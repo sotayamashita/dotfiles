@@ -3,6 +3,8 @@ function ..    ; cd .. ; end
 function ...   ; cd ../../ ; end
 function ....  ; cd ../../../ ; end
 function ..... ; cd ../../../../ ; end
+function l     ; tree --dirsfirst -aFCNL 1 $argv ; end
+function ll    ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
 # Utilities
 function g     ; git $argv ; end
@@ -28,6 +30,7 @@ alias cleanup_dsstore="find . -name '*.DS_Store' -type f -ls -delete"
 # Shortcuts
 alias dt="cd ~/Desktop"
 alias p="cd ~/Documents/projects"
+alias src="cd ~/Documents/src"
 alias j="jobs"
 alias h="history"
 alias git="hub"

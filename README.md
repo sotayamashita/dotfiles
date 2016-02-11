@@ -10,6 +10,10 @@
 * Git: https://git-scm.com/
 * Fisherman: https://github.com/fisherman/fisherman
 
+**Required fonts**
+
+* powerline/fonts: https://github.com/powerline/fonts
+
 ## Install
 
 ```bash
@@ -20,6 +24,6 @@ curl -s https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bootstra
 
 ```bash
 cd $HOME/.shdr
-git pull --rabase
+git pull --rebase
 cp -r $HOME/.shdr/.config/fish/* ~/.config/fish/
 ```
