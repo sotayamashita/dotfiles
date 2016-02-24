@@ -166,9 +166,8 @@
 
 [push]
 
-    # 'git push' will push the current branch to its tracking branch
-    # the usual default is to push all branches
-    default = upstream
+    # push easily. http://stackoverflow.com/a/23918418/89484
+    default = current
 
     # Make `git push` push relevant annotated tags when pushing branches out.
     followTags = true
