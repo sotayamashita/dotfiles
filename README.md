@@ -14,7 +14,13 @@
 ## Install
 
 ```bash
-curl -s https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bootstrap.sh | sh
+curl -s https://raw.githubusercontent.com/sotayamashita/dotfiles/master/install.sh | sh
+```
+
+## Install Homebrew formulae
+
+```bash
+./brew.sh
 ```
 
 ## Update
@@ -25,8 +31,13 @@ git pull --rebase
 cp -r $HOME/.shdr/.config/fish/* ~/.config/fish/
 ```
 
-## Install Homebrew formulae
+## Acknowledgements
 
-```bash
-./brew.sh
-```
+Inspiration and code was taken from many sources, including:
+
+* [Mathias Bynens' dotfiles](https://github.com/mathiasbynens/dotfiles)
+* [Nicolas Gallagher's dotfiles](https://github.com/necolas/dotfiles)
+
+## License
+
+MIT © Sota Yamashita
