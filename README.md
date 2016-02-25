@@ -4,14 +4,11 @@
 
 ## Setup
 
-**Required software**
+**Requirements**
 
 * Fish: http://fishshell.com/
 * Git: https://git-scm.com/
 * Fisherman: https://github.com/fisherman/fisherman
-
-**Required fonts**
-
 * powerline/fonts: https://github.com/powerline/fonts
 
 ## Install
@@ -26,4 +23,10 @@ curl -s https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bootstra
 cd $HOME/.shdr
 git pull --rebase
 cp -r $HOME/.shdr/.config/fish/* ~/.config/fish/
+```
+
+## Install Homebrew formulae
+
+```bash
+./brew.sh
 ```
