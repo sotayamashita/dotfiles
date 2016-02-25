@@ -6,7 +6,6 @@
 
 **Requirements**
 
-* Fish: http://fishshell.com/
 * Fisherman: https://github.com/fisherman/fisherman
 * powerline/fonts: https://github.com/powerline/fonts
 
