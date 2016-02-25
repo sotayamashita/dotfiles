@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check for Homebrew
 if ! type_exists 'brew'; then
