@@ -13,8 +13,16 @@
 
 ## Install
 
-```bash
+**Using Git and the bootstrap script**
+
+```javascript
 curl -s https://raw.githubusercontent.com/sotayamashita/dotfiles/master/install.sh | sh
+```
+
+**Git-free**
+
+```javascript
+cd; curl -#L https://github.com/sotayamashita/dotfiles/tarball/master | tar -xzv --strip-components 1 --exclude={README.md,bootstrap.sh,LICENSE-MIT.txt}
 ```
 
 ## Install Homebrew formulae
