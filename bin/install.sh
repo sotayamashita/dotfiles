@@ -3,6 +3,23 @@
 #
 # Utility
 #
+# info
+info() {
+  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+}
+
+# success message
+success() {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+# fail message
+fail() {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  echo ''
+  exit
+}
+
 # detect there is command
 type_exists() {
   if type $1 > /dev/null 2>&1; then
@@ -13,8 +30,17 @@ type_exists() {
 
 # brew update
 post_install() {
-  printf "Updating Homebrew..."
+  info "Updating Homebrew..."
   brew update
+}
+
+#
+link() {
+  from="$1"
+  to="$2"
+  info "Linking '$from' to '$to'"
+  rm -f "$to"
+  ln -s "$from" "$to"
 }
 
 
@@ -22,8 +48,8 @@ post_install() {
 # check for homebrew
 #
 if ! type_exists 'brew'; then
-  printf "Installing Homebrew..."
-  printf "Run ruby -e \"$(curl -fsSkL raw.github.com/mxcl/homebrew/go)\""
+  info "Installing Homebrew..."
+  info "Run ruby -e \"$(curl -fsSkL raw.github.com/mxcl/homebrew/go)\""
   ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
 fi
 
@@ -53,10 +79,11 @@ fi
 #
 # Install dotfiles
 #
-if [ ! -d "$HOME/.shdr" ]; then
-  echo "Installing SHDR for the first time"
-  git clone --depth=1 --depth=1 https://github.com/sotayamashita/dotfiles.git "$HOME/.shdr"
-  cp -r $HOME/.shdr/.config/fish/* ~/.config/fish/
+if [ ! -d "$HOME/.dotfiles" ]; then
+  info "Installing dotfiles for the first time"
+  git clone --depth=1 --depth=1 https://github.com/sotayamashita/dotfiles.git "$HOME/.dotfiles"
+  cp -r $HOME/.dotfiles/.config/fish/* ~/.config/fish/
+  success "Successfully, created ~/.dotfiles"
 else
-  echo "SHDR is already installed"
+  info "dotfiles is already installed"
 fi
