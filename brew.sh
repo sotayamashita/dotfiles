@@ -76,6 +76,8 @@ brew install tcpreplay
 brew install tcptrace
 brew install ucspi-tcp # `tcpserver` etc.
 brew install xz
+brew install tmux
+brew install awscli
 
 # Install other useful binaries.
 brew install ack
