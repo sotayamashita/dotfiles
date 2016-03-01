@@ -103,7 +103,7 @@
 [core]
 
     # Use custom `.gitignore`
-    excludesfile = ~/.shdr/git/.gitignore
+    excludesfile = ~/.gitignore
 
     # Treat spaces before tabs and all kinds of trailing whitespace as an error
     # [default] trailing-space: looks for spaces at the end of a line
@@ -171,6 +171,11 @@
 
     # Make `git push` push relevant annotated tags when pushing branches out.
     followTags = true
+
+[commit]
+
+  template = ~/.gitmessage
+
 
 # URL shorthands
 
