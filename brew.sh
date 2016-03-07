@@ -78,6 +78,7 @@ brew install ucspi-tcp # `tcpserver` etc.
 brew install xz
 brew install tmux
 brew install awscli
+brew install go
 
 
 # Install other useful binaries.
