@@ -79,6 +79,7 @@ brew install xz
 brew install tmux
 brew install awscli
 
+
 # Install other useful binaries.
 brew install ack
 brew install dark-mode
