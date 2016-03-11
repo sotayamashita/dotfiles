@@ -34,6 +34,9 @@ brew install bash-completion2
 # Install `wget` with IRI support.
 brew install wget --with-iri
 
+# Install curl
+brew install curl --with-nghttp2 --with-openssl
+
 # Install RingoJS and Narwhal.
 # Note that the order in which these are installed is important;
 # see http://git.io/brew-narwhal-ringo.
