@@ -87,6 +87,13 @@
     # Interactive rebase with the given number of latest commits
     reb = "!r() { git rebase -i HEAD~$1; }; r"
 
+    # Global .gitconfig aliases for GitHub Pull Request Managment
+    # https://gist.github.com/gnarf/5406589
+    # https://gist.github.com/piscisaureus/3342247
+    pr  = "!f() { git fetch -fu ${2:-origin} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
+    pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
+
+
 [format]
 
     pretty = format:%C(blue)%ad%Creset %C(yellow)%h%C(green)%d%Creset %C(blue)%s %C(magenta) [%an]%Creset
@@ -133,6 +140,7 @@
     remote = green
 
 [color "diff"]
+
     meta = yellow bold
     frag = magenta bold # line info
     old = red           # deletions
