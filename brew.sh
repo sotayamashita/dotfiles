@@ -104,6 +104,7 @@ brew install testssl
 brew install tree
 brew install webkit2png
 brew install zopfli
+brew install sshrc
 
 # Remove outdated versions from the cellar.
 brew cleanup

@@ -1,0 +1,15 @@
+# Requirement
+# https://github.com/Russell91/sshrc
+
+# alias
+#
+alias .. ='cd ..'
+alias ...='cd ../../'
+
+# alert
+#
+function dufunction(){
+  du -sh $1 --exclude=*/proc* | sort -h -r
+}
+
+alias  du=dufunction
