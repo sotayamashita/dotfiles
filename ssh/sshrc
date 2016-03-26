@@ -16,7 +16,7 @@ alias g='git'
 alias h='history'
 
 # Troubleshooting alias
-# 障害対応でよくつかうコマンドエイリアス
+# 障害対応でよく使うコマンドエイリアス
 #
 function extendDu() {
   sudo du -sh $1 --exclude=*/proc* | sort -h -r | head -5
