@@ -20,9 +20,9 @@ curl -s https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bin/inst
 ## Update
 
 ```bash
-cd $HOME/.dotfiles
-git pull --rebase
+git -C $HOME/.dotfiles pull --rebase
 cp -r $HOME/.dotfiles/.config/fish/* ~/.config/fish/
+source ~/.config/fish/config
 ```
 
 ## License

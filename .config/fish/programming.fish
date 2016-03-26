@@ -7,5 +7,5 @@ export CASSANDRA_HOME=$HOME/Documents/src/cassandra-2.1.2
 set PATH $PATH $CASSANDRA_HOME/bin
 
 # Golang
-export GOPATH=$HOME/Documents/go_workplace
+export GOPATH=$HOME/Documents/go_workspace
 set PATH $PATH $GOPATH/bin 

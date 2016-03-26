@@ -18,7 +18,4 @@ alias h='history'
 # Troubleshooting alias
 # 障害対応でよくつかうコマンドエイリアス
 #
-function dufunction(){
-  sudo du -sh $1 --exclude=*/proc* | sort -h -r | head -5
-}
-alias  du=dufunction
+alias du="sudo du -sh $1 --exclude=*/proc* | sort -h -r | head -5"
