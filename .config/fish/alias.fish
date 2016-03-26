@@ -66,4 +66,4 @@ alias reload="exec $SHELL -l"
 
 # Infrastructure
 #
-alias instances="cat ~/.ssh/config | grep $1 | awk '{print $2}' | perl -pe 's/\n/,/;' | perl -pe 'chop'"
+function instances; cat ~/.ssh/config | grep $argv | awk '{print $2}' | perl -pe 's/\n/,/;' | perl -pe 'chop'; end
