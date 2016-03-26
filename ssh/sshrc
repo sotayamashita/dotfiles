@@ -1,15 +1,24 @@
 # Requirement
 # https://github.com/Russell91/sshrc
+echo "You are using sssrhc"
 
-# alias
+# Navigation
+# ナビゲーション
 #
-alias .. ='cd ..'
-alias ...='cd ../../'
+alias ..  ='cd ..'
+alias ... ='cd ../../'
+alias ....='cd ../../../'
 
-# alert
+# Utility
+# ユーティリティ
+#
+alias g='git'
+alias h='history'
+
+# Troubleshooting alias
+# 障害対応でよくつかうコマンドエイリアス
 #
 function dufunction(){
-  du -sh $1 --exclude=*/proc* | sort -h -r
+  sudo du -sh $1 --exclude=*/proc* | sort -h -r | head -5
 }
-
 alias  du=dufunction
