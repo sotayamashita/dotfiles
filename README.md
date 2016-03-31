@@ -2,13 +2,6 @@
 
 > Default for OSX
 
-## Setup
-
-**Requirements**
-
-* Fisherman: https://github.com/fisherman/fisherman
-* powerline/fonts: https://github.com/powerline/fonts
-
 ## Install
 
 **Using Git and the install script**
