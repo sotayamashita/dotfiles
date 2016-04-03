@@ -1,7 +1,5 @@
 # Dotfiles
 
-> Default for OSX
-
 ## Install
 
 **Using Git and the install script**
