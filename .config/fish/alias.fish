@@ -44,7 +44,6 @@ alias git="hub"
 alias g="git"
 alias v="vim"
 alias ungz="gunzip -k"
-alias ssh=sshrc
 
 # Empty the Trash on all mounted volumes and the main HDD. then clear the useless sleepimage
 #
