@@ -19,6 +19,8 @@
     ci = commit                       # commit
     amend = commit --amend            # ammend your last commit
     ammend = commit --amend           # ammend your last commit
+    untrack = rm -r --cached
+    rewrite = rebase -i
 
     # checkout
     co = checkout                     # checkout
@@ -33,11 +35,14 @@
     last = diff HEAD^                 # diff last committed change
 
     # log
-    l = log --graph --date=short
+    graph = log --graph -10 --branches --remotes --tags  --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %ar) %Cred%d' --date-order
+    history = log -10 --format=format:'%Cgreen%h %Creset• %s (%cN, %ar)'
     changes = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\" --name-status
     short = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\"
     simple = log --pretty=format:\" * %s\"
     shortnocolor = log --pretty=format:\"%h %cr %cn %s\"
+    contributors = shortlog -s -n
+    last = log -1 HEAD --format=format:"%Cred%H"
 
     # pull
     pl = pull                         # pull
