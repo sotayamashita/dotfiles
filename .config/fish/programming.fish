@@ -8,4 +8,7 @@ set PATH $PATH $CASSANDRA_HOME/bin
 
 # Golang
 export GOPATH=$HOME/Documents/go_workspace
-set PATH $PATH $GOPATH/bin 
+set PATH $PATH $GOPATH/bin
+
+# Homebrew
+set PATH $PATH /usr/local/sbin
