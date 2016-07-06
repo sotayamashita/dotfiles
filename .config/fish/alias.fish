@@ -36,8 +36,10 @@ alias cleanup_dsstore="find . -name '*.DS_Store' -type f -ls -delete"
 # Shortcuts
 #
 alias dt="cd ~/Desktop"
-alias p="cd ~/Documents/projects"
-alias src="cd ~/Documents/src"
+alias mp="cd ~/Documents/projects"
+alias mw="cd ~/Documents/workspace"
+alias mg="cd ~/Documents/garage"
+alias ms="cd ~/Documents/src"
 alias j="jobs"
 alias h="history"
 alias git="hub"
