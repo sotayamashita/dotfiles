@@ -12,3 +12,6 @@ set PATH $PATH $GOPATH/bin
 
 # Homebrew
 set PATH $PATH /usr/local/sbin
+
+# diff-highlight
+set PATH $PATH /usr/local/share/git-core/contrib/diff-highlight
