@@ -199,7 +199,7 @@
 
 [pager]
 
-    # Need diff-so-fancy
+    # TODO: Need diff-so-fancy
     # https://github.com/so-fancy/diff-so-fancy 
     log  = diff-so-fancy | less --tabs=4 -RFX
     show = diff-so-fancy | less --tabs=4 -RFX
