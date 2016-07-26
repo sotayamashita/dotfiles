@@ -92,6 +92,9 @@
     # Interactive rebase with the given number of latest commits
     reb = "!r() { git rebase -i HEAD~$1; }; r"
 
+    # https://zarino.co.uk/post/git-set-upstream/
+    set-upstream = !git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD`
+
     # Global .gitconfig aliases for GitHub Pull Request Managment
     # https://gist.github.com/gnarf/5406589
     # https://gist.github.com/piscisaureus/3342247
