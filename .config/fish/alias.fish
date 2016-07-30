@@ -4,6 +4,7 @@ function ..    ; cd .. ; end
 function ...   ; cd ../../ ; end
 function ....  ; cd ../../../ ; end
 function ..... ; cd ../../../../ ; end
+function ......; cd ../../../../../ ; end
 function l     ; tree --dirsfirst -aFCNL 1 $argv ; end
 function ll    ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
@@ -15,12 +16,12 @@ function grep  ; command grep --color=auto $argv ; end
 # `cat` with beautiful colors. requires Pygments installed.
 #  Need - sudo easy_install -U Pygments
 #
-alias c='pygmentize -O style=monokai -f console256 -g'
+alias cat='pygmentize -O style=monokai -f console256 -g'
 
 # Networking. IP address, dig, DNS
 #
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias localip="ipconfig getifaddr en0"
+alias localip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
 alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
 alias dig="dig +nocmd any +multiline +noall +answer"
 
@@ -32,6 +33,11 @@ alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET
 # Recursively delete `.DS_Store` files
 #
 alias cleanup_dsstore="find . -name '*.DS_Store' -type f -ls -delete"
+
+# Recursively delete node_modules
+# https://twitter.com/addyosmani/status/758696688663998465
+# 
+alias cleanup_npmmodules="find . -name node_modules -type d -exec rm -rf {} +"
 
 # Shortcuts
 #
@@ -63,7 +69,6 @@ alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | grep -v exten
 # Reload the shell (i.e. invoke as a login shell)
 #
 alias reload="exec $SHELL -l"
-
 
 # Infrastructure
 #
