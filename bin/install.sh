@@ -81,7 +81,7 @@ fi
 #
 if [ ! -d "$HOME/.dotfiles" ]; then
   info "Installing dotfiles for the first time"
-  git clone --depth=1 --depth=1 https://github.com/sotayamashita/dotfiles.git "$HOME/.dotfiles"
+  git clone --depth=1 https://github.com/sotayamashita/dotfiles.git "$HOME/.dotfiles"
   cp -r $HOME/.dotfiles/.config/fish/* ~/.config/fish/
   success "Successfully, created ~/.dotfiles"
 else
