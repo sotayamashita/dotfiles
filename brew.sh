@@ -82,7 +82,7 @@ brew install xz
 brew install tmux
 brew install awscli
 brew install go
-
+brew install fish
 
 # Install other useful binaries.
 brew install ack
@@ -105,6 +105,7 @@ brew install tree
 brew install webkit2png
 brew install zopfli
 brew install sshrc
+brew install jq
 
 # Remove outdated versions from the cellar.
 brew cleanup
