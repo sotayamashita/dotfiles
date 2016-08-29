@@ -27,10 +27,9 @@ type_exists() {
 #
 # Install xcode-select
 #
-if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) &&
-   test -d "${xpath}" && test -x "${xpath}" ; then
-   info "Installing xcode-select"
-   xcode-select install
+if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
+  info "Installing xcode-select"
+  xcode-select install
 fi
 
 #
