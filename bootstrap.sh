@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# Bootstraping dotfiles
 
 #
 # Utilities
