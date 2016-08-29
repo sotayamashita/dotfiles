@@ -8,7 +8,7 @@
 **Using Git and the install script**
 
 ```javascript
-sh -c "`curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bin/install.sh`"
+sh -c "`curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bootstrap.sh`"
 ```
 
 
