@@ -58,7 +58,7 @@ if not test -f $HOME/.config/fish/functions/fisher.fish
   info "Installing fisherman"
   curl -sLo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
   fisher
-end
+fi
 
 #
 # Install dotfiles
