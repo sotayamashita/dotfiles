@@ -27,7 +27,7 @@ type_exists() {
 #
 # Install xcode-select
 #
-if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
+if not type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
   info "Installing xcode-select"
   xcode-select install
 fi
@@ -35,7 +35,7 @@ fi
 #
 # Install homebrew
 #
-if ! type_exists "brew"; then
+if not type_exists "brew"; then
   info "Installing brew"
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   ./brew.sh
@@ -44,7 +44,7 @@ fi
 #
 # Install fish
 #
-if ! type_exists "fish"; then
+if not type_exists "fish"; then
   info "Installing fish"
   brew install fish
   info "To make Fish your default shell"
@@ -63,7 +63,7 @@ fi
 #
 # Install dotfiles
 #
-if [ ! -d "$HOME/.dotfiles" ]; then
+if not test -d then
   info "Installing dotfiles for the first time"
   git clone --depth=1 https://github.com/sotayamashita/dotfiles.git "$HOME/.dotfiles"
   cp -r $HOME/.dotfiles/.config/fish/* ~/.config/fish/
