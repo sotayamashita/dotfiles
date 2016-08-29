@@ -54,7 +54,7 @@ fi
 #
 # Install fisher
 #
-if not test -f $HOME/.config/fish/functions/fisher.fish
+if not test -f $HOME/.config/fish/functions/fisher.fish; then
   info "Installing fisherman"
   curl -sLo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
   fisher
@@ -63,7 +63,7 @@ fi
 #
 # Install dotfiles
 #
-if not test -d then
+if not test -d $HOME/.dotfiles; then
   info "Installing dotfiles for the first time"
   git clone --depth=1 https://github.com/sotayamashita/dotfiles.git "$HOME/.dotfiles"
   cp -r $HOME/.dotfiles/.config/fish/* ~/.config/fish/
