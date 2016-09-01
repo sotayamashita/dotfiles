@@ -17,7 +17,7 @@ sh -c "`curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/mast
 ```bash
 git -C $HOME/.dotfiles pull --rebase
 cp -r $HOME/.dotfiles/.config/fish/* ~/.config/fish/
-source ~/.config/fish/config
+source ~/.config/fish/config.fish
 ```
 
 

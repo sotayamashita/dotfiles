@@ -12,15 +12,6 @@ source ~/.config/fish/path.fish
 #
 source ~/.secrets
 
-function type_exists
-  if type $argv > /dev/null/ 2>&1
-    return 0
-  end
-  return 1
-end
-
 # Load rbenv automatically by appending
 #
-if type_exists 'rbenv'
-  status --is-interactive; and . (rbenv init -|psub)
-end
+status --is-interactive; and . (rbenv init -|psub)
