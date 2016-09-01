@@ -14,4 +14,4 @@ source ~/.secrets
 
 # Load rbenv automatically by appending
 #
-status --is-interactive; and . (rbenv init -|psub)
+rbenv init - | source
