@@ -2,13 +2,6 @@
 #
 set -U fish_greeting ""
 
-# Ensure fisherman and plugins are installed
-#
-if not test -f $HOME/.config/fish/functions/fisher.fish
-  curl -sLo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
-  fisher
-end
-
 # Files
 #
 source ~/.config/fish/alias.fish
@@ -18,3 +11,16 @@ source ~/.config/fish/path.fish
 # Need: create it manually
 #
 source ~/.secrets
+
+function type_exists
+  if type $argv > /dev/null/ 2>&1
+    return 0
+  end
+  return 1
+end
+
+# Load rbenv automatically by appending
+#
+if type_exists 'rbenv'
+  status --is-interactive; and . (rbenv init -|psub)
+end
