@@ -74,15 +74,24 @@ install_xcode() {
 # Returns:
 #   none
 #######################################
-# TODO: If thre are new items, just install them like chef or ansible
-install_formulas() {
+install_homebrew() {
   if ! type_exists "brew"; then
     info "Installing brew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    ./brew.sh
   else
     success "all fomulas already installed"
   fi
+}
+
+#######################################
+# Install fomulas
+# Arguments:
+#   none
+# Returns:
+#   none
+#######################################
+install_fomulas() {
+  ./brew.sh
 }
 
 #######################################
@@ -138,12 +147,55 @@ install_dotfiles() {
   fi
 }
 
+#######################################
+# Create sercrets file
+# Arguments:
+#   none
+# Returns:
+#   none
+#######################################
+create_sercrets() {
+  if [[ ! -e $HOME/.secrets ]]; then
+    touch ~/.secrets
+    echo "
+      # All
+      set AUTHOR_NAME                       "<Your Name>"
+      set AUTHOR_MAIL                       "<Your Email Address>"
+
+      # Git
+      set GIT_AUTHOR_NAME                   "$AUTHOR_NAME"
+      set GIT_COMITTER_NAME                 "$GIT_AUTHOR_NAME"
+      git config --global user.name         "$GIT_COMITTER_NAME"
+
+      set GIT_AUTHOR_MAIL                   "$AUTHOR_MAIL"
+      set GIT_COMITTER_EMAIL                "$GIT_AUTHOR_MAIL"
+      git config --global user.email        "$GIT_AUTHOR_MAIL"
+
+      set GIT_AUTHOR_SIGNINGKEY             "xxxxxxxx"
+      set GIT_COMMIT_SIGNINGKEY             "$GIT_AUTHOR_SIGNINGKEY"
+      git config --global user.signingkey   "$GIT_AUTHOR_SIGNINGKEY"
+
+      # NPM
+      set NPM_AUTHOR_NAME                   "$AUTHOR_NAME"
+      npm config --global init-author-name  "$NPM_AUTHOR_NAME"
+
+      set NPM_AUTHOR_EMAIL                  "$AUTHOR_MAIL"
+      npm config --global init-author-email "$NPM_AUTHOR_EMAIL"
+    " >> $HOME/.secrets
+  else
+    success "/.secrets already created"
+  fi
+}
+
 main() {
   # Install xcode-install
   install_xcode
 
   # Install homebrew formulas
-  install_formulas
+  install_homebrew
+
+  # Install fomulas
+  install_fomulas
 
   # Install fish
   install_fish
@@ -153,6 +205,9 @@ main() {
 
   # Install dotfiles
   install_dotfiles
+
+  # Create sercret file
+  create_sercrets
 }
 
 main "$@"

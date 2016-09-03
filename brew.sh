@@ -106,6 +106,7 @@ brew install webkit2png
 brew install zopfli
 brew install sshrc
 brew install jq
+brew install rbenv
 
 # Remove outdated versions from the cellar.
 brew cleanup
