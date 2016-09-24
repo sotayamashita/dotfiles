@@ -1,7 +1,9 @@
 [welcome-badge]: https://img.shields.io/badge/PRs%20&%20Issues-welcome-brightgreen.svg
 [welcome-link]: https://github.com/sotayamashita/dotfiles/pulls
 
-# dotfiles [![PRs & Issues Welcome][welcome-badge]][welcome-link]
+# dotfiles
+
+[![PRs & Issues Welcome][welcome-badge]][welcome-link]
 
 > Dotfiles for OSX
 
