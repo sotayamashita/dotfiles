@@ -1,13 +1,13 @@
-# Dotfiles
+# dotfiles
 
-:octocat: Dotfiles for OSX
+> Dotfiles for OSX
 
 
 ## Install
 
 **Using Git and the install script**
 
-```javascript
+```bash
 sh -c "`curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bootstrap.sh`"
 ```
 
