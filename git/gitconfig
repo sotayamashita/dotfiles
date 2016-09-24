@@ -198,7 +198,8 @@
 
 [commit]
 
-  template = ~/.gitmessage
+    template = ~/.gitmessage
+    gpgsign = true
 
 [pager]
 
