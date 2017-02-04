@@ -61,7 +61,7 @@ type_exists() {
 install_xcode() {
   if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
     info "Installing xcode-select"
-    xcode-select install
+    xcode-select --install
   else
     success "xcode-select already installed"
   fi
