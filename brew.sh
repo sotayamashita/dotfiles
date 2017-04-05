@@ -107,6 +107,7 @@ brew install zopfli
 brew install sshrc
 brew install jq
 brew install rbenv
+brew install hub
 
 # Remove outdated versions from the cellar.
 brew cleanup
