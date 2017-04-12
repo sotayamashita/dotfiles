@@ -108,6 +108,9 @@ brew install sshrc
 brew install jq
 brew install rbenv
 brew install hub
+brew install gibo
+brew install postgresql
+brew install diff-so-fancy
 
 # Remove outdated versions from the cellar.
 brew cleanup
