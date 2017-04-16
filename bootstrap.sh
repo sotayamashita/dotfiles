@@ -189,6 +189,22 @@ EOT
   fi
 }
 
+create_symlink() {
+  if [[ -L $1 ]]; then
+    if [[ -e $1 ]]; then
+      info "${1} is already exist"
+    else
+      fail "${1} is broken link"
+    fi
+  elif [[ -e $1 ]]; then
+    fail ""
+  else
+    info "Trying create symlink"
+    ln -s $2 $1
+    success "Successfully, create symlink"
+  fi
+}
+
 
 create_ssh() {
   if [[ ! -d $HOME/.ssh ]]; then
@@ -223,6 +239,14 @@ main() {
 
   # Create sercret file
   create_sercrets
+
+  # Create symlink
+  # TODO: Raise the level of abstraction
+  create_symlink $HOME/.gitignore    $HOME/.dotfiles/git/gitignore
+  create_symlink $HOME/.gitconfig    $HOME/.dotfiles/git/gitconfig
+  create_symlink $HOME/.gitmessage   $HOME/.dotfiles/git/gitmessage
+  create_symlink $HOME/.npmrc        $HOME/.dotfiles/npm/npmrc
+  create_symlink $HOME/.editorconfig $HOME/.dotfiles/editorconfig/editorconfig
 }
 
 main "$@"
