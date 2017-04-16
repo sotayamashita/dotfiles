@@ -1,21 +1,14 @@
-[welcome-badge]: https://img.shields.io/badge/PRs%20&%20Issues-welcome-brightgreen.svg
-[welcome-link]: https://github.com/sotayamashita/dotfiles/pulls
+# dotfiles - just do it!
 
-# dotfiles
-
-[![PRs & Issues Welcome][welcome-badge]][welcome-link]
-
-> Dotfiles for OSX
-
+> Dotfiles for OSX.
 
 ## Install
 
-**Using Git and the install script**
+**Run script and it will change your environment immediately**
 
 ```bash
 sh -c "`curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bootstrap.sh`"
 ```
-
 
 ## Update
 
@@ -25,6 +18,9 @@ cp -r $HOME/.dotfiles/.config/fish/* ~/.config/fish/
 source ~/.config/fish/config.fish
 ```
 
+## Acknowledgement
+
+- [mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)
 
 ## License
 
