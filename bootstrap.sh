@@ -189,7 +189,20 @@ EOT
   fi
 }
 
+
+create_ssh() {
+  if [[ ! -d $HOME/.ssh ]]; then
+    mkdir $HOME/.ssh
+    chmod 700 $HOME/.ssh
+  else
+    success "/.ssh already created"
+  fi
+}
+
 main() {
+  # create ssh directory
+  create_ssh
+
   # Install xcode-install
   install_xcode
 
