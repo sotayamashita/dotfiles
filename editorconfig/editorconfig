@@ -7,7 +7,7 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# PHP should follow the PSR-2 standard 
+# PHP should follow the PSR-2 standard
 # Token from https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
 [*.php]
 indent_size = 4
