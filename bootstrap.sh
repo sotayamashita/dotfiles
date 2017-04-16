@@ -155,33 +155,35 @@ install_dotfiles() {
 #   none
 #######################################
 create_sercrets() {
-  if [[ ! -e $HOME/.secrets ]]; then
-    touch ~/.secrets
-    echo "
-      # All
-      set AUTHOR_NAME                       "<Your Name>"
-      set AUTHOR_MAIL                       "<Your Email Address>"
+  readonly FILENAME=".secrets"
+  readonly FILEPATH="${HOME}/${FILENAME}"
 
-      # Git
-      set GIT_AUTHOR_NAME                   "$AUTHOR_NAME"
-      set GIT_COMITTER_NAME                 "$GIT_AUTHOR_NAME"
-      git config --global user.name         "$GIT_COMITTER_NAME"
+  if [[ ! -e $FILEPATH ]]; then
+    cat <<EOT >> $FILEPATH
+# All
+set AUTHOR_NAME                       "<Your Name>"
+set AUTHOR_MAIL                       "<Your Email Address>"
 
-      set GIT_AUTHOR_MAIL                   "$AUTHOR_MAIL"
-      set GIT_COMITTER_EMAIL                "$GIT_AUTHOR_MAIL"
-      git config --global user.email        "$GIT_AUTHOR_MAIL"
+# Git
+set GIT_AUTHOR_NAME                   "\$AUTHOR_NAME"
+set GIT_COMITTER_NAME                 "\$GIT_AUTHOR_NAME"
+git config --global user.name         "\$GIT_COMITTER_NAME"
 
-      set GIT_AUTHOR_SIGNINGKEY             "xxxxxxxx"
-      set GIT_COMMIT_SIGNINGKEY             "$GIT_AUTHOR_SIGNINGKEY"
-      git config --global user.signingkey   "$GIT_AUTHOR_SIGNINGKEY"
+set GIT_AUTHOR_MAIL                   "\$AUTHOR_MAIL"
+set GIT_COMITTER_EMAIL                "\$GIT_AUTHOR_MAIL"
+git config --global user.email        "\$GIT_AUTHOR_MAIL"
 
-      # NPM
-      set NPM_AUTHOR_NAME                   "$AUTHOR_NAME"
-      npm config --global init-author-name  "$NPM_AUTHOR_NAME"
+set GIT_AUTHOR_SIGNINGKEY             "xxxxxxxx"
+set GIT_COMMIT_SIGNINGKEY             "\$GIT_AUTHOR_SIGNINGKEY"
+git config --global user.signingkey   "\$GIT_AUTHOR_SIGNINGKEY"
 
-      set NPM_AUTHOR_EMAIL                  "$AUTHOR_MAIL"
-      npm config --global init-author-email "$NPM_AUTHOR_EMAIL"
-    " >> $HOME/.secrets
+# NPM
+set NPM_AUTHOR_NAME                   "\$AUTHOR_NAME"
+npm config --global init-author-name  "\$NPM_AUTHOR_NAME"
+
+set NPM_AUTHOR_EMAIL                  "\$AUTHOR_MAIL"
+npm config --global init-author-email "\$NPM_AUTHOR_EMAIL"
+EOT
   else
     success "/.secrets already created"
   fi
