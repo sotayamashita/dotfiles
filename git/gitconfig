@@ -199,12 +199,12 @@
 [commit]
 
     template = ~/.gitmessage
-    gpgsign = true
+    gpgsign = false
 
 [pager]
 
     # TODO: Need diff-so-fancy
-    # https://github.com/so-fancy/diff-so-fancy 
+    # https://github.com/so-fancy/diff-so-fancy
     log  = diff-so-fancy | less --tabs=4 -RFX
     show = diff-so-fancy | less --tabs=4 -RFX
     diff = diff-so-fancy | less --tabs=4 -RFX
