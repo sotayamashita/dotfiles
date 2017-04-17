@@ -176,13 +176,6 @@ git config --global user.email        "\$GIT_AUTHOR_MAIL"
 set GIT_AUTHOR_SIGNINGKEY             "xxxxxxxx"
 set GIT_COMMIT_SIGNINGKEY             "\$GIT_AUTHOR_SIGNINGKEY"
 git config --global user.signingkey   "\$GIT_AUTHOR_SIGNINGKEY"
-
-# NPM
-set NPM_AUTHOR_NAME                   "\$AUTHOR_NAME"
-npm config --global init-author-name  "\$NPM_AUTHOR_NAME"
-
-set NPM_AUTHOR_EMAIL                  "\$AUTHOR_MAIL"
-npm config --global init-author-email "\$NPM_AUTHOR_EMAIL"
 EOT
   else
     success "/.secrets already created"
