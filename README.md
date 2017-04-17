@@ -1,10 +1,10 @@
-# dotfiles - just do it!
+# dotfiles
 
-> Dotfiles for OSX.
+> :zap: Superautomate - Dotfiles for OSX
 
 ## Install
 
-**Run script and it will change your environment immediately**
+**Run script and it is changing your environment immediately**
 
 ```bash
 sh -c "`curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bootstrap.sh`"
