@@ -18,7 +18,7 @@ cp -r $HOME/.dotfiles/.config/fish/* ~/.config/fish/
 source ~/.config/fish/config.fish
 ```
 
-## Acknowledgement
+## Acknowledgements
 
 - [mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)
 
