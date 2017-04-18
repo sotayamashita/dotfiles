@@ -1,0 +1,117 @@
+#!/bin/bash
+#
+# Utilities
+
+#######################################
+# Test whether a command exists
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+info() {
+    printf "\n$(tput setaf 7)%s$(tput sgr0)\n" "$@"
+}
+
+#######################################
+# Test whether a command exists
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+success() {
+    printf "$(tput setaf 64)✓ %s$(tput sgr0)\n" "$@"
+}
+
+#######################################
+# Test whether a command exists
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+error() {
+    printf "$(tput setaf 1)x %s$(tput sgr0)\n" "$@"
+}
+
+#######################################
+# Test whether a command exists
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+warning() {
+    printf "$(tput setaf 136)! %s$(tput sgr0)\n" "$@"
+}
+
+#######################################
+# Ask for confirmation before proceeding
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+seek_confirmation() {
+    printf "\n"
+    warning "$@"
+    read -p "Continue? (y/n) " -n 1
+    printf "\n"
+}
+
+#######################################
+# Test whether the result of an 'ask' is a confirmation
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+is_confirmed() {
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      return 0
+    fi
+    return 1
+}
+
+#######################################
+# Test whether a command exists
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+type_exists() {
+  if type $1 > /dev/null 2>&1; then
+    return 0
+  fi
+  return 1
+}
+
+#######################################
+# Test whether a Homebrew formula is already installed
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+formula_exists() {
+    if $(brew list $1 >/dev/null); then
+        success "${1} already installed"
+        return 0
+    fi
+    warning "Missing formula: $1"
+    return 1
+}
+
+#######################################
+# Create a symbolic link
+# Arguments:
+#   Command
+# Returns:
+#   0 or 1
+#######################################
+link() {
+  info "Linking ${1} to ${2}"
+  ln -fs $1 $2
+}

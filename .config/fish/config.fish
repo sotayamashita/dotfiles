@@ -10,7 +10,7 @@ source ~/.config/fish/path.fish
 # Gitconfig.user
 # Need: create it manually
 #
-source ~/.secrets
+source ~/.extra
 
 # Load rbenv automatically by appending
 #

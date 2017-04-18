@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Help
+
+#######################################
+# List additional software
+# Arguments:
+#   none
+# Returns:
+#   0 or 1
+#######################################
+run_help() {
+
+cat <<EOT
+Usage: $(basename "$0") [options]
+
+Options:
+    -h, --help      Print this help text
+    -l, --list      Print a list of additional software to install
+
+Documentation can be found at https://github.com/sotayamashita/dotfiles/
+
+Copyright (c) Sota Yamashita
+Licensed under the MIT license.
+EOT
+
+}

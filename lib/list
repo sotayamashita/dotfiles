@@ -1,0 +1,40 @@
+#!/bin/bash
+#
+# List Additional software to install
+
+#######################################
+# List additional software
+# Arguments:
+#   none
+# Returns:
+#   0 or 1
+#######################################
+run_list() {
+
+cat <<EOT
+
+Additional software to install
+
+Browsers:
+  Opera
+  Google Chrome
+  Google Chrome Canary
+
+Development:
+  iTerms 2
+  Atom
+  JetBrains ToolBox
+  Wireshark
+  Charles
+
+Other:
+  1Password
+  Dropbox
+  Airmail 3
+  Boom 2
+  Spotify
+  Divvy
+
+EOT
+
+}

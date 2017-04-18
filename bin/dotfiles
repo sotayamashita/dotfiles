@@ -1,0 +1,109 @@
+#!/bin/bash
+#
+# Bootstraping dotfiles
+
+readonly DOTFILES_DIRECTORY="${HOME}/.dotfiles"
+
+main() {
+  # Check for Dotfiles
+  if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
+    git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY}
+  fi
+
+  # Source files
+  cd ${DOTFILES_DIRECTORY}
+  source ./lib/utils
+  source ./lib/help
+  source ./lib/list
+
+  # Help
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    run_help
+    exit
+  fi
+
+  # List additional software to install
+  if [[ "$1" == "-l" || "$1" == "--list" ]]; then
+    run_list
+    exit
+  fi
+
+  # Check for SSH directory
+  if [[ ! -d $HOME/.ssh ]]; then
+    info "Creating ${HOME}/.ssh directory"
+    mkdir $HOME/.ssh
+    chmod 700 $HOME/.ssh
+  else
+    success "DONE. ssh directory already created"
+  fi
+
+  # Check for Homebrew
+  if ! type_exists "brew"; then
+    info "Installing homebrew"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  else
+    success "DONE. Homebrew already installed"
+  fi
+
+  # Check for Fish
+  if ! type_exists "fish"; then
+    info "To make Fish your default shell"
+    chsh -s /usr/local/bin/fish
+  else
+    success "fish already installed"
+  fi
+
+  # Check for fisherman
+  if [[ ! -f $HOME/.config/fish/functions/fisher.fish ]]; then
+    info "Installing fisherman"
+    curl -sLo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
+    fisher
+  else
+    success "fisherman already installed"
+  fi
+
+  # Check for .extra file
+  readonly FILENAME=".extra"
+  readonly FILEPATH="${HOME}/${FILENAME}"
+
+  if [[ ! -e $FILEPATH ]]; then
+    cat <<EOT >> $FILEPATH
+# All
+set AUTHOR_NAME                       "<Your Name>"
+set AUTHOR_MAIL                       "<Your Email Address>"
+
+# Git
+set GIT_AUTHOR_NAME                   "\$AUTHOR_NAME"
+set GIT_COMITTER_NAME                 "\$GIT_AUTHOR_NAME"
+git config --global user.name         "\$GIT_COMITTER_NAME"
+
+set GIT_AUTHOR_MAIL                   "\$AUTHOR_MAIL"
+set GIT_COMITTER_EMAIL                "\$GIT_AUTHOR_MAIL"
+git config --global user.email        "\$GIT_AUTHOR_MAIL"
+
+set GIT_AUTHOR_SIGNINGKEY             "xxxxxxxx"
+set GIT_COMMIT_SIGNINGKEY             "\$GIT_AUTHOR_SIGNINGKEY"
+git config --global user.signingkey   "\$GIT_AUTHOR_SIGNINGKEY"
+EOT
+  else
+    success "~/.extra already created"
+  fi
+
+  # Make symbolic link
+  for file in "./symlink/*"
+  do
+    link "./symlink/${file}" "${HOME}/.${entry}"
+  done
+  success "Done. symbolic links are created."
+
+  # Ask before potentially overwriting OS X defaults
+  seek_confirmation "Warning: This step may modify your OS X system defaults."
+  if is_confirmed; then
+      bash ./bin/macos
+      success "Done. Note that some of these changes require a logout/restart to take effect."
+  else
+      info "Skipped OS X settings update."
+  fi
+}
+
+main "$@"

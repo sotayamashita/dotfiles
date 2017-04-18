@@ -4,10 +4,10 @@
 
 ## Install
 
-**Run script and it is changing your environment immediately**
+**Using Git and then run the install script**
 
 ```bash
-sh -c "`curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bootstrap.sh`"
+sh -c "`curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bin/bootstrap.sh`"
 ```
 
 ## Update
