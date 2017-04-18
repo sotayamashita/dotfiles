@@ -13,7 +13,13 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/mas
 ## Usage
 
 ```
-dotfiles --help
+dotfiles help
+
+Usage: dotfiles <command>
+
+Commands:
+    update      Pull the latest changes to update
+    list        Print a list of additional software to install
 ```
 
 ## License
