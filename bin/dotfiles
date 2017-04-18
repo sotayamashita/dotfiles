@@ -5,6 +5,17 @@
 readonly DOTFILES_DIRECTORY="${HOME}/.dotfiles"
 
 main() {
+
+  for ARGUMENT in $@
+  do
+    case $ARGUMENT in
+    init) echo 'init' ;;
+    esac
+  done
+
+  exit
+
+
   # Check for Dotfiles
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY}
