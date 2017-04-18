@@ -113,7 +113,7 @@ update() {
   git -C $DOTFILES_DIRECTORY reset --hard HEAD
   git -C $DOTFILES_DIRECTORY clean -fd
   git -C $DOTFILES_DIRECTORY pull --rebase
-  cp -r $DOTFILES_DIRECTORY /.config/fish/* $HOME/.config/fish/
+  cp -r $DOTFILES_DIRECTORY/.config/fish/* $HOME/.config/fish/
   source ~/.config/fish/config.fish
 
   RETVAL="0"
