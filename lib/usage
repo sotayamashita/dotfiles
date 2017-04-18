@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Usage
+
+#######################################
+# Usage
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+run_help() {
+
+cat <<EOT
+Usage: $(basename "$0")
+
+
+EOT
+
+}
