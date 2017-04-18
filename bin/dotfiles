@@ -132,6 +132,29 @@ list() {
 }
 
 #######################################
+# Macos modify your OS X system defaults
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+macos() {
+  bash ./lib/macos
+  RETVAL="0"
+}
+
+#######################################
+# Homebrew modify your OS X system defaults
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+brew() {
+  bash ./lib/brew
+}
+
+#######################################
 # Usage show usage
 # Arguments:
 #   None
@@ -172,6 +195,14 @@ main() {
 
       list)
         list
+        ;;
+
+      macos)
+        macos
+        ;;
+
+      brew)
+        brew
         ;;
 
       *)

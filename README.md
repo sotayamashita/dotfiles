@@ -19,8 +19,11 @@ dotfiles help
 Usage: dotfiles <command>
 
 Commands:
+    init        Initialize
     update      Pull the latest changes to update
     list        Print a list of additional software to install
+    macos       Modify your OS X system defaults
+    brew        Install Homebrew fomulas
 ```
 
 ## License
