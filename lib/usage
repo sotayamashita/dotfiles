@@ -9,12 +9,9 @@
 # Returns:
 #   None
 #######################################
-run_help() {
+run_usage() {
 
 cat <<EOT
-Usage: $(basename "$0")
-
-
 EOT
 
 }
