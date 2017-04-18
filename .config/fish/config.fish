@@ -28,7 +28,7 @@ function httpdump  ; sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E "Host\: .*
 function ip        ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
 function localip   ; ipconfig getifaddr en0 ; end
 function r         ; exec $SHELL -l ; end
-function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'
+function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80' ; end
 function t         ; command tree -C $argv ; end
 function urlencode ; python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);" ; end
 function v         ; vim ; end
