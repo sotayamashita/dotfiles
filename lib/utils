@@ -112,6 +112,6 @@ formula_exists() {
 #   0 or 1
 #######################################
 link() {
-  info "Linking ${1} to ${2}"
+  echo "Linking ${1} to ${2}"
   ln -fs $1 $2
 }

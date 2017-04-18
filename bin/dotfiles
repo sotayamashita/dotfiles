@@ -89,9 +89,9 @@ EOT
   fi
 
   # Make symbolic link
-  for file in "${DOTFILES_DIRECTORY}/symlink/*"
+  for file in $( ls ${DOTFILES_DIRECTORY}/symlink/* )
   do
-    link "${DOTFILES_DIRECTORY}/symlink/${file}" "${HOME}/.${file}"
+    link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
   done
   success "Done. symbolic links are created."
 
