@@ -12,6 +12,13 @@
 run_usage() {
 
 cat <<EOT
+
+Usage: $(basename "$0") <command>
+
+Commands:
+    update      Pull the latest changes to update
+    list        Print a list of additional software to install
+
 EOT
 
 }
