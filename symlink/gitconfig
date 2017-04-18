@@ -108,7 +108,7 @@
 
 [branch]
 
-    autosetupmerge = always
+    autosetupmerge = true
 
 [apply]
 

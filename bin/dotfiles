@@ -1,41 +1,29 @@
 #!/bin/bash
 #
-# Bootstraping dotfiles
+# dotfiles
 
 readonly DOTFILES_DIRECTORY="${HOME}/.dotfiles"
 
-main() {
+source ${DOTFILES_DIRECTORY}/lib/utils
+source ${DOTFILES_DIRECTORY}/lib/list
+source ${DOTFILES_DIRECTORY}/lib/usage
 
-  for ARGUMENT in $@
-  do
-    case $ARGUMENT in
-    init) echo 'init' ;;
-    esac
-  done
+RETVAL="0"
 
-  exit
-
-
-  # Check for Dotfiles
-  if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
-    git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY}
-  fi
-
-  # Source files
-  source ${DOTFILES_DIRECTORY}/lib/utils
-  source ${DOTFILES_DIRECTORY}/lib/help
-  source ${DOTFILES_DIRECTORY}/lib/list
-
-  # Help
-  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    run_help
-    exit
-  fi
-
-  # List additional software to install
-  if [[ "$1" == "-l" || "$1" == "--list" ]]; then
-    run_list
-    exit
+#######################################
+# Init
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+init() {
+  # Check for Xcode
+  if [[ ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"]]; then
+    info "Installing xcode-select"
+    xcode-select --install
+  else
+    success "xcode-select already installed"
   fi
 
   # Check for SSH directory
@@ -114,6 +102,88 @@ EOT
   else
       info "Skipped OS X settings update."
   fi
+
+  RETVAL="0"
+}
+
+#######################################
+# Update pull origin master
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+update() {
+  git -C $DOTFILES_DIRECTORY reset --hard HEAD
+  git -C $DOTFILES_DIRECTORY clean -fd
+  git -C $DOTFILES_DIRECTORY pull --rebase
+  cp -r $DOTFILES_DIRECTORY /.config/fish/* $HOME/.config/fish/
+  source ~/.config/fish/config.fish
+
+  RETVAL="0"
+}
+
+#######################################
+# List show additional software
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+list() {
+  run_list
+  RETVAL="0"
+}
+
+#######################################
+# Usage show usage
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+usage() {
+  run_usage
+  RETVAL="2"
+}
+
+#######################################
+# Main entry point
+# Arguments:
+#   all
+# Returns:
+#   None
+#######################################
+main() {
+  # Check for Dotfile
+  if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
+    git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY}
+  fi
+
+  for ARGUMENT in $@; do
+    case "$ARGUMENT" in
+      init)
+        init
+        ;;
+
+      update)
+        update
+        ;;
+
+      list)
+        list
+        ;;
+
+      *)
+        usage
+        ;;
+    esac
+    if [ "$RETVAL" -ne 0 ]; then
+      break
+	  fi
+  done
+
+  exit $RETVAL
 }
 
 main "$@"
