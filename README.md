@@ -12,9 +12,10 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/mas
 
 ## Usage
 
-```
+```bash
 dotfiles help
-
+```
+```
 Usage: dotfiles <command>
 
 Commands:
