@@ -110,6 +110,7 @@ EOT
 #   None
 #######################################
 update() {
+  printf "\xf0\x9f\x9a\x80\x20 Pull origin master ..."
   git -C $DOTFILES_DIRECTORY reset --hard HEAD
   git -C $DOTFILES_DIRECTORY clean -fd
   git -C $DOTFILES_DIRECTORY pull --rebase
@@ -127,6 +128,7 @@ update() {
 #   None
 #######################################
 list() {
+  printf "\xf0\x9f\x92\xaa\x20 Show additional software to install manually ..."
   run_list
   RETVAL="0"
 }
@@ -139,6 +141,7 @@ list() {
 #   None
 #######################################
 macos() {
+  printf "\xf0\x9f\x94\xa7\x20 Modifing your OS X system ..."
   bash ./lib/macos
   RETVAL="0"
 }
