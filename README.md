@@ -2,7 +2,7 @@
 
 > :zap: Superautomate - Dotfiles for OSX
 
-## Install
+## Installfa
 
 **Using Git and then run the install script**
 
