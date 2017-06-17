@@ -3,7 +3,6 @@
 # dotfiles
 
 readonly DOTFILES_DIRECTORY="${HOME}/.dotfiles"
-
 RETVAL="0"
 
 #######################################
