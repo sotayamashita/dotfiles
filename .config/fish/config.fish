@@ -1,4 +1,3 @@
-
 set fish_greeting
 
 # Paths
@@ -15,7 +14,9 @@ function ......; cd ../../../../../ ; end
 function l     ; tree --dirsfirst -aFCNL 1 $argv ; end
 function ll    ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 function dt    ; cd ~/Desktop ; end
+function work  ; cd ~/Documents/workspace ; end
 function src   ; cd ~/Documents/src ; end
+
 
 # Utilities
 function d         ; du -h -d=1 $argv ; end
@@ -69,6 +70,9 @@ source ~/.extra
 
 # Load rbenv automatically by appending
 rbenv init - | source
+
+# Load pyenv automatically by appending
+pyenv init -| source
 
 # Java Home
 # http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
