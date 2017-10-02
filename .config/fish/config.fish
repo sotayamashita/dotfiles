@@ -11,12 +11,9 @@ function ...   ; cd ../../ ; end
 function ....  ; cd ../../../ ; end
 function ..... ; cd ../../../../ ; end
 function ......; cd ../../../../../ ; end
-function l     ; tree --dirsfirst -aFCNL 1 $argv ; end
-function ll    ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 function dt    ; cd ~/Desktop ; end
 function work  ; cd ~/Documents/workspace ; end
 function src   ; cd ~/Documents/src ; end
-
 
 # Utilities
 function d         ; du -h -d=1 $argv ; end
@@ -33,6 +30,12 @@ function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80' ; e
 function t         ; command tree -C $argv ; end
 function urlencode ; python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);" ; end
 function v         ; vim ; end
+
+# command which need extra library
+test -e /usr/local/bin/hub  ; and function g  ; git $argv ; end
+test -e /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv ; end
+test -e /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end 
+
 
 # View files/dirs
 function cat
@@ -72,8 +75,9 @@ source ~/.extra
 rbenv init - | source
 
 # Load pyenv automatically by appending
-pyenv init -| source
+# pyenv init -| source
 
 # Java Home
 # http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
 export JAVA_HOME=(/usr/libexec/java_home)
+
