@@ -86,8 +86,8 @@
     contributors = shortlog --summary --numbered
 
     # Remove branches that have already been merged with master
-    # a.k.a. ‘delete merged’
-    dm = "git branch --merged | grep -vE '^\\*|master$|develop$' | xargs -I % git branch -d %"
+    # a.k.a. 'delete merged'
+    dm = !git branch --merged | grep -vE '^\\*|master$|develop$' | xargs -I % git branch -d %
 
     # Interactive rebase with the given number of latest commits
     reb = "!r() { git rebase -i HEAD~$1; }; r"
