@@ -31,7 +31,6 @@ function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80' ; e
 function t         ; command tree -C $argv ; end
 function urlencode ; python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);" ; end
 function v         ; vim ; end
-function killport  ; lsof -sTCP:LISTEN -i:$argv -t; end
 
 # command which need extra library
 test -e /usr/local/bin/hub  ; and function g  ; git $argv ; end
