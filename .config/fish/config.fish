@@ -38,6 +38,7 @@ test -x /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv 
 test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
 # View files/dirs
+# TODO: sudo pip install pygments
 function cat
   set arg_count (count $argv)
 
