@@ -45,6 +45,11 @@ defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
 
+# Enable Touch-To-Click  
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
 # Disable press-and-hold for keys in favor of key repeat
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
@@ -139,6 +144,9 @@ file=/Applications/Dropbox.app/Contents/Resources/emblem-dropbox-uptodate.icns
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
 
+# Remove default apps
+defaults write com.apple.dock persistent-apps -array
+
 # Set the icon size of Dock items to 36 pixels
 defaults write com.apple.dock tilesize -int 36
 
@@ -156,7 +164,7 @@ defaults write com.apple.dock autohide-time-modifier -float 0
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
 
-# Set the position of Dock
+# Set the Dock position to left
 defaults write com.apple.Dock orientation -string left
 
 # Make Dock icons of hidden applications translucent
