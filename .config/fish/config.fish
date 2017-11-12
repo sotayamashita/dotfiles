@@ -1,7 +1,6 @@
 set fish_greeting
 
 # Paths
-test -x /usr/bin/ssh                                     ; and set PATH /usr/bin/ssh $PATH
 test -d $HOME/.dotfiles/bin                              ; and set PATH $HOME/.dotfiles/bin $PATH
 test -d /usr/local/sbin                                  ; and set PATH /usr/local/sbin $PATH
 test -x /usr/local/share/git-core/contrib/diff-highlight ; and set PATH /usr/local/share/git-core/contrib/diff-highlight $PATH
