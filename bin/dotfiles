@@ -41,7 +41,7 @@ run() {
     success "Done. homebrew already installed"
   fi
 
-  Install homebrew formulas
+  # Install homebrew formulas
   if type_exists "brew"; then
     bash $DOTFILES_DIRECTORY/lib/brew &> /dev/null
   fi
