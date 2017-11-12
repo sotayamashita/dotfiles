@@ -10,7 +10,7 @@
 #   0 or 1
 #######################################
 info() {
-    printf "\n$(tput setaf 7)%s$(tput sgr0)\n" "$@"
+    printf "$(tput setaf 7)- %s$(tput sgr0)\n" "$@"
 }
 
 #######################################
@@ -54,9 +54,8 @@ warning() {
 #   0 or 1
 #######################################
 seek_confirmation() {
-    printf "\n"
     warning "$@"
-    read -p "Continue? (y/n) " -n 1
+    read -p "? Continue (y/n) " -n 1
     printf "\n"
 }
 
