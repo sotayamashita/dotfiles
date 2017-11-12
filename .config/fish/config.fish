@@ -1,9 +1,10 @@
 set fish_greeting
 
 # Paths
-test -d ~/.dotfiles/bin                                  ; and set PATH ~/.dotfiles/bin $PATH
+test -x /usr/bin/ssh                                     ; and set PATH /usr/bin/ssh $PATH
+test -d $HOME/.dotfiles/bin                              ; and set PATH $HOME/.dotfiles/bin $PATH
 test -d /usr/local/sbin                                  ; and set PATH /usr/local/sbin $PATH
-test -e /usr/local/share/git-core/contrib/diff-highlight ; and set PATH /usr/local/share/git-core/contrib/diff-highlight $PATH
+test -x /usr/local/share/git-core/contrib/diff-highlight ; and set PATH /usr/local/share/git-core/contrib/diff-highlight $PATH
 test -d /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin; and set PATH  /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin $PATH
 
 # Navigation
@@ -12,9 +13,10 @@ function ...   ; cd ../../ ; end
 function ....  ; cd ../../../ ; end
 function ..... ; cd ../../../../ ; end
 function ......; cd ../../../../../ ; end
-function dt    ; cd ~/Desktop ; end
-function work  ; cd ~/Documents/workspace ; end
-function src   ; cd ~/Documents/src ; end
+
+function dt    ; cd $HOME/Desktop ; end
+function work  ; cd $HOME/Documents/workspace ; end
+function src   ; cd $HOME/Documents/src ; end
 
 # Utilities
 function d         ; du -h -d=1 $argv ; end
@@ -26,16 +28,15 @@ function h         ; history ; end
 function httpdump  ; sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E "Host\: .*|GET \/.*" ; end
 function ip        ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
 function localip   ; ipconfig getifaddr en0 ; end
-function r         ; exec $SHELL -l ; end
 function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80' ; end
 function t         ; command tree -C $argv ; end
 function urlencode ; python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);" ; end
 function v         ; vim ; end
 
-# command which need extra library
-test -e /usr/local/bin/hub  ; and function g  ; git $argv ; end
-test -e /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv ; end
-test -e /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end 
+# Need extra libraries
+test -x /usr/local/bin/hub  ; and function g  ; git $argv ; end
+test -x /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv ; end
+test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
 # View files/dirs
 function cat
@@ -69,15 +70,11 @@ end
 function l; cat $argv; end
 
 # Gitconfig.user
-source ~/.extra
+test -e $HOME/.extra; and source $HOME/.extra
 
 # Load rbenv automatically by appending
-rbenv init - | source
-
-# Load pyenv automatically by appending
-# pyenv init -| source
+test -x /usr/local/bin/rbenv; and rbenv init - | source
 
 # Java Home
 # http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
-export JAVA_HOME=(/usr/libexec/java_home)
-
+set JAVA_HOME (/usr/libexec/java_home)
