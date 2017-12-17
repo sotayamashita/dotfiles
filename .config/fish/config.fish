@@ -84,4 +84,4 @@ test -x /usr/libexec/java_home; and set JAVA_HOME (/usr/libexec/java_home)
 # Set workspace path
 test -d $HOME/Documents/go_workspace; and set -x GOPATH $HOME/Documents/go_workspace
 # Add the go bin path to be able to execute our programs
-test -x /usr/local/go/bin; and set -x PATH $PATH /usr/local/go/bin $GOPATH/bin
+test -x /usr/local/go/bin; and set -x PATH $PATH /usr/local/bin/go $GOPATH/bin
