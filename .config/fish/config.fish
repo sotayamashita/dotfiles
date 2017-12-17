@@ -72,9 +72,16 @@ function l; cat $argv; end
 # Gitconfig.user
 test -e $HOME/.extra; and source $HOME/.extra
 
+# Ruby
 # Load rbenv automatically by appending
 test -x /usr/local/bin/rbenv; and rbenv init - | source
 
-# Java Home
-# http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
-set JAVA_HOME (/usr/libexec/java_home)
+# Java
+# See: http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
+test -x /usr/libexec/java_home; and set JAVA_HOME (/usr/libexec/java_home)
+
+# Golang
+# Set workspace path
+test -d $HOME/Documents/go_workspace; and set -x GOPATH $HOME/Documents/go_workspace
+# Add the go bin path to be able to execute our programs
+test -x /usr/local/go/bin; and set -x PATH $PATH /usr/local/go/bin $GOPATH/bin
