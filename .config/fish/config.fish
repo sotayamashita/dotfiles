@@ -73,7 +73,7 @@ function l; cat $argv; end
 test -e $HOME/.extra; and source $HOME/.extra
 
 # Rust
-test -e $HOME/.cargo/env and source $HOME/.cargo/env
+test -e $HOME/.cargo/env; and source $HOME/.cargo/env
 
 # Ruby
 # Load rbenv automatically by appending
