@@ -72,6 +72,9 @@ function l; cat $argv; end
 # Gitconfig.user
 test -e $HOME/.extra; and source $HOME/.extra
 
+# Rust
+test -e $HOME/.cargo/env and source $HOME/.cargo/env
+
 # Ruby
 # Load rbenv automatically by appending
 test -x /usr/local/bin/rbenv; and rbenv init - | source
