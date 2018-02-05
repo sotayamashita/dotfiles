@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# see: https://gist.github.com/IanVaughan/2902499
+
+uninstall() {
+  list=`gem list --no-versions`
+  for gem in $list; do
+    gem uninstall $gem -aIx
+  done
+  gem list
+  gem install bundler
+}
+
+main() {
+  #rbenv versions --bare
+  RBENVPATH=`rbenv root`
+  echo $RBENVPATH
+  RUBIES=`ls $RBENVPATH/versions`
+  for ruby in $RUBIES; do
+    echo '---------------------------------------'
+    echo $ruby
+    rbenv local $ruby
+    uninstall
+  done
+}
+
+main "$@"
