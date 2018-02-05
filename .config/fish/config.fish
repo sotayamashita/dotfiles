@@ -72,9 +72,6 @@ function l; cat $argv; end
 # Gitconfig.user
 test -e $HOME/.extra; and source $HOME/.extra
 
-# Uninstall all rbenv gems
-test -e $HOME/.dotfiles/lib/uninstall_gems; and source $HOME/.dotfiles/lib/uninstall_gems
-
 # Rust
 test -e $HOME/.cargo/env; and source $HOME/.cargo/env
 
