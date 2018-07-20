@@ -4,7 +4,7 @@ set fish_greeting
 test -d $HOME/.dotfiles/bin                              ; and set PATH $HOME/.dotfiles/bin $PATH
 test -d /usr/local/sbin                                  ; and set PATH /usr/local/sbin $PATH
 test -x /usr/local/share/git-core/contrib/diff-highlight ; and set PATH /usr/local/share/git-core/contrib/diff-highlight $PATH
-test -d /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin; and set PATH  /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin $PATH
+test -d /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin; and set PATH /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin $PATH
 
 # Navigation
 function ..    ; cd .. ; end
@@ -82,6 +82,13 @@ test -x /usr/local/bin/rbenv; and rbenv init - | source
 # Java
 # See: http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
 test -x /usr/libexec/java_home; and set JAVA_HOME (/usr/libexec/java_home)
+
+# Android
+# See: https://stackoverflow.com/questions/19986214/setting-android-home-enviromental-variable-on-mac-os-x
+# Set ANDROID_HOME
+test -d $HOME/Library/Android/sdk; and set -x ANDROID_HOME $HOME/Library/Android/sdk
+test -d $ANDROID_HOME/tools; and set -x PATH $ANDROID_HOME/tools $PATH
+test -d $ANDROID_HOME/platform-tools; and set -x PATH $ANDROID_HOME/platform-tools $PATH
 
 # Golang
 # Set workspace path
