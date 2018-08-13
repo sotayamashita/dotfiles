@@ -79,6 +79,11 @@ test -e $HOME/.cargo/env; and source $HOME/.cargo/env
 # Load rbenv automatically by appending
 test -x /usr/local/bin/rbenv; and rbenv init - | source
 
+# Python
+text -d $HOME/.pyenv; and set -x PYENV_ROOT ($HOME/.pyenv)
+test -d $HOME/.pyenv; and set -x PATH $PYENV_ROOT/bin $PATH
+test -x /usr/local/bin/pyenv; and pyenv init - | source
+
 # Java
 # See: http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
 test -x /usr/libexec/java_home; and set -x JAVA_HOME (/usr/libexec/java_home)
