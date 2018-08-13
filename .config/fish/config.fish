@@ -80,8 +80,7 @@ test -e $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x /usr/local/bin/rbenv; and rbenv init - | source
 
 # Python
-test -d $HOME/.pyenv; and set -x PYENV_ROOT ($HOME/.pyenv)
-test -d $HOME/.pyenv; and set -x PATH $PYENV_ROOT/bin $PATH
+# See: https://github.com/pyenv/pyenv#homebrew-on-mac-os-x
 test -x /usr/local/bin/pyenv; and pyenv init - | source
 
 # Java
