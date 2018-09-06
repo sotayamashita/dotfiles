@@ -37,38 +37,6 @@ test -x /usr/local/bin/hub  ; and function g  ; git $argv ; end
 test -x /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv ; end
 test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
-# View files/dirs
-# TODO: sudo pip install pygments
-function cat
-  set arg_count (count $argv)
-
-  if math "$arg_count==0" > /dev/null
-    tree --dirsfirst -aFCNL 1 ./
-    return
-  end
-
-  for i in $argv
-    set_color yellow
-    if math "$arg_count>1" > /dev/null; echo "$i:" 1>&2; end
-    set_color normal
-
-    if test -e $i; and test -r $i
-      if test -d $i
-        tree --dirsfirst -aFCNL 1 $i
-      else
-        pygmentize -O style=monokai -f console256 -g $i
-      end
-    else
-      set_color red
-      echo "Cannot open: $i" 1>&2
-    end
-
-    set_color normal
-  end
-end
-
-function l; cat $argv; end
-
 # Gitconfig.user
 test -e $HOME/.extra; and source $HOME/.extra
 
