@@ -8,24 +8,15 @@ source ${DOTFILES_DIRECTORY}/lib/utils
 
 RETVAL="0"
 
-run() {
+#######################################
+# Install itself
+#######################################
+bootstrap() {
   # Ask for the administrator password upfront
   sudo -v
 
-  # Create workspace and src directories if needed
-  if [[ ! -d $HOME/Documents/workspace ]]; then
-    mkdir $HOME/Documents/workspace
-  else
-    success "Done. workspace already created"
-  fi
-
-  if [[ ! -d $HOME/Documents/src ]]; then
-    mkdir $HOME/Documents/src
-  else
-    success "Done. src already created"
-  fi
-
-  # Install xcode if needed
+  # Install xcode-select if needed
+  # See: https://www.manpagez.com/man/1/xcode-select/
   if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
     info "Installing xcode-select"
     xcode-select --install
@@ -34,6 +25,7 @@ run() {
   fi
 
   # Install homebrew if needed
+  # See: https://brew.sh/
   if ! type_exists "brew"; then
     info "Installing homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -41,17 +33,13 @@ run() {
     success "Done. homebrew already installed"
   fi
 
-  # Install homebrew formulas
-  if type_exists "brew"; then
-    bash $DOTFILES_DIRECTORY/lib/brew &> /dev/null
-  fi
-
-  # Install fisherman if needed
-  if ! test "fisher"; then
-    info "Installing fisherman"
+  # Install oh-my-fish if needed
+  # See: https://github.com/oh-my-fish/oh-my-fish#installation
+  if ! type_exists "omf"; then
+    info "Installing oh-my-fish"
     curl -sLo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
   else
-    success "Done. fisherman already installed"
+    success "Done. oh-my-fish already installed"
   fi
 
   # Change your default shell to "fish"
@@ -60,6 +48,11 @@ run() {
     chsh -s /usr/local/bin/fish
   else
     success "Done. fish already installed"
+  fi
+
+  # Install homebrew formulas
+  if type_exists "brew"; then
+    bash $DOTFILES_DIRECTORY/lib/brew &> /dev/null
   fi
 
   # Create extra file
@@ -120,15 +113,15 @@ update() {
 }
 
 #######################################
-# Usage show usage
+# Show usage
 #######################################
 usage() {
 cat <<EOT
 Usage: $(basename "$0") <command>
 
 Commands:
-    run         Run the command
-    update      Pull the latest changes to update
+    bootstrap   Execute everything
+    update      Pull the latest changes
 EOT
   RETVAL="2"
 }
@@ -137,15 +130,15 @@ EOT
 # Entry point
 #######################################
 main() {
-  # Dotfile exist?
+  # Clone repostiory if it does not exist
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
   fi
 
   for ARGUMENT in $@; do
     case "$ARGUMENT" in
-      run)
-        run
+      bootstrap)
+        bootstrap
         ;;
 
       update)
