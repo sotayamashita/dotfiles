@@ -36,33 +36,33 @@ test -x /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv 
 test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
 # Gitconfig.user
-test -e $HOME/.extra; and source $HOME/.extra
+test -e $HOME/.extra ; and source $HOME/.extra
 
 # Rust
-test -e $HOME/.cargo/env; and source $HOME/.cargo/env
+test -e $HOME/.cargo/env ; and source $HOME/.cargo/env
 
 # Ruby
 # Load rbenv automatically by appending
-test -x /usr/local/bin/rbenv; and rbenv init - | source
+test -x /usr/local/bin/rbenv ; and rbenv init - | source
 
 # Python
 # See: https://github.com/pyenv/pyenv#homebrew-on-mac-os-x
-test -x /usr/local/bin/pyenv; and pyenv init - | source
+test -x /usr/local/bin/pyenv ; and pyenv init - | source
 
 # Java
 # See: http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
-test -x /usr/libexec/java_home; and set -x JAVA_HOME (/usr/libexec/java_home)
-test -d $JAVA_HOME/bin; and set -x PATH $JAVA_HOME/bin $PATH
+test -x /usr/libexec/java_home ; and set -x JAVA_HOME (/usr/libexec/java_home)
+test -d $JAVA_HOME/bin         ; and set -x PATH $JAVA_HOME/bin $PATH
 
 # Android
 # See: https://stackoverflow.com/questions/19986214/setting-android-home-enviromental-variable-on-mac-os-x
-test -d $HOME/Library/Android/sdk; and set -x ANDROID_HOME $HOME/Library/Android/sdk
-test -d $ANDROID_HOME/tools; and set -x PATH $ANDROID_HOME/tools $PATH
-test -d $ANDROID_HOME/platform-tools; and set -x PATH $ANDROID_HOME/platform-tools $PATH
+test -d $HOME/Library/Android/sdk    ; and set -x ANDROID_HOME $HOME/Library/Android/sdk
+test -d $ANDROID_HOME/tools          ; and set -x PATH $ANDROID_HOME/tools $PATH
+test -d $ANDROID_HOME/platform-tools ; and set -x PATH $ANDROID_HOME/platform-tools $PATH
 
 # Kitty
 # See: https://sw.kovidgoyal.net/kitty/#fish
-test -x /usr/local/bin/kitty; and kitty + complete setup fish | source
+test -x /usr/local/bin/kitty ; and kitty + complete setup fish | source
 
 # Themes
 set SPACEFISH_PROMPT_ORDER time user dir host git exec_time line_sep battery jobs exit_code char
