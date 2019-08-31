@@ -25,7 +25,5 @@ Commands:
 
 ## License
 
-## License
-
-Dotfiles © [Sam Yamashita](https://twitter.com/sota0805). Released under the [MIT License](LICENSE)<br/>
+dotfiles © [Sam Yamashita](https://twitter.com/sota0805). Released under the [MIT License](LICENSE)<br/>
 Authored and maintained by [Sam Yamashita](https://twitter.com/sota0805) with help from [contributors](https://github.com/sotayamashita/dotfiles/contributors).
