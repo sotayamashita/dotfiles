@@ -56,7 +56,6 @@ test -d $JAVA_HOME/bin; and set -x PATH $JAVA_HOME/bin $PATH
 
 # Android
 # See: https://stackoverflow.com/questions/19986214/setting-android-home-enviromental-variable-on-mac-os-x
-# Set ANDROID_HOME
 test -d $HOME/Library/Android/sdk; and set -x ANDROID_HOME $HOME/Library/Android/sdk
 test -d $ANDROID_HOME/tools; and set -x PATH $ANDROID_HOME/tools $PATH
 test -d $ANDROID_HOME/platform-tools; and set -x PATH $ANDROID_HOME/platform-tools $PATH
@@ -66,5 +65,4 @@ test -d $ANDROID_HOME/platform-tools; and set -x PATH $ANDROID_HOME/platform-too
 test -x /usr/local/bin/kitty; and kitty + complete setup fish | source
 
 # Themes
-# set -g fish_user_paths "/usr/local/opt/libxml2/bin" $fish_user_paths
 set SPACEFISH_PROMPT_ORDER time user dir host git exec_time line_sep battery jobs exit_code char
