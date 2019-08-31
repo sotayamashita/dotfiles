@@ -17,26 +17,29 @@ function dt    ; cd $HOME/Desktop ; end
 function work  ; cd $HOME/Documents/workspace ; end
 
 # Utilities
+function mv        ; gmv --interactive --verbose $argv ; end
+function rm        ; grm --interactive --verbose $argv ; end
+function cp        ; gcp --interactive --verbose $argv ; end
 function d         ; du -h -d=1 $argv ; end
 function dig       ; dig +nocmd any +multiline +noall +answer ; end
-function g         ; git $argv ; end
 function grep      ; command grep --color=auto $argv ; end
-function j         ; jobs ; end
-function h         ; history ; end
 function httpdump  ; sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E "Host\: .*|GET \/.*" ; end
 function ip        ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
 function localip   ; ipconfig getifaddr en0 ; end
 function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80' ; end
 function urlencode ; python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);" ; end
+function g         ; git $argv ; end
+function h         ; history ; end
+function j         ; jobs ; end
 function v         ; vim ; end
+
+# Gitconfig.user
+test -e $HOME/.extra ; and source $HOME/.extra
 
 # Need extra libraries
 test -x /usr/local/bin/hub  ; and function g  ; git $argv ; end
 test -x /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv ; end
 test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
-
-# Gitconfig.user
-test -e $HOME/.extra ; and source $HOME/.extra
 
 # Rust
 test -e $HOME/.cargo/env ; and source $HOME/.cargo/env
