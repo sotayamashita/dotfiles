@@ -15,7 +15,6 @@ function ......; cd ../../../../../ ; end
 
 function dt    ; cd $HOME/Desktop ; end
 function work  ; cd $HOME/Documents/workspace ; end
-function src   ; cd $HOME/Documents/src ; end
 
 # Utilities
 function d         ; du -h -d=1 $argv ; end
@@ -28,7 +27,6 @@ function httpdump  ; sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E "Host\: .*
 function ip        ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
 function localip   ; ipconfig getifaddr en0 ; end
 function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80' ; end
-function t         ; command tree -C $argv ; end
 function urlencode ; python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);" ; end
 function v         ; vim ; end
 
@@ -63,8 +61,10 @@ test -d $HOME/Library/Android/sdk; and set -x ANDROID_HOME $HOME/Library/Android
 test -d $ANDROID_HOME/tools; and set -x PATH $ANDROID_HOME/tools $PATH
 test -d $ANDROID_HOME/platform-tools; and set -x PATH $ANDROID_HOME/platform-tools $PATH
 
-# Golang
-# Set workspace path
-test -d $HOME/Documents/go_workspace; and set -x GOPATH $HOME/Documents/go_workspace
-# Add the go bin path to be able to execute our programs
-test -x /usr/local/go/bin; and set -x PATH $PATH /usr/local/bin/go $GOPATH/bin
+# Kitty
+# See: https://sw.kovidgoyal.net/kitty/#fish
+test -x /usr/local/bin/kitty; and kitty + complete setup fish | source
+
+# Themes
+# set -g fish_user_paths "/usr/local/opt/libxml2/bin" $fish_user_paths
+set SPACEFISH_PROMPT_ORDER time user dir host git exec_time line_sep battery jobs exit_code char
