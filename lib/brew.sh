@@ -30,7 +30,6 @@ brew install screen
 brew install php
 brew install gmp
 
-
 # Install font tools
 brew tap bramstein/webfonttools
 brew install sfnt2woff
