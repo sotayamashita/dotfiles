@@ -3,7 +3,6 @@
 # Install tools using omebrew Cask
 # See: https://github.com/Homebrew/homebrew-cask
 
-
 # Apps
 brew cask install google-japanese-ime
 brew cask install 1password
@@ -15,8 +14,7 @@ brew cask install visual-studio-code
 brew cask install jetbrains-toolbox
 brew cask install notion
 brew cask install spotify
-brew cask install zoom
-
+brew cask install zoomus
 
 # Fonts
 brew tap homebrew/cask-fonts

@@ -30,6 +30,7 @@ brew install screen
 brew install php
 brew install gmp
 
+
 # Install font tools
 brew tap bramstein/webfonttools
 brew install sfnt2woff
@@ -69,7 +70,8 @@ brew install git
 brew install git-lfs
 brew install hub
 brew install gs
-brew install imagemagick --with-webp
+# FIXME: Invalid option
+# brew install imagemagick --with-webp
 brew install lua
 brew install lynx
 brew install p7zip
@@ -88,7 +90,7 @@ brew install ffmpeg --with-libvpx
 brew install docker
 brew install fish
 brew install rbenv
-brew instlal pyenv
+brew install pyenv
 brew install go
 
 # Remove outdated versions from the cellar
