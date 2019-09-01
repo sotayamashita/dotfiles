@@ -43,7 +43,7 @@ bootstrap() {
   # See: https://github.com/oh-my-fish/oh-my-fish#installation
   if ! type_exists "omf"; then
     info "Installing oh-my-fish"
-    curl -sLo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
+    curl -L https://get.oh-my.fish | fish
   else
     success "Done. oh-my-fish already installed"
   fi
