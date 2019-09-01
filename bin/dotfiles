@@ -33,6 +33,12 @@ bootstrap() {
     success "Done. homebrew already installed"
   fi
 
+  # Install homebrew formulas
+  if type_exists "brew"; then
+    bash $DOTFILES_DIRECTORY/lib/brew.sh &> /dev/null
+    bash $DOTFILES_DIRECTORY/lib/brew-cask.sh &> /dev/null
+  fi
+
   # Install oh-my-fish if needed
   # See: https://github.com/oh-my-fish/oh-my-fish#installation
   if ! type_exists "omf"; then
@@ -48,11 +54,6 @@ bootstrap() {
     chsh -s /usr/local/bin/fish
   else
     success "Done. fish already installed"
-  fi
-
-  # Install homebrew formulas
-  if type_exists "brew"; then
-    bash $DOTFILES_DIRECTORY/lib/brew &> /dev/null
   fi
 
   # Create extra file
