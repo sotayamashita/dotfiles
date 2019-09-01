@@ -13,6 +13,7 @@ brew cask install iterm2
 brew cask install visual-studio-code
 brew cask install jetbrains-toolbox
 brew cask install docker
+brew cask install divvy
 brew cask install notion
 brew cask install spotify
 brew cask install zoomus
