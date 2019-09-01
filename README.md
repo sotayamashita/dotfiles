@@ -7,7 +7,7 @@
 **Using Git and then run the install script**
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bin/dotfiles) run"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bin/dotfiles) bootstrap"
 ```
 
 ## Usage
@@ -15,12 +15,12 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/mas
 ```bash
 dotfiles help
 ```
-```
+```bash
 Usage: dotfiles <command>
 
 Commands:
-    run         Run the command
-    update      Pull the latest changes to update
+    bootstrap   Execute everything
+    update      Pull the latest changes
 ```
 
 ## License
