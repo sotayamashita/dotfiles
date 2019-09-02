@@ -67,5 +67,9 @@ test -d $ANDROID_HOME/platform-tools ; and set -x PATH $ANDROID_HOME/platform-to
 # See: https://sw.kovidgoyal.net/kitty/#fish
 test -x /usr/local/bin/kitty ; and kitty + complete setup fish | source
 
+# Elastic Beanstalk
+# See: https://github.com/aws/aws-elastic-beanstalk-cli-setup
+test -x $HOME/.ebcli-virtual-env/executables ; and set PATH $HOME/.ebcli-virtual-env/executables $PATH
+
 # Themes
 set SPACEFISH_PROMPT_ORDER time user dir host git exec_time line_sep battery jobs exit_code char
