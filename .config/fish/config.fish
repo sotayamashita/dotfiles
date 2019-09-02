@@ -54,8 +54,8 @@ test -x /usr/local/bin/pyenv ; and pyenv init - | source
 
 # Java
 # See: http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
-test -x /usr/libexec/java_home ; and set -x JAVA_HOME (/usr/libexec/java_home)
-test -d $JAVA_HOME/bin         ; and set -x PATH $JAVA_HOME/bin $PATH
+# test -x /usr/libexec/java_home ; and set -x JAVA_HOME (/usr/libexec/java_home)
+# test -d $JAVA_HOME/bin         ; and set -x PATH $JAVA_HOME/bin $PATH
 
 # Android
 # See: https://stackoverflow.com/questions/19986214/setting-android-home-enviromental-variable-on-mac-os-x
