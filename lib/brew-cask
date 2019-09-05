@@ -17,6 +17,9 @@ brew cask install docker
 brew cask install kitty
 brew cask install divvy
 brew cask install notion
+brew cask install superhuman
+brew cask install slack
+brew cask install toggl
 brew cask install spotify
 brew cask install zoomus
 
