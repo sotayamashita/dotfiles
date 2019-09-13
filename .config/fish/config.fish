@@ -2,9 +2,9 @@ set fish_greeting
 
 # Paths
 test -d $HOME/.dotfiles/bin                              ; and set PATH $HOME/.dotfiles/bin $PATH
+test -d $HOME/.local/bin                                 ; and set PATH $HOME.local/bin/ $PATH
 test -d /usr/local/sbin                                  ; and set PATH /usr/local/sbin $PATH
 test -x /usr/local/share/git-core/contrib/diff-highlight ; and set PATH /usr/local/share/git-core/contrib/diff-highlight $PATH
-test -d /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin; and set PATH /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin $PATH
 
 # Navigation
 function ..    ; cd .. ; end
