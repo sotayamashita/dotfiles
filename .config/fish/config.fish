@@ -5,6 +5,7 @@ test -d $HOME/.dotfiles/bin                              ; and set PATH $HOME/.d
 test -d $HOME/.local/bin                                 ; and set PATH $HOME.local/bin/ $PATH
 test -d /usr/local/sbin                                  ; and set PATH /usr/local/sbin $PATH
 test -x /usr/local/share/git-core/contrib/diff-highlight ; and set PATH /usr/local/share/git-core/contrib/diff-highlight $PATH
+test -x $HOME/.ebcli-virtual-env/executables             ; and set PATH $HOME/.ebcli-virtual-env/executables $PATH
 
 # Navigation
 function ..    ; cd .. ; end
