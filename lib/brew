@@ -91,6 +91,7 @@ brew install fish
 brew install rbenv
 brew install pyenv
 brew install go
+brew install circleci
 
 # Remove outdated versions from the cellar
 brew cleanup
