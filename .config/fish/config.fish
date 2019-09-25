@@ -42,6 +42,9 @@ test -x /usr/local/bin/hub  ; and function g  ; git $argv ; end
 test -x /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv ; end
 test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
+# Golang
+test -d $HOME/go ; and set -x GOPATH (go env GOPATH)
+
 # Rust
 test -e $HOME/.cargo/env ; and source $HOME/.cargo/env
 
@@ -55,8 +58,8 @@ test -x /usr/local/bin/pyenv ; and pyenv init - | source
 
 # Java
 # See: http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
-# test -x /usr/libexec/java_home ; and set -x JAVA_HOME (/usr/libexec/java_home)
-# test -d $JAVA_HOME/bin         ; and set -x PATH $JAVA_HOME/bin $PATH
+test -x /usr/libexec/java_home ; and set -x JAVA_HOME (/usr/libexec/java_home)
+test -d $JAVA_HOME/bin         ; and set -x PATH $JAVA_HOME/bin $PATH
 
 # Android
 # See: https://stackoverflow.com/questions/19986214/setting-android-home-enviromental-variable-on-mac-os-x
