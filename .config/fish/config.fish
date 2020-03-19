@@ -46,7 +46,8 @@ test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $a
 test -d $HOME/go ; and set -x GOPATH (go env GOPATH)
 
 # Rust
-test -e $HOME/.cargo/env ; and source $HOME/.cargo/env
+test -d $HOME/.cargo; and set -x CARGO_HOME $HOME/.cargo
+test -d $CARGO_HOME/bin;  and set -x PATH $CARGO_HOME/bin $PATH
 
 # Ruby
 # Load rbenv automatically by appending
