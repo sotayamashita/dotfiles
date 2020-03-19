@@ -5,7 +5,6 @@ test -d $HOME/.dotfiles/bin                              ; and set PATH $HOME/.d
 test -d $HOME/.local/bin                                 ; and set PATH $HOME/.local/bin/ $PATH
 test -d /usr/local/sbin                                  ; and set PATH /usr/local/sbin $PATH
 test -x /usr/local/share/git-core/contrib/diff-highlight ; and set PATH /usr/local/share/git-core/contrib/diff-highlight $PATH
-test -x $HOME/.ebcli-virtual-env/executables             ; and set PATH $HOME/.ebcli-virtual-env/executables $PATH
 
 # Navigation
 function ..    ; cd .. ; end
@@ -14,6 +13,7 @@ function ....  ; cd ../../../ ; end
 function ..... ; cd ../../../../ ; end
 function ......; cd ../../../../../ ; end
 
+# Navigation for me
 function dt    ; cd $HOME/Desktop ; end
 function work  ; cd $HOME/Documents/workspace ; end
 
@@ -29,7 +29,6 @@ function ip        ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; 
 function localip   ; ipconfig getifaddr en0 ; end
 function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80' ; end
 function urlencode ; python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);" ; end
-function g         ; git $argv ; end
 function h         ; history ; end
 function j         ; jobs ; end
 function v         ; vim ; end
@@ -37,8 +36,10 @@ function v         ; vim ; end
 # Gitconfig.user
 test -e $HOME/.extra ; and source $HOME/.extra
 
-# Need extra libraries
-test -x /usr/local/bin/hub  ; and function g  ; git $argv ; end
+# Need to install gh via Homebrew
+# See: https://github.com/cli/cli
+test -x /usr/local/bin/gh   ; and function g  ; git $argv ; end
+# Need to install tree via Homebrew
 test -x /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv ; end
 test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
