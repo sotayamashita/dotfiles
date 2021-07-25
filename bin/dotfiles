@@ -9,7 +9,7 @@ source ${DOTFILES_DIRECTORY}/lib/utils
 RETVAL="0"
 
 #######################################
-# Install itself
+# Setup
 #######################################
 bootstrap() {
   # Ask for the administrator password upfront
@@ -114,14 +114,14 @@ update() {
 }
 
 #######################################
-# Show usage
+# Usage
 #######################################
 usage() {
 cat <<EOT
 Usage: $(basename "$0") <command>
 
 Commands:
-    bootstrap   Execute everything
+    bootstrap   Setup
     update      Pull the latest changes
 EOT
   RETVAL="2"
@@ -131,7 +131,6 @@ EOT
 # Entry point
 #######################################
 main() {
-  # Clone repostiory if it does not exist
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
   fi

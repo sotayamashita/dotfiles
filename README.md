@@ -1,6 +1,6 @@
 # dotfiles
 
-> :zap: Superautomate - Dotfiles for OSX
+> :zap: Superautomate - Dotfiles for macOS
 
 ## Install
 
@@ -15,6 +15,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/mas
 ```bash
 dotfiles help
 ```
+
 ```bash
 Usage: dotfiles <command>
 
