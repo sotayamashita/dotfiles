@@ -1,10 +1,7 @@
 set fish_greeting
 
-# Paths
-test -d $HOME/.dotfiles/bin                              ; and set PATH $HOME/.dotfiles/bin $PATH
-test -d $HOME/.local/bin                                 ; and set PATH $HOME/.local/bin/ $PATH
-test -d /usr/local/sbin                                  ; and set PATH /usr/local/sbin $PATH
-test -x /usr/local/share/git-core/contrib/diff-highlight ; and set PATH /usr/local/share/git-core/contrib/diff-highlight $PATH
+# Path
+test -d /opt/homebrew/bin ;       and set -g fish_user_paths "/opt/homebrew/bin" $fish_user_paths
 
 # Navigation
 function ..    ; cd .. ; end
@@ -13,69 +10,24 @@ function ....  ; cd ../../../ ; end
 function ..... ; cd ../../../../ ; end
 function ......; cd ../../../../../ ; end
 
-# Navigation for me
-function dt    ; cd $HOME/Desktop ; end
-function work  ; cd $HOME/Documents/workspace ; end
-
-# Utilities
-function mv        ; gmv --interactive --verbose $argv ; end
-function rm        ; grm --interactive --verbose $argv ; end
-function cp        ; gcp --interactive --verbose $argv ; end
-function d         ; du -h -d=1 $argv ; end
-function dig       ; dig +nocmd any +multiline +noall +answer ; end
-function grep      ; command grep --color=auto $argv ; end
-function httpdump  ; sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E "Host\: .*|GET \/.*" ; end
+# Utility
 function ip        ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
 function localip   ; ipconfig getifaddr en0 ; end
-function sniff     ; sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80' ; end
-function urlencode ; python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);" ; end
-function h         ; history ; end
-function j         ; jobs ; end
-function v         ; vim ; end
 
-# Gitconfig.user
-test -e $HOME/.extra ; and source $HOME/.extra
+## Commands that depend on other libraries
+test -x /opt/homebrew/bin/hub ; and function g    ; hub $argv ; end
+test -x /opt/homebrew/bin/lsd ; and function ls   ; lsd $argv ; end
+test -x /opt/homebrew/bin/btm ; and function top  ; btm ; end
+test -x /opt/homebrew/bin/bat ; and function cat  ; bat --style=header,grid $argv; end
 
-# Need to install gh via Homebrew
-# See: https://github.com/cli/cli
-test -x /usr/local/bin/gh   ; and function g  ; git $argv ; end
-# Need to install tree via Homebrew
-test -x /usr/local/bin/tree ; and function l  ; tree --dirsfirst -aFCNL 1 $argv ; end
-test -x /usr/local/bin/tree ; and function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
+# Load gituserconfig
+test -e $HOME/.gituserconfig ; and source $HOME/.gituserconfig
 
-# Golang
-test -d $HOME/go ; and set -x GOPATH (go env GOPATH)
+# Init starship, which is The minimal, blazing-fast, and infinitely customizable prompt for any shell!
+# https://starship.rs/guide/#%F0%9F%9A%80-installation
+set -gx STARSHIP_CONFIG $HOME/.config/starship.toml
+starship init fish | source
 
-# Rust
-test -d $HOME/.cargo; and set -x CARGO_HOME $HOME/.cargo
-test -d $CARGO_HOME/bin;  and set -x PATH $CARGO_HOME/bin $PATH
-
-# Ruby
-# Load rbenv automatically by appending
-test -x /usr/local/bin/rbenv ; and rbenv init - | source
-
-# Python
-# See: https://github.com/pyenv/pyenv#homebrew-on-mac-os-x
-test -x /usr/local/bin/pyenv ; and pyenv init - | source
-
-# Java
-# See: http://stackoverflow.com/questions/1348842/what-should-i-set-java-home-to-on-osx
-test -x /usr/libexec/java_home ; and set -x JAVA_HOME (/usr/libexec/java_home)
-test -d $JAVA_HOME/bin         ; and set -x PATH $JAVA_HOME/bin $PATH
-
-# Android
-# See: https://stackoverflow.com/questions/19986214/setting-android-home-enviromental-variable-on-mac-os-x
-test -d $HOME/Library/Android/sdk    ; and set -x ANDROID_HOME $HOME/Library/Android/sdk
-test -d $ANDROID_HOME/tools          ; and set -x PATH $ANDROID_HOME/tools $PATH
-test -d $ANDROID_HOME/platform-tools ; and set -x PATH $ANDROID_HOME/platform-tools $PATH
-
-# Kitty
-# See: https://sw.kovidgoyal.net/kitty/#fish
-test -x /usr/local/bin/kitty ; and kitty + complete setup fish | source
-
-# Elastic Beanstalk
-# See: https://github.com/aws/aws-elastic-beanstalk-cli-setup
-test -x $HOME/.ebcli-virtual-env/executables ; and set PATH $HOME/.ebcli-virtual-env/executables $PATH
-
-# Themes
-set SPACEFISH_PROMPT_ORDER time user dir host git exec_time line_sep battery jobs exit_code char
+# Init asdf, which it Extendable version manager
+# https://github.com/asdf-vm/asdf
+source /opt/homebrew/opt/asdf/asdf.fish

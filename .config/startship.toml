@@ -1,0 +1,24 @@
+# Inserts a blank line between shell prompts
+add_newline = true
+
+format = """
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$time\
+\n\
+$character"""
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol   = "[✗](bold red)"
+
+[directory]
+truncate_to_repo = false
+
+[time]
+disabled    = false
+use_12hr    = false
+time_format = "%T"
