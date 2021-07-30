@@ -1,18 +1,16 @@
 set fish_greeting
 
 # Path
-test -d /opt/homebrew/bin ;       and set -g fish_user_paths "/opt/homebrew/bin" $fish_user_paths
-
-# Navigation
-function ..    ; cd .. ; end
-function ...   ; cd ../../ ; end
-function ....  ; cd ../../../ ; end
-function ..... ; cd ../../../../ ; end
-function ......; cd ../../../../../ ; end
+test -d /opt/homebrew/bin ; and set -g fish_user_paths "/opt/homebrew/bin" $fish_user_paths
 
 # Utility
-function ip        ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
-function localip   ; ipconfig getifaddr en0 ; end
+function ..      ; cd .. ; end
+function ...     ; cd ../../ ; end
+function ....    ; cd ../../../ ; end
+function .....   ; cd ../../../../ ; end
+function ......  ; cd ../../../../../ ; end
+function ip      ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
+function localip ; ipconfig getifaddr en0 ; end
 
 ## Commands that depend on other libraries
 test -x /opt/homebrew/bin/hub ; and function g    ; hub $argv ; end
