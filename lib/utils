@@ -33,6 +33,7 @@ install_homebrew_fomulas() {
   if type_exists "brew"; then
     bash $DOTFILES_DIRECTORY/lib/brew.sh &> /dev/null
     bash $DOTFILES_DIRECTORY/lib/brew-cask.sh &> /dev/null
+  fi
 }
 
 #######################################
