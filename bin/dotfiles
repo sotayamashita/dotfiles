@@ -49,10 +49,9 @@ make_symbolic_link() {
   success "Symbolic links are created"
 }
 
-# Install xcode-select 
 install_xcode_select() {
   if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
-    info "Installing xcode-select"
+    info "Install xcode-select"
     xcode-select --install
     success "Success. xcode-select is installed to: $(xcode-select --print-path)"
   else
@@ -60,13 +59,13 @@ install_xcode_select() {
   fi
 }
 
-# Install Homebrew
 install_homebrew() {
   if ! type_exists "brew"; then
-    info "Installing homebrew"
+    info "Install homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    success "Success. Homebrew is installed to: $(which brew)"
   else
-    success "Done. homebrew already installed"
+    success "Skipped. Homebrew has been installed to: $(which brew)"
   fi
 }
 
@@ -88,8 +87,8 @@ bootstrap() {
 
   install_xcode_select
 
+  install_homebrew
 
-#   install_homebrew
 
 #   install_homebrew_fomulas
 
