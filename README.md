@@ -1,5 +1,7 @@
 # dotfiles
 
+[![shell-lint-check](https://github.com/sotayamashita/dotfiles/actions/workflows/shell-lint-check.yml/badge.svg)](https://github.com/sotayamashita/dotfiles/actions/workflows/shell-lint-check.yml) [![markdown-lint-check](https://github.com/sotayamashita/dotfiles/actions/workflows/markdown-lint-check.yml/badge.svg)](https://github.com/sotayamashita/dotfiles/actions/workflows/markdown-lint-check.yml) [![markdown-link-check](https://github.com/sotayamashita/dotfiles/actions/workflows/markdown-link-check.yml/badge.svg)](https://github.com/sotayamashita/dotfiles/actions/workflows/markdown-link-check.yml)
+
 > :zap: Superautomate - Dotfiles for macOS
 
 ## Install
