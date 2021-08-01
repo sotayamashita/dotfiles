@@ -2,9 +2,62 @@
 #
 # Utilities
 
-#######################################
+info() {
+    printf "$(tput setaf 7)- %s$(tput sgr0)\n" "$@"
+}
+
+success() {
+    printf "$(tput setaf 64)✓ %s$(tput sgr0)\n" "$@"
+}
+
+error() {
+    printf "$(tput setaf 1)x %s$(tput sgr0)\n" "$@"
+}
+
+warning() {
+    printf "$(tput setaf 136)! %s$(tput sgr0)\n" "$@"
+}
+
+# Ask for confirmation before proceeding
+seek_confirmation() {
+    warning "$@"
+    read -p "? Continue (y/n) " -n 1
+    printf "\n"
+}
+
+# Test whether the result of an `seek_confirmation` is a confirmation
+is_confirmed() {
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      return 0
+    fi
+    return 1
+}
+
+# Test whether a command exists
+type_exists() {
+  if type $1 > /dev/null 2>&1; then
+    return 0
+  fi
+  return 1
+}
+
+# Test whether a Homebrew formula is already installed
+formula_exists() {
+    if $(brew list $1 >/dev/null); then
+        success "${1} already installed"
+        return 0
+    fi
+    warning "Missing formula: $1"
+    return 1
+}
+
+# Create a symbolic link
+link() {
+  ln -fs $1 $2
+}
+
+
 # Install xcode-select 
-#######################################
 install_xcode_select() {
   if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
     info "Installing xcode-select"
@@ -14,9 +67,7 @@ install_xcode_select() {
   fi
 }
 
-#######################################
 # Install Homebrew
-#######################################
 install_homebrew() {
   if ! type_exists "brew"; then
     info "Installing homebrew"
@@ -26,26 +77,10 @@ install_homebrew() {
   fi
 }
 
-#######################################
 # Install Homebrew fomulas
-#######################################
 install_homebrew_fomulas() {
   if type_exists "brew"; then
     bash $DOTFILES_DIRECTORY/lib/brew.sh &> /dev/null
     bash $DOTFILES_DIRECTORY/lib/brew-cask.sh &> /dev/null
   fi
-}
-
-#######################################
-# Usage
-#######################################
-usage() {
-cat <<EOT
-Usage: $(basename "$0") <command>
-
-Commands:
-    bootstrap   Setup
-    update      Pull the latest changes
-EOT
-  RETVAL="2"
 }
