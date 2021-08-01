@@ -4,9 +4,8 @@ readonly DOTFILES_DIRECTORY="${HOME}/.dotfiles"
 readonly EXTRA_FILE_NAME=".extra"
 readonly EXTRA_FILE_PATH="${HOME}/${EXTRA_FILE_NAME}"
 
-source ${DOTFILES_DIRECTORY}/lib/utils
-
 RETVAL="0"
+
 
 #######################################
 # Setup
@@ -15,29 +14,11 @@ bootstrap() {
   # Ask for the administrator password upfront
   sudo -v
 
-  # Install xcode-select if needed
-  # See: https://www.manpagez.com/man/1/xcode-select/
-  if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
-    info "Installing xcode-select"
-    xcode-select --install
-  else
-    success "Done. xcode-select already installed"
-  fi
+  install_xcode_select
 
-  # Install homebrew if needed
-  # See: https://brew.sh/
-  if ! type_exists "brew"; then
-    info "Installing homebrew"
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  else
-    success "Done. homebrew already installed"
-  fi
+  install_homebrew
 
-  # Install homebrew formulas
-  if type_exists "brew"; then
-    bash $DOTFILES_DIRECTORY/lib/brew.sh &> /dev/null
-    bash $DOTFILES_DIRECTORY/lib/brew-cask.sh &> /dev/null
-  fi
+  install_homebrew_fomulas
 
   # Install oh-my-fish if needed
   # See: https://github.com/oh-my-fish/oh-my-fish#installation
@@ -114,26 +95,17 @@ update() {
 }
 
 #######################################
-# Usage
-#######################################
-usage() {
-cat <<EOT
-Usage: $(basename "$0") <command>
-
-Commands:
-    bootstrap   Setup
-    update      Pull the latest changes
-EOT
-  RETVAL="2"
-}
-
-#######################################
 # Entry point
 #######################################
 main() {
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
   fi
+
+  source ${DOTFILES_DIRECTORY}/lib/utils
+  source ${DOTFILES_DIRECTORY}/lib/brew
+  source ${DOTFILES_DIRECTORY}/lib/brew-cask
+  source ${DOTFILES_DIRECTORY}/lib/macos
 
   for ARGUMENT in $@; do
     case "$ARGUMENT" in

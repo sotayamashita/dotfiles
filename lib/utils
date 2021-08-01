@@ -3,113 +3,48 @@
 # Utilities
 
 #######################################
-# Test whether a command exists
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
+# Install xcode-select 
 #######################################
-info() {
-    printf "$(tput setaf 7)- %s$(tput sgr0)\n" "$@"
-}
-
-#######################################
-# Test whether a command exists
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
-#######################################
-success() {
-    printf "$(tput setaf 64)✓ %s$(tput sgr0)\n" "$@"
-}
-
-#######################################
-# Test whether a command exists
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
-#######################################
-error() {
-    printf "$(tput setaf 1)x %s$(tput sgr0)\n" "$@"
-}
-
-#######################################
-# Test whether a command exists
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
-#######################################
-warning() {
-    printf "$(tput setaf 136)! %s$(tput sgr0)\n" "$@"
-}
-
-#######################################
-# Ask for confirmation before proceeding
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
-#######################################
-seek_confirmation() {
-    warning "$@"
-    read -p "? Continue (y/n) " -n 1
-    printf "\n"
-}
-
-#######################################
-# Test whether the result of an 'ask' is a confirmation
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
-#######################################
-is_confirmed() {
-    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-      return 0
-    fi
-    return 1
-}
-
-#######################################
-# Test whether a command exists
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
-#######################################
-type_exists() {
-  if type $1 > /dev/null 2>&1; then
-    return 0
+install_xcode_select() {
+  if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
+    info "Installing xcode-select"
+    xcode-select --install
+  else
+    success "Done. xcode-select already installed"
   fi
-  return 1
 }
 
 #######################################
-# Test whether a Homebrew formula is already installed
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
+# Install Homebrew
 #######################################
-formula_exists() {
-    if $(brew list $1 >/dev/null); then
-        success "${1} already installed"
-        return 0
-    fi
-    warning "Missing formula: $1"
-    return 1
+install_homebrew() {
+  if ! type_exists "brew"; then
+    info "Installing homebrew"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  else
+    success "Done. homebrew already installed"
+  fi
 }
 
 #######################################
-# Create a symbolic link
-# Arguments:
-#   Command
-# Returns:
-#   0 or 1
+# Install Homebrew fomulas
 #######################################
-link() {
-  ln -fs $1 $2
+install_homebrew_fomulas() {
+  if type_exists "brew"; then
+    bash $DOTFILES_DIRECTORY/lib/brew.sh &> /dev/null
+    bash $DOTFILES_DIRECTORY/lib/brew-cask.sh &> /dev/null
+}
+
+#######################################
+# Usage
+#######################################
+usage() {
+cat <<EOT
+Usage: $(basename "$0") <command>
+
+Commands:
+    bootstrap   Setup
+    update      Pull the latest changes
+EOT
+  RETVAL="2"
 }
