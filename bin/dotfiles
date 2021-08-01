@@ -55,7 +55,7 @@ install_xcode_select() {
     info "Installing xcode-select"
     xcode-select --install
   else
-    success "Done. xcode-select already installed"
+    success "xcode-select has been installed to: $(xcode-select --print-path)"
   fi
 }
 
