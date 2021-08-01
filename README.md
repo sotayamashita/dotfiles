@@ -24,6 +24,10 @@ Commands:
     update      Pull the latest changes
 ```
 
+## Remaining manual work
+
+See: [#45](https://github.com/sotayamashita/dotfiles/issues/45)
+
 ## License
 
 dotfiles © [Sam Yamashita](https://twitter.com/sota0805). Released under the [MIT License](LICENSE)<br/>
