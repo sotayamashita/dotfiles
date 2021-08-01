@@ -158,8 +158,6 @@ main() {
     success "Success: The dotfiles is cloned to: ${DOTFILES_DIRECTORY}"
   fi
   
-  source ${DOTFILES_DIRECTORY}/lib/utils
-
   for ARGUMENT in $@; do
     case "$ARGUMENT" in
       update)
