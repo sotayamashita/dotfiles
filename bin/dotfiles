@@ -25,6 +25,7 @@ warning() {
 # Ask for confirmation before proceeding
 seek_confirmation() {
     warning "$@"
+    printf "\n"
     read -p "? Continue (y/n) " -n 1
     printf "\n"
 }
@@ -88,7 +89,7 @@ make_symbolic_link() {
   do
     link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
   done
-  success "Succss: Symbolic links are created"
+  success "Success: Symbolic links are created"
 }
 
 modify_macos() {
@@ -124,63 +125,16 @@ bootstrap() {
 
   make_symbolic_link
 
+  # TODO: Update it later
+  # install_homebrew_fomulas
+
   modify_macos
-#   install_homebrew_fomulas
+  
+  # TODO: Remove manual flow as possible as I can
+  info "1. Make fish as the default."
+  info "   sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
 
-#   # Change your default shell to "fish"
-#   if ! type_exists "fish" && [[ $SHELL -eq "fish" ]]; then
-#     info "Changing your default shell to \"fish\""
-#     chsh -s /usr/local/bin/fish
-#   else
-#     success "Done. fish already installed"
-#   fi
-
-#   # Create extra file
-#   if [[ ! -e $EXTRA_FILE_PATH ]]; then
-#     cat <<EOT >> $EXTRA_FILE_PATH
-# # All
-# set AUTHOR_NAME                       "<Your Name>"
-# set AUTHOR_MAIL                       "<Your Email Address>"
-
-# # Git
-# set GIT_AUTHOR_NAME                   "\$AUTHOR_NAME"
-# set GIT_COMITTER_NAME                 "\$GIT_AUTHOR_NAME"
-# git config --global user.name         "\$GIT_COMITTER_NAME"
-
-# set GIT_AUTHOR_MAIL                   "\$AUTHOR_MAIL"
-# set GIT_COMITTER_EMAIL                "\$GIT_AUTHOR_MAIL"
-# git config --global user.email        "\$GIT_AUTHOR_MAIL"
-
-# set GIT_AUTHOR_SIGNINGKEY             "xxxxxxxx"
-# set GIT_COMMIT_SIGNINGKEY             "\$GIT_AUTHOR_SIGNINGKEY"
-# git config --global user.signingkey   "\$GIT_AUTHOR_SIGNINGKEY"
-# EOT
-#   else
-#     success "Done. ~/.extra already created"
-#   fi
-
-#   # Make symbolic link
-#   for file in $( ls ${DOTFILES_DIRECTORY}/symlink/* )
-#   do
-#     link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
-#   done
-#   success "Done. symbolic links are created."
-
-#   # Ask before potentially overwriting OS X defaults
-#   seek_confirmation "Warning: This step may modify your OS X system defaults."
-#   if is_confirmed; then
-#       bash $DOTFILES_DIRECTORY/lib/macos
-#       success "Done. Note: that some of these changes require a logout/restart to take effect."
-#   else
-#       info "Skipped OS X settings update."
-#   fi
-
-
-    
-
-    # info "1. sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
-
-    RETVAL="0"
+  RETVAL="0"
 }
 
 #######################################
