@@ -135,6 +135,7 @@ bootstrap() {
   info "   sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
   info "   cp -r  path/to/.config/fish/* ~/.config/fish/"
   info "   source ~/.config/fish/config.fish"
+  info "2. Install fonts and set it on iTerms"
 
   RETVAL="0"
 }
