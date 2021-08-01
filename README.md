@@ -4,7 +4,7 @@
 
 ## Install
 
-**Using Git and then run the install script**
+### Using Git and then run the install script**
 
 ```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/main/bin/dotfiles) bootstrap"
