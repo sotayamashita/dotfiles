@@ -22,7 +22,7 @@ jobs:
         uses: luizm/action-sh-checker@v0.1.12
         env:
           SHELLCHECK_OPTS: -e SC2154
-          SHFMT_OPTS: -i 2
+          SHFMT_OPTS: -i 2 -ci -w  
         with:
           sh_checker_comment: false
           sh_checker_exclude: "lib symlink .config ^bin/uninstall_gems"

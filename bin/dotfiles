@@ -7,64 +7,64 @@ readonly EXTRA_FILE_PATH="${HOME}/${EXTRA_FILE_NAME}"
 RETVAL="0"
 
 info() {
-	printf "$(tput setaf 7)- %s$(tput sgr0)\n" "$@"
+  printf "$(tput setaf 7)- %s$(tput sgr0)\n" "$@"
 }
 
 success() {
-	printf "$(tput setaf 64)✓ %s$(tput sgr0)\n" "$@"
+  printf "$(tput setaf 64)✓ %s$(tput sgr0)\n" "$@"
 }
 
 error() {
-	printf "$(tput setaf 1)x %s$(tput sgr0)\n" "$@"
+  printf "$(tput setaf 1)x %s$(tput sgr0)\n" "$@"
 }
 
 warning() {
-	printf "$(tput setaf 136)! %s$(tput sgr0)\n" "$@"
+  printf "$(tput setaf 136)! %s$(tput sgr0)\n" "$@"
 }
 
 # Ask for confirmation before proceeding
 seek_confirmation() {
-	warning "$@"
-	printf "\n"
-	read -rp "? Continue (y/n) " -n 1
-	printf "\n"
+  warning "$@"
+  printf "\n"
+  read -rp "? Continue (y/n) " -n 1
+  printf "\n"
 }
 
 # Test whether the result of an `seek_confirmation` is a confirmation
 is_confirmed() {
-	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-		return 0
-	fi
-	return 1
+  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    return 0
+  fi
+  return 1
 }
 
 link() {
-	ln -fs "$1" "$2"
+  ln -fs "$1" "$2"
 }
 
 install_xcode_select() {
-	if ! type xcode-select >&- && xpath=$(xcode-select --print-path) && test -d "${xpath}" && test -x "${xpath}"; then
-		info "Install: xcode-select"
-		xcode-select --install
-		success "Success: xcode-select is installed to: $(xcode-select --print-path)"
-	else
-		info "Skipped: xcode-select has been installed to: $(xcode-select --print-path)"
-	fi
+  if ! type xcode-select >&- && xpath=$(xcode-select --print-path) && test -d "${xpath}" && test -x "${xpath}"; then
+    info "Install: xcode-select"
+    xcode-select --install
+    success "Success: xcode-select is installed to: $(xcode-select --print-path)"
+  else
+    info "Skipped: xcode-select has been installed to: $(xcode-select --print-path)"
+  fi
 }
 
 install_homebrew() {
-	if ! type_exists "brew"; then
-		info "Install: Homebrew"
-		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-		success "Success: Homebrew is installed to: $(which brew)"
-	else
-		info "Skipped: Homebrew has been installed to: $(which brew)"
-	fi
+  if ! type_exists "brew"; then
+    info "Install: Homebrew"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    success "Success: Homebrew is installed to: $(which brew)"
+  else
+    info "Skipped: Homebrew has been installed to: $(which brew)"
+  fi
 }
 
 create_gituserconfig() {
-	if [[ ! -e $EXTRA_FILE_PATH ]]; then
-		cat <<EOT >>"$EXTRA_FILE_PATH"
+  if [[ ! -e $EXTRA_FILE_PATH ]]; then
+    cat <<EOT >>"$EXTRA_FILE_PATH"
 # All
 set AUTHOR_NAME                       "<Your Name>"
 set AUTHOR_MAIL                       "<Your Email Address>"
@@ -78,109 +78,109 @@ set GIT_AUTHOR_MAIL                   "\$AUTHOR_MAIL"
 set GIT_COMITTER_EMAIL                "\$GIT_AUTHOR_MAIL"
 git config --global user.email        "\$GIT_AUTHOR_MAIL"
 EOT
-		success "Success: ${EXTRA_FILE_NAME} is created to: ${EXTRA_FILE_PATH}"
-	else
-		info "Skipped:. ${EXTRA_FILE_NAME} has been created to: ${EXTRA_FILE_PATH}"
-	fi
+    success "Success: ${EXTRA_FILE_NAME} is created to: ${EXTRA_FILE_PATH}"
+  else
+    info "Skipped:. ${EXTRA_FILE_NAME} has been created to: ${EXTRA_FILE_PATH}"
+  fi
 }
 
 make_symbolic_link() {
-	for file in "${DOTFILES_DIRECTORY}"/symlink/*; do
-		[[ -e "$file" ]] || break # handle the case of no ${DOTFILES_DIRECTORY}/symlink/* files
-		link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
-	done
-	success "Success: Symbolic links are created"
+  for file in "${DOTFILES_DIRECTORY}"/symlink/*; do
+    [[ -e "$file" ]] || break # handle the case of no ${DOTFILES_DIRECTORY}/symlink/* files
+    link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
+  done
+  success "Success: Symbolic links are created"
 }
 
 modify_macos() {
-	seek_confirmation "Warning: This step may modify your macOS system defaults."
-	if is_confirmed; then
-		bash "$DOTFILES_DIRECTORY"/lib/macos
-		success "Success: Note: that some of these changes require a logout/restart to take effect."
-	else
-		info "Skipped: macOS settings update."
-	fi
+  seek_confirmation "Warning: This step may modify your macOS system defaults."
+  if is_confirmed; then
+    bash "$DOTFILES_DIRECTORY"/lib/macos
+    success "Success: Note: that some of these changes require a logout/restart to take effect."
+  else
+    info "Skipped: macOS settings update."
+  fi
 }
 
 install_homebrew_fomulas() {
-	if type_exists "brew"; then
-		bash "$DOTFILES_DIRECTORY"/lib/brew.sh &>/dev/null
-		bash "$DOTFILES_DIRECTORY"/lib/brew-cask.sh &>/dev/null
-	fi
+  if type_exists "brew"; then
+    bash "$DOTFILES_DIRECTORY"/lib/brew.sh &>/dev/null
+    bash "$DOTFILES_DIRECTORY"/lib/brew-cask.sh &>/dev/null
+  fi
 }
 
 #######################################
 # Setup
 #######################################
 bootstrap() {
-	# Ask for the administrator password upfront
-	sudo -v
+  # Ask for the administrator password upfront
+  sudo -v
 
-	install_xcode_select
+  install_xcode_select
 
-	install_homebrew
+  install_homebrew
 
-	create_gituserconfig
+  create_gituserconfig
 
-	make_symbolic_link
+  make_symbolic_link
 
-	# TODO: Update it later
-	# install_homebrew_fomulas
+  # TODO: Update it later
+  # install_homebrew_fomulas
 
-	modify_macos
+  modify_macos
 
-	# TODO: Remove manual flow as possible as I can
-	info "1. Make fish as the default."
-	info "   sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
-	info "   sudo chsh -s /usr/local/bin/fish"
-	info "   cp -r  path/to/.config/fish/* ~/.config/fish/"
-	info "   source ~/.config/fish/config.fish"
-	info "2. Install fonts and set it on iTerms"
+  # TODO: Remove manual flow as possible as I can
+  info "1. Make fish as the default."
+  info "   sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
+  info "   sudo chsh -s /usr/local/bin/fish"
+  info "   cp -r  path/to/.config/fish/* ~/.config/fish/"
+  info "   source ~/.config/fish/config.fish"
+  info "2. Install fonts and set it on iTerms"
 
-	RETVAL="0"
+  RETVAL="0"
 }
 
 #######################################
 # Update itself
 #######################################
 update() {
-	printf "\xf0\x9f\x9a\x80\x20 Pull origin master ..."
-	git -C "$DOTFILES_DIRECTORY" reset --hard HEAD
-	git -C "$DOTFILES_DIRECTORY" clean -fd
-	git -C "$DOTFILES_DIRECTORY" pull --rebase
-	cp -r "$DOTFILES_DIRECTORY"/.config/fish/* ~/.config/fish/
-	fish -c "source ~/.config/fish/config.fish"
+  printf "\xf0\x9f\x9a\x80\x20 Pull origin master ..."
+  git -C "$DOTFILES_DIRECTORY" reset --hard HEAD
+  git -C "$DOTFILES_DIRECTORY" clean -fd
+  git -C "$DOTFILES_DIRECTORY" pull --rebase
+  cp -r "$DOTFILES_DIRECTORY"/.config/fish/* ~/.config/fish/
+  fish -c "source ~/.config/fish/config.fish"
 
-	RETVAL="0"
+  RETVAL="0"
 }
 
 main() {
-	if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
-		info "Install: the dotfile"
-		git clone --depth=1 https://github.com/sotayamashita/dotfiles.git "${DOTFILES_DIRECTORY}" &>/dev/null
-		success "Success: The dotfiles is cloned to: ${DOTFILES_DIRECTORY}"
-	fi
+  if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
+    info "Install: the dotfile"
+    git clone --depth=1 https://github.com/sotayamashita/dotfiles.git "${DOTFILES_DIRECTORY}" &>/dev/null
+    success "Success: The dotfiles is cloned to: ${DOTFILES_DIRECTORY}"
+  fi
 
-	for ARGUMENT in "$@"; do
-		case "$ARGUMENT" in
-		update)
-			update
-			;;
+  for ARGUMENT in "$@"; do
+    case "$ARGUMENT" in
+      update)
+        update
+        ;;
 
-		bootstrap)
-			bootstrap
-			;;
+      bootstrap)
+        bootstrap
+        ;;
 
-		*)
-			usage
-			;;
-		esac
-		if [ "$RETVAL" -ne 0 ]; then
-			break
-		fi
-	done
+      *)
+        usage
+        ;;
+    esac
+    if [ "$RETVAL" -ne 0 ]; then
+      break
+    fi
+  done
 
-	exit $RETVAL
+  exit $RETVAL
 }
 
 main "$@"
