@@ -16,68 +16,68 @@ bootstrap() {
 
   install_xcode_select
 
-  install_homebrew
+#   install_homebrew
 
-  install_homebrew_fomulas
+#   install_homebrew_fomulas
 
-  # Install oh-my-fish if needed
-  # See: https://github.com/oh-my-fish/oh-my-fish#installation
-  if ! type_exists "omf"; then
-    info "Installing oh-my-fish"
-    curl -L https://get.oh-my.fish | fish
-  else
-    success "Done. oh-my-fish already installed"
-  fi
+#   # Install oh-my-fish if needed
+#   # See: https://github.com/oh-my-fish/oh-my-fish#installation
+#   if ! type_exists "omf"; then
+#     info "Installing oh-my-fish"
+#     curl -L https://get.oh-my.fish | fish
+#   else
+#     success "Done. oh-my-fish already installed"
+#   fi
 
-  # Change your default shell to "fish"
-  if ! type_exists "fish" && [[ $SHELL -eq "fish" ]]; then
-    info "Changing your default shell to \"fish\""
-    chsh -s /usr/local/bin/fish
-  else
-    success "Done. fish already installed"
-  fi
+#   # Change your default shell to "fish"
+#   if ! type_exists "fish" && [[ $SHELL -eq "fish" ]]; then
+#     info "Changing your default shell to \"fish\""
+#     chsh -s /usr/local/bin/fish
+#   else
+#     success "Done. fish already installed"
+#   fi
 
-  # Create extra file
-  if [[ ! -e $EXTRA_FILE_PATH ]]; then
-    cat <<EOT >> $EXTRA_FILE_PATH
-# All
-set AUTHOR_NAME                       "<Your Name>"
-set AUTHOR_MAIL                       "<Your Email Address>"
+#   # Create extra file
+#   if [[ ! -e $EXTRA_FILE_PATH ]]; then
+#     cat <<EOT >> $EXTRA_FILE_PATH
+# # All
+# set AUTHOR_NAME                       "<Your Name>"
+# set AUTHOR_MAIL                       "<Your Email Address>"
 
-# Git
-set GIT_AUTHOR_NAME                   "\$AUTHOR_NAME"
-set GIT_COMITTER_NAME                 "\$GIT_AUTHOR_NAME"
-git config --global user.name         "\$GIT_COMITTER_NAME"
+# # Git
+# set GIT_AUTHOR_NAME                   "\$AUTHOR_NAME"
+# set GIT_COMITTER_NAME                 "\$GIT_AUTHOR_NAME"
+# git config --global user.name         "\$GIT_COMITTER_NAME"
 
-set GIT_AUTHOR_MAIL                   "\$AUTHOR_MAIL"
-set GIT_COMITTER_EMAIL                "\$GIT_AUTHOR_MAIL"
-git config --global user.email        "\$GIT_AUTHOR_MAIL"
+# set GIT_AUTHOR_MAIL                   "\$AUTHOR_MAIL"
+# set GIT_COMITTER_EMAIL                "\$GIT_AUTHOR_MAIL"
+# git config --global user.email        "\$GIT_AUTHOR_MAIL"
 
-set GIT_AUTHOR_SIGNINGKEY             "xxxxxxxx"
-set GIT_COMMIT_SIGNINGKEY             "\$GIT_AUTHOR_SIGNINGKEY"
-git config --global user.signingkey   "\$GIT_AUTHOR_SIGNINGKEY"
-EOT
-  else
-    success "Done. ~/.extra already created"
-  fi
+# set GIT_AUTHOR_SIGNINGKEY             "xxxxxxxx"
+# set GIT_COMMIT_SIGNINGKEY             "\$GIT_AUTHOR_SIGNINGKEY"
+# git config --global user.signingkey   "\$GIT_AUTHOR_SIGNINGKEY"
+# EOT
+#   else
+#     success "Done. ~/.extra already created"
+#   fi
 
-  # Make symbolic link
-  for file in $( ls ${DOTFILES_DIRECTORY}/symlink/* )
-  do
-    link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
-  done
-  success "Done. symbolic links are created."
+#   # Make symbolic link
+#   for file in $( ls ${DOTFILES_DIRECTORY}/symlink/* )
+#   do
+#     link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
+#   done
+#   success "Done. symbolic links are created."
 
-  # Ask before potentially overwriting OS X defaults
-  seek_confirmation "Warning: This step may modify your OS X system defaults."
-  if is_confirmed; then
-      bash $DOTFILES_DIRECTORY/lib/macos
-      success "Done. Note: that some of these changes require a logout/restart to take effect."
-  else
-      info "Skipped OS X settings update."
-  fi
+#   # Ask before potentially overwriting OS X defaults
+#   seek_confirmation "Warning: This step may modify your OS X system defaults."
+#   if is_confirmed; then
+#       bash $DOTFILES_DIRECTORY/lib/macos
+#       success "Done. Note: that some of these changes require a logout/restart to take effect."
+#   else
+#       info "Skipped OS X settings update."
+#   fi
 
-  RETVAL="0"
+#   RETVAL="0"
 }
 
 #######################################
@@ -101,11 +101,8 @@ main() {
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
   fi
-
+  
   source ${DOTFILES_DIRECTORY}/lib/utils
-  source ${DOTFILES_DIRECTORY}/lib/brew
-  source ${DOTFILES_DIRECTORY}/lib/brew-cask
-  source ${DOTFILES_DIRECTORY}/lib/macos
 
   for ARGUMENT in $@; do
     case "$ARGUMENT" in
