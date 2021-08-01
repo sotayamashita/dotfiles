@@ -23,9 +23,8 @@ test -e $HOME/.gituserconfig ; and source $HOME/.gituserconfig
 
 # Init starship, which is The minimal, blazing-fast, and infinitely customizable prompt for any shell!
 # https://starship.rs/guide/#%F0%9F%9A%80-installation
-set -gx STARSHIP_CONFIG $HOME/.config/starship.toml
-starship init fish | source
+test -d /usr/local/Cellar/starship; and set -gx STARSHIP_CONFIG $HOME/.config/starship.toml && starship init fish | source
 
 # Init asdf, which it Extendable version manager
 # https://github.com/asdf-vm/asdf
-source /opt/homebrew/opt/asdf/asdf.fish
+test -e /opt/homebrew/opt/asdf/asdf.fish ; and source /opt/homebrew/opt/asdf/asdf.fish

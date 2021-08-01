@@ -133,6 +133,8 @@ bootstrap() {
   # TODO: Remove manual flow as possible as I can
   info "1. Make fish as the default."
   info "   sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
+  info "   cp -r  path/to/.config/fish/* ~/.config/fish/"
+  info "   source ~/.config/fish/config.fish"
 
   RETVAL="0"
 }
