@@ -87,6 +87,7 @@ EOT
 make_symbolic_link() {
   for file in "${DOTFILES_DIRECTORY}"/symlink/*
   do
+    [[ -e "$file" ]] || break # handle the case of no ${DOTFILES_DIRECTORY}/symlink/* files
     link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
   done
   success "Success: Symbolic links are created"
