@@ -6,6 +6,22 @@ readonly EXTRA_FILE_PATH="${HOME}/${EXTRA_FILE_NAME}"
 
 RETVAL="0"
 
+info() {
+    printf "$(tput setaf 7)- %s$(tput sgr0)\n" "$@"
+}
+
+success() {
+    printf "$(tput setaf 64)✓ %s$(tput sgr0)\n" "$@"
+}
+
+error() {
+    printf "$(tput setaf 1)x %s$(tput sgr0)\n" "$@"
+}
+
+warning() {
+    printf "$(tput setaf 136)! %s$(tput sgr0)\n" "$@"
+}
+
 
 #######################################
 # Setup
@@ -19,15 +35,6 @@ bootstrap() {
 #   install_homebrew
 
 #   install_homebrew_fomulas
-
-#   # Install oh-my-fish if needed
-#   # See: https://github.com/oh-my-fish/oh-my-fish#installation
-#   if ! type_exists "omf"; then
-#     info "Installing oh-my-fish"
-#     curl -L https://get.oh-my.fish | fish
-#   else
-#     success "Done. oh-my-fish already installed"
-#   fi
 
 #   # Change your default shell to "fish"
 #   if ! type_exists "fish" && [[ $SHELL -eq "fish" ]]; then
@@ -99,8 +106,10 @@ update() {
 #######################################
 main() {
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
+    info "Cloning the dotifiles"
     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
   else
+    info "Updating the dotfiles"
     git -C ${DOTFILES_DIRECTORY} pull
   fi
   
