@@ -26,7 +26,7 @@ warning() {
 seek_confirmation() {
     warning "$@"
     printf "\n"
-    read -p "? Continue (y/n) " -n 1
+    read -rp "? Continue (y/n) " -n 1
     printf "\n"
 }
 
@@ -85,7 +85,7 @@ EOT
 }
 
 make_symbolic_link() {
-  for file in $( ls "${DOTFILES_DIRECTORY}"/symlink/* )
+  for file in "${DOTFILES_DIRECTORY}"/symlink/*
   do
     link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
   done
