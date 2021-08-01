@@ -41,21 +41,13 @@ link() {
   ln -fs $1 $2
 }
 
-make_symbolic_link() {
-  for file in $( ls ${DOTFILES_DIRECTORY}/symlink/* )
-  do
-    link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
-  done
-  success "Symbolic links are created"
-}
-
 install_xcode_select() {
   if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
     info "Install xcode-select"
     xcode-select --install
     success "Success: xcode-select is installed to: $(xcode-select --print-path)"
   else
-    success "Skipped: xcode-select has been installed to: $(xcode-select --print-path)"
+    info "Skipped: xcode-select has been installed to: $(xcode-select --print-path)"
   fi
 }
 
@@ -65,11 +57,50 @@ install_homebrew() {
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     success "Success: Homebrew is installed to: $(which brew)"
   else
-    success "Skipped: Homebrew has been installed to: $(which brew)"
+    info "Skipped: Homebrew has been installed to: $(which brew)"
   fi
 }
 
-# Install Homebrew fomulas
+create_gituserconfig() {
+  if [[ ! -e $EXTRA_FILE_PATH ]]; then
+    cat <<EOT >> $EXTRA_FILE_PATH
+# All
+set AUTHOR_NAME                       "<Your Name>"
+set AUTHOR_MAIL                       "<Your Email Address>"
+
+# Git
+set GIT_AUTHOR_NAME                   "\$AUTHOR_NAME"
+set GIT_COMITTER_NAME                 "\$GIT_AUTHOR_NAME"
+git config --global user.name         "\$GIT_COMITTER_NAME"
+
+set GIT_AUTHOR_MAIL                   "\$AUTHOR_MAIL"
+set GIT_COMITTER_EMAIL                "\$GIT_AUTHOR_MAIL"
+git config --global user.email        "\$GIT_AUTHOR_MAIL"
+EOT
+    success "Success: ${EXTRA_FILE_NAME} is created to: ${EXTRA_FILE_PATH}"
+  else
+    info "Skipped:. ${EXTRA_FILE_NAME} has been created to: ${EXTRA_FILE_PATH}"
+  fi 
+}
+
+make_symbolic_link() {
+  for file in $( ls ${DOTFILES_DIRECTORY}/symlink/* )
+  do
+    link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
+  done
+  success "Succss: Symbolic links are created"
+}
+
+modify_macos() {
+  seek_confirmation "Warning: This step may modify your macOS system defaults."
+  if is_confirmed; then
+    bash $DOTFILES_DIRECTORY/lib/macos
+    success "Success: Note: that some of these changes require a logout/restart to take effect."
+  else
+    info "Skipped: macOS settings update."
+  fi
+}
+
 install_homebrew_fomulas() {
   if type_exists "brew"; then
     bash $DOTFILES_DIRECTORY/lib/brew.sh &> /dev/null
@@ -89,7 +120,11 @@ bootstrap() {
 
   install_homebrew
 
+  create_gituserconfig
 
+  make_symbolic_link
+
+  modify_macos
 #   install_homebrew_fomulas
 
 #   # Change your default shell to "fish"
@@ -141,15 +176,9 @@ bootstrap() {
 #   fi
 
 
-    seek_confirmation "Warning: This step may modify your macOS system defaults."
-    if is_confirmed; then
-      bash $DOTFILES_DIRECTORY/lib/macos
-      success "Note: that some of these changes require a logout/restart to take effect."
-    else
-      info "Skipped macOS settings update."
-    fi
+    
 
-    info "1. sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
+    # info "1. sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
 
     RETVAL="0"
 }
