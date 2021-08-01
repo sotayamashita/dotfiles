@@ -7,7 +7,7 @@
 **Using Git and then run the install script**
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/master/bin/dotfiles) bootstrap"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/main/bin/dotfiles) bootstrap"
 ```
 
 ## Usage
