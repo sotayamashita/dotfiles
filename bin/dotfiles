@@ -39,7 +39,7 @@ is_confirmed() {
 }
 
 link() {
-  ln -fs $1 $2
+  ln -fs "$1" "$2"
 }
 
 install_xcode_select() {
@@ -64,7 +64,7 @@ install_homebrew() {
 
 create_gituserconfig() {
   if [[ ! -e $EXTRA_FILE_PATH ]]; then
-    cat <<EOT >> $EXTRA_FILE_PATH
+    cat <<EOT >> "$EXTRA_FILE_PATH"
 # All
 set AUTHOR_NAME                       "<Your Name>"
 set AUTHOR_MAIL                       "<Your Email Address>"
@@ -85,7 +85,7 @@ EOT
 }
 
 make_symbolic_link() {
-  for file in $( ls ${DOTFILES_DIRECTORY}/symlink/* )
+  for file in $( ls "${DOTFILES_DIRECTORY}"/symlink/* )
   do
     link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
   done
@@ -95,7 +95,7 @@ make_symbolic_link() {
 modify_macos() {
   seek_confirmation "Warning: This step may modify your macOS system defaults."
   if is_confirmed; then
-    bash $DOTFILES_DIRECTORY/lib/macos
+    bash "$DOTFILES_DIRECTORY"/lib/macos
     success "Success: Note: that some of these changes require a logout/restart to take effect."
   else
     info "Skipped: macOS settings update."
@@ -104,8 +104,8 @@ modify_macos() {
 
 install_homebrew_fomulas() {
   if type_exists "brew"; then
-    bash $DOTFILES_DIRECTORY/lib/brew.sh &> /dev/null
-    bash $DOTFILES_DIRECTORY/lib/brew-cask.sh &> /dev/null
+    bash "$DOTFILES_DIRECTORY"/lib/brew.sh &> /dev/null
+    bash "$DOTFILES_DIRECTORY"/lib/brew-cask.sh &> /dev/null
   fi
 }
 
@@ -146,10 +146,10 @@ bootstrap() {
 #######################################
 update() {
   printf "\xf0\x9f\x9a\x80\x20 Pull origin master ..."
-  git -C $DOTFILES_DIRECTORY reset --hard HEAD
-  git -C $DOTFILES_DIRECTORY clean -fd
-  git -C $DOTFILES_DIRECTORY pull --rebase
-  cp -r  $DOTFILES_DIRECTORY/.config/fish/* ~/.config/fish/
+  git -C "$DOTFILES_DIRECTORY" reset --hard HEAD
+  git -C "$DOTFILES_DIRECTORY" clean -fd
+  git -C "$DOTFILES_DIRECTORY" pull --rebase
+  cp -r  "$DOTFILES_DIRECTORY"/.config/fish/* ~/.config/fish/
   fish -c "source ~/.config/fish/config.fish"
 
   RETVAL="0"
@@ -158,11 +158,11 @@ update() {
 main() {
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
     info "Install: the dotfile"
-    git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
+    git clone --depth=1 https://github.com/sotayamashita/dotfiles.git "${DOTFILES_DIRECTORY}" &> /dev/null
     success "Success: The dotfiles is cloned to: ${DOTFILES_DIRECTORY}"
   fi
   
-  for ARGUMENT in $@; do
+  for ARGUMENT in "$@"; do
     case "$ARGUMENT" in
       update)
         update

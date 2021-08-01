@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 uninstall() {
-  list=`gem list --no-versions`
+  list=$(gem list --no-versions)
   for gem in $list; do
     gem uninstall $gem -aIx
   done

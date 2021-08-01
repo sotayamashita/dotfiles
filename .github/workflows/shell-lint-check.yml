@@ -25,4 +25,4 @@ jobs:
           SHFMT_OPTS: -i 2
         with:
           sh_checker_comment: false
-          sh_checker_exclude: "lib  symlink .config ^symlink/uninstall_gems"
+          sh_checker_exclude: "lib symlink .config ^bin/uninstall_gems"
