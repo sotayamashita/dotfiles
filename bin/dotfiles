@@ -170,9 +170,9 @@ update() {
 
 main() {
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
-    info "Installing the cloned"
+    info "Install the dotfile"
     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
-    success "Done. The dotfiles is cloned: ${DOTFILES_DIRECTORY}"
+    success "Succss. The dotfiles is cloned to: ${DOTFILES_DIRECTORY}"
   fi
   
   source ${DOTFILES_DIRECTORY}/lib/utils
