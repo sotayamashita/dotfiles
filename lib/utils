@@ -57,30 +57,23 @@ link() {
 }
 
 
-# Install xcode-select 
-install_xcode_select() {
-  if ! type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}"; then
-    info "Installing xcode-select"
-    xcode-select --install
+install() {
+  if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
+    info "Installing the dotifiles"
+    git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
+    success "Done. The dotfiles is installed"
   else
-    success "Done. xcode-select already installed"
+    info "The dotfiles has been installed"
   fi
+
+  RETVAL="0"
 }
 
-# Install Homebrew
-install_homebrew() {
-  if ! type_exists "brew"; then
-    info "Installing homebrew"
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  else
-    success "Done. homebrew already installed"
-  fi
-}
-
-# Install Homebrew fomulas
-install_homebrew_fomulas() {
-  if type_exists "brew"; then
-    bash $DOTFILES_DIRECTORY/lib/brew.sh &> /dev/null
-    bash $DOTFILES_DIRECTORY/lib/brew-cask.sh &> /dev/null
-  fi
+update() {
+  info "Updating the dotfiles"
+  git -C $DOTFILES_DIRECTORY reset --hard HEAD
+  git -C $DOTFILES_DIRECTORY clean -fd
+  git -C $DOTFILES_DIRECTORY pull --rebase
+  
+  RETVAL="0"
 }

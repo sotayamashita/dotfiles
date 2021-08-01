@@ -147,7 +147,7 @@ bootstrap() {
       success "Note: that some of these changes require a logout/restart to take effect."
     else
       info "Skipped macOS settings update."
-    end
+    fi
 
     info "1. sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
 
@@ -165,28 +165,6 @@ update() {
   cp -r  $DOTFILES_DIRECTORY/.config/fish/* ~/.config/fish/
   fish -c "source ~/.config/fish/config.fish"
 
-  RETVAL="0"
-}
-
-
-install() {
-  if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
-    info "Installing the dotifiles"
-    git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
-    success "Done. The dotfiles is installed"
-  else
-    info "The dotfiles has been installed"
-  fi
-
-  RETVAL="0"
-}
-
-update() {
-  info "Updating the dotfiles"
-  git -C $DOTFILES_DIRECTORY reset --hard HEAD
-  git -C $DOTFILES_DIRECTORY clean -fd
-  git -C $DOTFILES_DIRECTORY pull --rebase
-  
   RETVAL="0"
 }
 
