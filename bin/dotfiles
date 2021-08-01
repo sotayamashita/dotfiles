@@ -99,10 +99,8 @@ update() {
 #######################################
 main() {
   if [[ ! -d ${DOTFILES_DIRECTORY} ]]; then
-    info "Cloning the dotfiles"
     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git ${DOTFILES_DIRECTORY} &> /dev/null
   else
-    info "Updating the dotfiles"
     git -C ${DOTFILES_DIRECTORY} pull
   fi
   
