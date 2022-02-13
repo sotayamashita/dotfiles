@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Make sure we’re using the latest Homebrew.
+brew update
+
+# Upgrade any already-installed formulae.
+brew upgrade
+
+brew install git
+brew install git-lfs
+brew install hub
+brew install youtube-dl
+brew install diff-so-fancy
+brew install bottom
+brew install rm-improved
+brew install bat
+
+# Remove outdated versions from the cellar
+brew cleanup
+
+# Check system potential problem
+brew doctor
