@@ -24,6 +24,9 @@ if ! is_confirmed; then
   exit 1
 fi
 
+# Verified environments
+# - macOS 12.1/12.2
+
 # Close System Preferences, to prevent it from overriding settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
 
