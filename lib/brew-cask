@@ -1,30 +1,62 @@
 #!/bin/bash
+#
+# Prerequisite
+#   - brew command
+#
+# You can search from https://formulae.brew.sh/
 
-# Install tools using omebrew Cask
-# See: https://github.com/Homebrew/homebrew-cask
+. $(dirname "$0")/utility.sh
+
+# Install a Homebrew formula
+install_cask_if_needed() {
+    if ! brew_cask_exists ${1}; then
+        info "Installing: ${1}"
+        brew install ${1}
+    fi
+}
+
+# Make sure we’re using the latest Homebrew.
+brew update
+
+# Upgrade any already-installed formulae.
+brew upgrade
+
+
+
 
 # Apps
-brew cask install google-japanese-ime
-brew cask install 1password
-brew cask install dropbox
-brew cask install google-chrome
-brew cask install brave-browser
-brew cask install chromedriver
-brew cask install iterm2
-brew cask install visual-studio-code
-brew cask install jetbrains-toolbox
-brew cask install docker
-brew cask install kitty
-brew cask install sketch
-brew cask install divvy
-brew cask install tunnelblick
-brew cask install notion
-brew cask install superhuman
-brew cask install slack
-brew cask install toggl
-brew cask install spotify
-brew cask install zoomus
+# General
+install_cask_if_needed firefox
+install_cask_if_needed cleanshot
+install_cask_if_needed cleanmymac
+install_cask_if_needed raycast
+install_cask_if_needed superhuman
+install_cask_if_needed notion
+install_cask_if_needed slack
+# Dev
+install_cask_if_needed iterm2
+install_cask_if_needed fig
+install_cask_if_needed visual-studio-code
 
-# Fonts
-brew tap homebrew/cask-fonts
-brew cask install font-hack-nerd-font
+
+# CLI
+# https://developer.1password.com/docs/cli/get-started/
+install_cask_if_needed 1password/tap/1password-cli
+
+
+# Font
+# https://github.com/ryanoasis/nerd-fonts
+if ! brew_cask_exists font-fira-code-nerd-font; then
+    info "Installing: font-fira-code-nerd-font"
+    brew tap homebrew/cask-fonts
+    brew install --cask font-fira-code-nerd-font
+fi
+
+
+
+
+# Remove outdated versions from the cellar
+brew cleanup
+
+# Check system potential problem
+brew doctor

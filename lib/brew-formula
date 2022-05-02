@@ -1,0 +1,67 @@
+#!/bin/bash
+
+. $(dirname "$0")/utility.sh
+
+# Install a Homebrew formula
+install_formula_if_needed() {
+    if ! brew_formula_exists ${1}; then
+        info "Installing: ${1}"
+        brew install ${1}
+    fi
+}
+
+# Make sure we’re using the latest Homebrew.
+brew update
+
+# Upgrade any already-installed formulae.
+brew upgrade
+
+
+
+
+# Install GnuPG to enable PGP-signing commits.
+install_formula_if_needed gnupg
+
+# Shells
+# Note: don’t forget to add `/usr/local/bin/<EACHSHELL>` to `/etc/shells` before running `chsh`.
+install_formula_if_needed bash
+install_formula_if_needed zsh
+install_formula_if_needed fish
+
+# Install more recent versions of some macOS tools
+install_formula_if_needed vim
+install_formula_if_needed grep
+install_formula_if_needed openssh
+
+# Useful binaries
+install_formula_if_needed starship
+install_formula_if_needed git
+install_formula_if_needed git-lfs
+install_formula_if_needed gh
+install_formula_if_needed diff-so-fancy
+install_formula_if_needed gibo
+install_formula_if_needed ffmpeg
+install_formula_if_needed youtube-dl
+install_formula_if_needed jq
+install_formula_if_needed postgresql
+
+# Language version manager
+install_formula_if_needed rbenv
+install_formula_if_needed ruby-build
+
+# Modern Alternatives of CLI
+install_formula_if_needed bottom   # better `top`  -- `btm`
+install_formula_if_needed procs    # better `ps`   -- `procs` 
+install_formula_if_needed dust     # better `du`   -- `dust`  
+install_formula_if_needed exa      # better `ls`   -- `exa -T -L 1 --icons`
+install_formula_if_needed bat      # better `cat`  -- `bat --style=header,grid $argv`
+install_formula_if_needed tealdeer # better `tldr` -- `tldr`
+
+
+
+
+# Remove outdated versions from the cellar
+brew cleanup
+
+# Check system potential problem
+brew doctor

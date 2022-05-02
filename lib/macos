@@ -1,4 +1,28 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+. $(dirname "$0")/utility.sh
+
+# Ask for confirmation before proceeding
+seek_confirmation() {
+  warning "$@"
+  printf "\n"
+  read -rp "? Continue (y/n) " -n 1
+  printf "\n"
+}
+
+# Test whether the result of an `seek_confirmation` is a confirmation
+is_confirmed() {
+  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    return 0
+  fi
+  return 1
+}
+
+seek_confirmation "Warning: This step may modify your macOS system defaults."
+if ! is_confirmed; then
+  info "Skipped"
+  exit 1
+fi
 
 # Close System Preferences, to prevent it from overriding settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
