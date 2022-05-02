@@ -14,6 +14,9 @@ function localip ; ipconfig getifaddr en0 ; end
 # GPG
 set -gx GPG_TTY (tty)
 
+# Startship
+set -gx STARSHIP_CONFIG $HOME/.config/starship.toml && starship init fish | source
+
 # Homebrew
 fish_add_path /opt/homebrew/bin
 
@@ -35,13 +38,8 @@ fish_add_path $HOME/Library/Android/sdk/cmdline-tools/latest/bin
 set -gx JAVA_HOME /usr/libexec/java_home
 fish_add_path $JAVA_HOME/bin
 
-
 ## Commands that depend on other libraries
 test -x /opt/homebrew/bin/hub ; and function g    ; gh  $argv ; end
 test -x /opt/homebrew/bin/lsd ; and function ls   ; lsd $argv ; end
 test -x /opt/homebrew/bin/btm ; and function top  ; btm ; end
 test -x /opt/homebrew/bin/bat ; and function cat  ; bat --style=header,grid $argv; end
-
-# Init starship, which is The minimal, blazing-fast, and infinitely customizable prompt for any shell!
-# https://starship.rs/guide/#%F0%9F%9A%80-installation
-test -d /usr/local/Cellar/starship; and set -gx STARSHIP_CONFIG $HOME/.config/starship.toml && starship init fish | source
