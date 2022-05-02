@@ -38,8 +38,8 @@ fish_add_path $HOME/Library/Android/sdk/cmdline-tools/latest/bin
 set -gx JAVA_HOME /usr/libexec/java_home
 fish_add_path $JAVA_HOME/bin
 
-## Commands that depend on other libraries
-test -x /opt/homebrew/bin/hub ; and function g    ; gh  $argv ; end
+# Commands that depend on other libraries
+test -x /opt/homebrew/bin/git ; and function g    ; git $argv ; end
 test -x /opt/homebrew/bin/lsd ; and function ls   ; lsd $argv ; end
 test -x /opt/homebrew/bin/btm ; and function top  ; btm ; end
 test -x /opt/homebrew/bin/bat ; and function cat  ; bat --style=header,grid $argv; end

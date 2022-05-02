@@ -44,6 +44,7 @@ install_formula_if_needed ffmpeg
 install_formula_if_needed youtube-dl
 install_formula_if_needed jq
 install_formula_if_needed postgresql
+install_formula_if_needed pinentry-mac
 
 # Language version manager
 install_formula_if_needed rbenv
