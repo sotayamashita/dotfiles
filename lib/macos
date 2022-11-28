@@ -70,6 +70,18 @@ defaults write com.apple.dock "show-recents" -bool "false"
 
 
 #
+# System Preferences > Users & Groups > $USER > Login items
+# 
+# List Login items
+osascript -e 'tell application "System Events" to get the name of every login item'
+
+# Add Login items
+apps = ( "Raycast" )
+
+
+
+
+#
 # System Preferences > Keyboard > Shortcuts (Note: Required a restart)
 # - https://apple.stackexchange.com/a/91680
 #

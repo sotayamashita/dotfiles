@@ -2,6 +2,10 @@
 
     path = ~/.gitconfig.user
 
+    # git-delta custom themes
+    # https://dandavison.github.io/delta/custom-themes.html
+    path = ~/.gitconfig.delta
+
 [init]
 
     defaultBranch = main
@@ -48,22 +52,27 @@
     unstage  = reset HEAD         # remove files from index (tracking)
     uncommit = reset --soft HEAD^ # go back before last commit, with files in uncommitted state 
 
-    # stash 
+    # stash
     ss = stash                    # stash changes
     sl = stash list               # list stashes
     sa = stash apply              # apply stash  (restore changes)
     sd = stash drop               # drop stashes (destroy chnages)
 
     # status
-    s = status -s                # status
+    s  = status -s                # status
+    st = status -s                # status
 
     # Show verbose output about tags, branches or remotes
 	tags     = tag -l
 	branches = branch --all
 	remotes  = remote --verbose
 
+    # Git branch upstreams
+    # https://zarino.co.uk/post/git-set-upstream/
+    set-upstream = !git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD`
+
     # Switch to a branch, creating it if necessary.
-    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+    go = "!f() { git switch $1 2>/dev/null || git switch -c $1; }; f"
 
     # Find branches containing commit
     fb = "!f() { git branch -a --contains $1; }; f"
@@ -79,7 +88,7 @@
 
     # Remove branches that have already been merged with main.
     # a.k.a. ‘delete merged’
-    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+    dm = "!f() { git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; }; f"
 
     # List contributors with number of commits.
     contributors = shortlog --summary --numbered
@@ -93,7 +102,6 @@
 
 	# Show most recently changed branches first.
 	sort = -committerdate
-
 
 [core]
 
@@ -113,7 +121,7 @@
     editor = vim
 
     # Pager
-    pager = diff-so-fancy | less --tabs=4 -RFX
+    pager = delta
 
 [color]
 
@@ -152,17 +160,15 @@
 [push]
 
     # https://git-scm.com/docs/git-config#git-config-pushdefault
-    default = simple
+	default = current
 
     # Make `git push` push relevant annotated tags when pushing branches out.
     followTags = true
 
 
-# diff-so-fancy
-# See: https://github.com/so-fancy/diff-so-fancy
 [interactive]
 
-    diffFilter   = diff-so-fancy --patch
+    diffFilter   = delta --color-only
 
 [color "diff-highlight"]
 
@@ -202,3 +208,19 @@
 [url "git://gist.github.com/"]
 
     insteadOf     = "gist:"
+
+# git-delta
+# https://github.nmiku.com/dandavison/delta
+[delta]
+    features     = woolly-mammoth
+    navigate     = true
+    side-by-side = true
+    line-numbers = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+[pull]
+	rebase = false

@@ -1,7 +1,0 @@
-#!/bin/bash
-
-. $(dirname "$0")/utility.sh
-
-# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI.html
-
-# https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html

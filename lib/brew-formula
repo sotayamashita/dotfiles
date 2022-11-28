@@ -37,14 +37,15 @@ install_formula_if_needed openssh
 install_formula_if_needed starship
 install_formula_if_needed git
 install_formula_if_needed git-lfs
+install_formula_if_needed git-delta
 install_formula_if_needed gh
-install_formula_if_needed diff-so-fancy
 install_formula_if_needed gibo
 install_formula_if_needed ffmpeg
 install_formula_if_needed youtube-dl
 install_formula_if_needed jq
 install_formula_if_needed postgresql
 install_formula_if_needed pinentry-mac
+install_formula_if_needed graphicsmagick
 
 # Language version manager
 install_formula_if_needed rbenv

@@ -27,17 +27,22 @@ brew upgrade
 # Apps
 # General
 install_cask_if_needed firefox
+install_cask_if_needed brave-browser
+install_cask_if_needed google-chrome
 install_cask_if_needed cleanshot
 install_cask_if_needed cleanmymac
 install_cask_if_needed raycast
-install_cask_if_needed superhuman
 install_cask_if_needed notion
+install_cask_if_needed obsidian
 install_cask_if_needed slack
+install_cask_if_needed divvy
+install_cask_if_needed spotify
+install_cask_if_needed deepl
+
 # Dev
 install_cask_if_needed iterm2
 install_cask_if_needed fig
 install_cask_if_needed visual-studio-code
-
 
 # CLI
 # https://developer.1password.com/docs/cli/get-started/
