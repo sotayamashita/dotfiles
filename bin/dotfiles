@@ -4,8 +4,8 @@ RETVAL="0"
 
 readonly DOTFILES_DIR_PATH="${HOME}/.dotfiles"
 
-links() {
-    links=(
+symlinks() {
+    symlinks=(
         ".config/fish/config.fish:~/.config/fish/config.fish"
         ".config/git/.gitconfig:~/.gitconfig"
         ".config/git/.gitconfig.user:~/.gitconfig.user"
@@ -14,9 +14,12 @@ links() {
         ".config/starship.toml:~/.config/starship.toml"
     )
 
-    for link in "${links[@]}"; do
-        printf "%s → %s\n"
-        ln -sf "${DOTFILES_DIR_PATH}/${link%%:*}" "${link##*:}"
+    for symlink in "${symlinks[@]}"; do
+        src="${DOTFILES_DIR_PATH}/${symlink%%:*}"
+        tgt="${symlink##*:}"
+
+        printf "%s → %s\n" "$src" "$tgt"
+        ln -sf "$src" "$tgt"
     done
 
     RETVAL="0"
@@ -25,8 +28,8 @@ links() {
 main() {
     for ARGUMENT in "$@"; do
         case "$ARGUMENT" in
-            links)
-                links
+            symlinks)
+                symlinks
                 ;;
          esac
          [ "$RETVAL" -ne 0 ] && break
