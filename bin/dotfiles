@@ -4,7 +4,7 @@ RETVAL="0"
 
 readonly DOTFILES_DIR_PATH="$PWD"
 
-symlinks() {
+symbolic_links() {
     # Symbolic source and target links
     links=(
         ".config/fish/config.fish:.config/fish/config.fish"
@@ -27,12 +27,33 @@ symlinks() {
     RETVAL="0"
 }
 
+help() {
+    printf "$(tput setaf 3)Usage:$(tput sgr0)\n"
+    printf "  $(basename $0) [OPTIONS]\n"
+    printf "  $(basename $0) <subcommand>\n"
+    printf "\n"
+    printf "$(tput setaf 3)OPTIONS:$(tput sgr0)\n"
+    printf "  $(tput setaf 2)-h$(tput sgr0), $(tput setaf 2)--help$(tput sgr0)\n"
+    printf "    Print this help message\n"
+    printf "\n"
+    printf "$(tput setaf 3)SUBCOMMANDS:$(tput sgr0)\n"
+    printf "  $(tput setaf 2)links$(tput sgr0)\n"
+    printf "    Create symbolic links\n"
+
+    RETVAL="1"
+}
+
 main() {
     for ARGUMENT in "$@"; do
         case "$ARGUMENT" in
-            symlinks)
-                symlinks
+            links)
+                symbolic_links
                 ;;
+
+            "-h" | "--help")
+                help
+                ;;
+
          esac
          [ "$RETVAL" -ne 0 ] && break
     done
@@ -41,137 +62,3 @@ main() {
 }
 
 main "$@"
-
-
-# . $(dirname "$0")/lib/utility.sh
-
-# RETVAL="0"
-
-# readonly DOTFILES_DIR_PATH="${HOME}/.dotfiles"
-
-# install_dotfiles() {
-#   if [[ -d ${DOTFILES_DIR_PATH} ]]; then
-#     success "Found: sotayamashita/dotfiles at ${DOTFILES_DIR_PATH}"
-#   else
-#     warning "Missing: ${DOTFILES_DIR_PATH}"
-#     info "Installing: sotayamashita/dotfiles"
-#     git clone --depth=1 https://github.com/sotayamashita/dotfiles.git "${DOTFILES_DIRECTORY}" &>/dev/null
-#   fi
-
-#   RETVAL="0"
-# }
-
-# install_xcode_select() {
-#     if type xcode-select >&- && xpath=$(xcode-select --print-path) && test -d "${xpath}" && test -x "${xpath}"; then
-#         success "Found: xcode-select at $(xcode-select --print-path)"
-#     else
-#         info "Installing: xcode-select"
-#         xcode-select --install
-#     fi
-# }
-
-# bootstrap() {
-#     install_xcode_select
-
-#     /bin/bash $(dirname "$0")/lib/brew.sh
-
-#     /bin/bash $(dirname "$0")/lib/brew-formulas.sh
-
-#     /bin/bash $(dirname "$0")/lib/macos.sh
-
-#     info "1. Make fish as the default."
-#     info "   sudo vim /etc/shells and add /usr/local/bin/fish bottom of the file."
-#     info "   sudo chsh -s /usr/local/bin/fish"
-#     info "   cp -r  path/to/.config/fish/* ~/.config/fish/"
-#     info "   source ~/.config/fish/config.fish"
-#     info "2. Install fonts and set it on iTerms"
-
-#     RETVAL="0"
-# }
-
-# update() {
-#     git -C ${DOTFILES_DIR_PATH} reset --hard HEAD
-#     git -C ${DOTFILES_DIR_PATH} clean -fd
-#     git -C ${DOTFILES_DIR_PATH} pull --rebase
-#     cp -r ${DOTFILES_DIR_PATH}/.config/fish/* ${HOME}/.config/fish/
-
-#     RETVAL="0"
-# }
-
-# main() {
-#     install_dotfiles
-
-#     for ARGUMENT in "$@"; do
-#         case "$ARGUMENT" in
-#             bootstrap)
-#                 bootstrap
-#                 ;;
-
-#             update)
-#                 update
-#                 ;;
-#          esac
-#          [ "$RETVAL" -ne 0 ] && break
-#     done
-
-#     exit $RETVAL
-# }
-
-# main "$@"
-
-
-# # readonly EXTRA_FILE_NAME=".gituserconfig"
-# # readonly EXTRA_FILE_PATH="${HOME}/${EXTRA_FILE_NAME}"
-
-# # install_xcode_select() {
-# #   if ! type xcode-select >&- && xpath=$(xcode-select --print-path) && test -d "${xpath}" && test -x "${xpath}"; then
-# #     info "Install: xcode-select"
-# #     xcode-select --install
-# #     success "Success: xcode-select is installed to: $(xcode-select --print-path)"
-# #   else
-# #     info "Skipped: xcode-select has been installed to: $(xcode-select --print-path)"
-# #   fi
-# # }
-
-# # create_gituserconfig() {
-# #   if [[ ! -e $EXTRA_FILE_PATH ]]; then
-# #     cat <<EOT >>"$EXTRA_FILE_PATH"
-# # # All
-# # set AUTHOR_NAME                       "<Your Name>"
-# # set AUTHOR_MAIL                       "<Your Email Address>"
-
-# # # Git
-# # set GIT_AUTHOR_NAME                   "\$AUTHOR_NAME"
-# # set GIT_COMITTER_NAME                 "\$GIT_AUTHOR_NAME"
-# # git config --global user.name         "\$GIT_COMITTER_NAME"
-
-# # set GIT_AUTHOR_MAIL                   "\$AUTHOR_MAIL"
-# # set GIT_COMITTER_EMAIL                "\$GIT_AUTHOR_MAIL"
-# # git config --global user.email        "\$GIT_AUTHOR_MAIL"
-# # EOT
-# #     success "Success: ${EXTRA_FILE_NAME} is created to: ${EXTRA_FILE_PATH}"
-# #   else
-# #     info "Skipped:. ${EXTRA_FILE_NAME} has been created to: ${EXTRA_FILE_PATH}"
-# #   fi
-# # }
-
-# # make_symbolic_link() {
-# #   for file in "${DOTFILES_DIRECTORY}"/symlink/*; do
-# #     [[ -e "$file" ]] || break # handle the case of no ${DOTFILES_DIRECTORY}/symlink/* files
-# #     link "${DOTFILES_DIRECTORY}/symlink/${file##*/}" "${HOME}/.${file##*/}"
-# #   done
-# #   success "Success: Symbolic links are created"
-# # }
-
-# # modify_macos() {
-# #   seek_confirmation "Warning: This step may modify your macOS system defaults."
-# #   if is_confirmed; then
-# #     bash "$DOTFILES_DIRECTORY"/lib/macos
-# #     success "Success: Note: that some of these changes require a logout/restart to take effect."
-# #   else
-# #     info "Skipped: macOS settings update."
-# #   fi
-# # }
-
-
-
