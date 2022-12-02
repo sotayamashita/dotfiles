@@ -2,24 +2,26 @@
 
 RETVAL="0"
 
-readonly DOTFILES_DIR_PATH="${HOME}/.dotfiles"
+readonly DOTFILES_DIR_PATH="$PWD"
 
 symlinks() {
-    symlinks=(
-        ".config/fish/config.fish:~/.config/fish/config.fish"
-        ".config/git/.gitconfig:~/.gitconfig"
-        ".config/git/.gitconfig.user:~/.gitconfig.user"
-        ".config/git/.gitconfig.delta:~/.gitconfig.delta"
-        ".config/git/.gitignore.global:~/.gitignore.global"
-        ".config/starship.toml:~/.config/starship.toml"
+    # Symbolic source and target links
+    links=(
+        ".config/fish/config.fish:.config/fish/config.fish"
+        ".config/git/.gitconfig:.gitconfig"
+        ".config/git/.gitconfig.alias:.gitconfig.alias"
+        ".config/git/.gitconfig.user:.gitconfig.user"
+        ".config/git/.gitconfig.delta:.gitconfig.delta"
+        ".config/git/.gitignore.global:.gitignore.global"
+        ".config/starship.toml:.config/starship.toml"
     )
 
-    for symlink in "${symlinks[@]}"; do
-        src="${DOTFILES_DIR_PATH}/${symlink%%:*}"
-        tgt="${symlink##*:}"
+    # Create symbolic a link to a file
+    for link in "${links[@]}"; do
+        source="${DOTFILES_DIR_PATH}/${link%%:*}"
+        target="${HOME}/${link##*:}"
 
-        printf "%s → %s\n" "$src" "$tgt"
-        ln -sf "$src" "$tgt"
+        ln -sf "${source}" "${target}"
     done
 
     RETVAL="0"

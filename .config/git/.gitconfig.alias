@@ -1,0 +1,82 @@
+[alias]
+
+    # List aliases.
+    aliases = config --get-regexp alias
+
+    # add
+    a = add                       # add
+
+    # branch
+    b = branch -v                 # branch (verbose)
+
+    # clone
+    cl    = clone --recursive     # clone recursive
+
+    # commit
+    c     = commit -m             # commit with message
+    ci    = commit                # commit
+    amend = commit --amend        # amend your last commit
+
+    # commit all changes.
+    ca = !git add -A && git commit -av
+
+    # diff
+    d = diff                      # diff unstaged chnages
+
+    # log
+    l    = log --pretty=oneline -n 20 --graph --abbrev-commit
+    last = log -1 HEAD --format=format:"%Cred%H"
+
+    # Pull in remote changes for the current repository and all its submodules.
+    pl = pull --recurse-submodules
+
+    # push
+    ps = push                     # push
+
+    # remote
+    r = remote -v                 # show remotes (verbose)
+
+    # reset
+    unstage  = reset HEAD         # remove files from index (tracking)
+    uncommit = reset --soft HEAD^ # go back before last commit, with files in uncommitted state 
+
+    # stash
+    ss = stash                    # stash changes
+    sl = stash list               # list stashes
+    sa = stash apply              # apply stash  (restore changes)
+    sd = stash drop               # drop stashes (destroy chnages)
+
+    # status
+    s  = status -s                # status
+    st = status -s                # status
+
+    # Show verbose output about tags, branches or remotes
+	tags     = tag -l
+	branches = branch --all
+	remotes  = remote --verbose
+
+    # Git branch upstreams
+    # https://zarino.co.uk/post/git-set-upstream/
+    set-upstream = !git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD`
+
+    # Switch to a branch, creating it if necessary.
+    go = "!f() { git switch $1 2>/dev/null || git switch -c $1; }; f"
+
+    # Find branches containing commit
+    fb = "!f() { git branch -a --contains $1; }; f"
+
+    # Find tags containing commit
+    ft = "!f() { git describe --always --contains $1; }; f"
+
+    # Find commits by source code
+    fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+
+    # Find commits by commit message
+    fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
+    # Remove branches that have already been merged with main.
+    # a.k.a. ‘delete merged’
+    dm = "!f() { git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; }; f"
+
+    # List contributors with number of commits.
+    contributors = shortlog --summary --numbered
