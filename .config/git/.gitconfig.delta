@@ -26,6 +26,14 @@
 # 4. Feel free to include a comment line indicating who is the author of the
 #    theme. E.g. a link to your github user page.
 
+# git-delta
+# https://github.nmiku.com/dandavison/delta
+[delta]
+    features     = woolly-mammoth
+    navigate     = true
+    side-by-side = true
+    line-numbers = true
+
 [delta "collared-trogon"]
     # author: https://github.com/clnoll
     commit-decoration-style = bold box ul

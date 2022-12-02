@@ -1,85 +1,73 @@
-# disable default fish greeting ⋊>
-set fish_greeting "" 
+# To change login shell to fish:
+# echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
+# chsh -s /opt/homebrew/bin/fish
 
-# Navigation
-function ..      ; cd .. ; end
-function ...     ; cd ../../ ; end
-function ....    ; cd ../../../ ; end
-function .....   ; cd ../../../../ ; end
-function ......  ; cd ../../../../../ ; end
+# Disable default greeting message ⋊>
+# https://fishshell.com/docs/current/faq.html#how-do-i-change-the-greeting-message
+set -U fish_greeting
 
-# Utility
-function ip      ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
-function localip ; ipconfig getifaddr en0 ; end
+
+# Programming languages/libraries
+
+# Dotfiles
+fish_add_path $HOME/.dotfiles/bin
 
 # Homebrew
-if test -d (brew --prefix)
-  fish_add_path (brew --prefix)/bin
-end
+# https://brew.sh/
+fish_add_path /opt/homebrew/bin
 
-# GPG
-if type -q gpg-agent
-  set -gx GPG_TTY (tty)
-end
+# Openssl
+# https://www.openssl.org/
+fish_add_path /opt/homebrew/openssl@3/bin
 
-# Startship 
-# https://starship.rs/
-if test -d (brew --prefix starship)
-  set -gx STARSHIP_CONFIG $HOME/.config/starship.toml
-  starship init fish | source
-end
-
-# Node.js (Volta)
+# Node.js with Volta
 # https://volta.sh/
-if test -d $HOME/.volta
-  set -gx VOLTA_HOME $HOME/.volta
-  fish_add_path $VOLTA_HOME/bin
-end
+fish_add_path $HOME/.volta/bin
 
-# Ruby (rbenv)
+# Ruby with rbenv
 # https://github.com/rbenv/rbenv
-if test -d (brew --prefix rbenv)
-  status --is-interactive; and rbenv init - fish | source
-end
-
-if test -d (brew --prefix openssl@3)
-  fish_add_path (brew --prefix openssl@3)/bin
-end
-
+status --is-interactive; and rbenv init - fish | source
 
 # Rust
-# https://www.rust-lang.org/tools/install
-if test -d $HOME/.cargo
-  set -gx CARGO_HOME $HOME/.cargo
-  fish_add_path $CARGO_HOME/bin
+# https://www.rust-lang.org/
+fish_add_path $HOME/.cargo/bin
+
+# Utility
+alias g=git
+alias help='tldr'
+alias ..="cd .."
+alias ...="cd ../../"
+alias ....="cd ../../.."
+
+# Replacement for X
+
+# https://github.com/ogham/exa
+function ls -w exa
+  exa -al -hg --icons --color=always --group-directories-first $argv
 end
 
-# Flutter
-# https://docs.flutter.dev/get-started/install/macos
-if test -d $HOME/flutter
-  fish_add_path $HOME/flutter/bin
+# https://github.com/sharkdp/bat
+function cat -w bat
+  bat --style=header,grid $argv;
 end
 
-# Java
-if test -d /usr/libexec/java_home
-  set -gx JAVA_HOME /usr/libexec/java_home
-  fish_add_path $JAVA_HOME/bin
+# https://github.com/ClementTsang/bottom
+function top -w btm
+  btm
 end
 
-# Android
-if test -d $HOME/Library/Android/sdk
-  set -gx ANDROID_HOME $HOME/Library/Android/sdk
-  fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
+# https://github.com/dalance/procs
+function ps -w procs
+  procs $argv
 end
 
-# Postgres
-# Fix `Library not loaded: '/opt/homebrew/opt/postgresql/lib/libpq.5.dylib' (LoadError)`
-if test -d (brew --prefix postgresql@14) 
-  ln -sf /opt/homebrew/opt/postgresql/lib/postgresql@14/libpq.5.dylib /opt/homebrew/opt/postgresql/lib/libpq.5.dylib
+# https://github.com/denilsonsa/prettyping
+function ping -w  prettyping
+  prettyping --nolegend $argv
 end
 
-# Commands that depend on other libraries
-test -x /opt/homebrew/bin/git ; and function g    ; git $argv ; end
-test -x /opt/homebrew/bin/lsd ; and function ls   ; lsd $argv ; end
-test -x /opt/homebrew/bin/btm ; and function top  ; btm ; end
-test -x /opt/homebrew/bin/bat ; and function cat  ; bat --style=header,grid $argv; end
+
+# Terminal prompt with Starship
+# Note: Must be end of the file
+# https://starship.rs/
+starship init fish | source

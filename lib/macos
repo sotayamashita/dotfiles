@@ -24,8 +24,8 @@ if ! is_confirmed; then
   exit 1
 fi
 
-# Verified environments
-# - macOS 12.1/12.2
+
+
 
 # Close System Preferences, to prevent it from overriding settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
@@ -37,24 +37,12 @@ sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 
-#
-# General
-#
-
-# "Application Downloaded from Internet" popup will display, Disable
-defaults write com.apple.LaunchServices "LSQuarantine" -bool "true" 
 
 
 #
-# System Preferences > Dock
+# System Preferences > Dock (*Reset required)
 # - https://github.com/yannbertrand/macos-defaults
-#
-
-# Dock - reset
-# defaults delete com.apple.dock; killall Dock
-
-# Dock - remove the persistent apps
-# defaults delete com.apple.dock persistent-apps
+# 
 
 # Dock > Size, 36
 defaults write com.apple.dock "tilesize" -int "36"
@@ -67,16 +55,6 @@ defaults write com.apple.dock "autohide" -bool "true"
 
 # Dock > Show recent applications in Dock, false
 defaults write com.apple.dock "show-recents" -bool "false"
-
-
-#
-# System Preferences > Users & Groups > $USER > Login items
-# 
-# List Login items
-osascript -e 'tell application "System Events" to get the name of every login item'
-
-# Add Login items
-apps = ( "Raycast" )
 
 
 
@@ -101,7 +79,6 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 51
     </dict>
   </dict>
 "
-
 
 # Keyboard > Shortcuts > Input Sources > Select the previous input source, Cmd + Space
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 60 "
@@ -158,11 +135,28 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 65
   </dict>
 "
 
+# Keyboard > Key repeat rate
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+
+
+
+#
+# System Preferences > Trackpad
+#
+
+# Trackpad > Enable Tap to click for this user and for the login screen
+# See: https://github.com/mathiasbynens/dotfiles/blob/main/.macos#L127-L130
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+
+
 
 #
 # Kill affected applications
 # 
-
 for app in "Dock"; do
     killall "${app}" &> /dev/null
 done

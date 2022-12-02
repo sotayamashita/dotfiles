@@ -2,11 +2,24 @@
 
 . $(dirname "$0")/utility.sh
 
+# Set homebrew path only in this bash script temporary
+export PATH="$PATH:/opt/homebrew/bin"
+
+# Test whether a Homebrew formula is already installed
+brew_formula_exists() {
+    if $(brew list ${1} --formula >/dev/null); then
+        success "Found formula: ${1}"
+        return 0
+    fi
+    warning "Missing formula: ${1}"
+    return 1
+}
+
 # Install a Homebrew formula
 install_formula_if_needed() {
     if ! brew_formula_exists ${1}; then
         info "Installing: ${1}"
-        brew install ${1}
+        $BREW_PATH/brew install ${1}
     fi
 }
 
@@ -38,10 +51,8 @@ install_formula_if_needed starship
 install_formula_if_needed git
 install_formula_if_needed git-lfs
 install_formula_if_needed git-delta
-install_formula_if_needed gh
 install_formula_if_needed gibo
 install_formula_if_needed ffmpeg
-install_formula_if_needed youtube-dl
 install_formula_if_needed jq
 install_formula_if_needed postgresql
 install_formula_if_needed pinentry-mac
@@ -58,7 +69,7 @@ install_formula_if_needed dust     # better `du`   -- `dust`
 install_formula_if_needed exa      # better `ls`   -- `exa -T -L 1 --icons`
 install_formula_if_needed bat      # better `cat`  -- `bat --style=header,grid $argv`
 install_formula_if_needed tealdeer # better `tldr` -- `tldr`
-
+install_formula_if_needed fzf
 
 
 

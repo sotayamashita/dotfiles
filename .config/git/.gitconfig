@@ -209,18 +209,11 @@
 
     insteadOf     = "gist:"
 
-# git-delta
-# https://github.nmiku.com/dandavison/delta
-[delta]
-    features     = woolly-mammoth
-    navigate     = true
-    side-by-side = true
-    line-numbers = true
-
 [merge]
     conflictstyle = diff3
 
 [diff]
     colorMoved = default
+
 [pull]
 	rebase = false
