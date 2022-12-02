@@ -15,6 +15,7 @@ links() {
     )
 
     for link in "${links[@]}"; do
+        printf "%s → %s\n"
         ln -sf "${DOTFILES_DIR_PATH}/${link%%:*}" "${link##*:}"
     done
 }
