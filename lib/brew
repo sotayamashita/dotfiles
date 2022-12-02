@@ -1,100 +1,11 @@
 #!/bin/bash
 
-# Install command-line tools using Homebrew.
-# See: https://github.com/Homebrew/brew
+. $(dirname "$0")/utility.sh
 
-# Make sure we’re using the latest Homebrew.
-brew update
+# Set homebrew path only in this bash script temporary
+export PATH="$PATH:/opt/homebrew/bin"
 
-# Upgrade any already-installed formulae.
-brew upgrade
-
-# Install GNU core utilities (those that come with OS X are outdated).
-brew install coreutils
-# Install some other useful utilities like `sponge`.
-brew install moreutils
-# Install GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed.
-brew install findutils
-# Install GNU `sed`, overwriting the built-in `sed`.
-brew install gnu-sed
-
-# Install `wget` with IRI support
-# FIXME: Invalid option
-# brew install wget --with-iri
-
-# Install more recent versions of some macOS tools.
-brew install vim
-brew install grep
-brew install openssh
-brew install screen
-brew install php
-brew install gmp
-
-# Install font tools
-brew tap bramstein/webfonttools
-brew install sfnt2woff
-brew install sfnt2woff-zopfli
-brew install woff2
-
-# Install some CTF tools
-# See https://github.com/ctfs/write-ups.
-brew install aircrack-ng
-brew install bfg
-brew install binutils
-brew install binwalk
-brew install cifer
-brew install dex2jar
-brew install dns2tcp
-brew install fcrackzip
-brew install foremost
-brew install hashpump
-brew install hydra
-brew install john
-brew install knock
-brew install netpbm
-brew install nmap
-brew install pngcheck
-brew install socat
-brew install sqlmap
-brew install tcpflow
-brew install tcpreplay
-brew install tcptrace
-brew install ucspi-tcp # `tcpserver` etc.
-brew install xpdf
-brew install xz
-
-# Install other useful binaries.
-brew install ack
-brew install git
-brew install git-lfs
-brew install hub
-brew install gs
-# FIXME: Invalid option
-# brew install imagemagick --with-webp
-brew install lua
-brew install lynx
-brew install p7zip
-brew install pigz
-brew install pv
-brew install rename
-brew install rlwrap
-brew install ssh-copy-id
-brew install tree
-brew install gibo
-brew install vbindiff
-brew install zopfli
-brew install youtube-dl
-brew install diff-so-fancy
-brew install ffmpeg --with-libvpx
-brew install docker
-brew install fish
-brew install rbenv
-brew install pyenv
-brew install go
-brew install circleci
-
-# Remove outdated versions from the cellar
-brew cleanup
-
-# Check system potential problem
-brew doctor
+if ! type_exists brew; then
+    # See: https://github.com/Homebrew/install
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi

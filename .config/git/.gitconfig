@@ -1,0 +1,219 @@
+[include]
+
+    path = ~/.gitconfig.user
+
+    # git-delta custom themes
+    # https://dandavison.github.io/delta/custom-themes.html
+    path = ~/.gitconfig.delta
+
+[init]
+
+    defaultBranch = main
+
+[alias]
+
+    # List aliases.
+    aliases = config --get-regexp alias
+
+    # add
+    a = add                       # add
+
+    # branch
+    b = branch -v                 # branch (verbose)
+
+    # clone
+    cl    = clone --recursive     # clone recursive
+
+    # commit
+    c     = commit -m             # commit with message
+    ci    = commit                # commit
+    amend = commit --amend        # amend your last commit
+
+    # commit all changes.
+    ca = !git add -A && git commit -av
+
+    # diff
+    d = diff                      # diff unstaged chnages
+
+    # log
+    l    = log --pretty=oneline -n 20 --graph --abbrev-commit
+    last = log -1 HEAD --format=format:"%Cred%H"
+
+    # Pull in remote changes for the current repository and all its submodules.
+    pl = pull --recurse-submodules
+
+    # push
+    ps = push                     # push
+
+    # remote
+    r = remote -v                 # show remotes (verbose)
+
+    # reset
+    unstage  = reset HEAD         # remove files from index (tracking)
+    uncommit = reset --soft HEAD^ # go back before last commit, with files in uncommitted state 
+
+    # stash
+    ss = stash                    # stash changes
+    sl = stash list               # list stashes
+    sa = stash apply              # apply stash  (restore changes)
+    sd = stash drop               # drop stashes (destroy chnages)
+
+    # status
+    s  = status -s                # status
+    st = status -s                # status
+
+    # Show verbose output about tags, branches or remotes
+	tags     = tag -l
+	branches = branch --all
+	remotes  = remote --verbose
+
+    # Git branch upstreams
+    # https://zarino.co.uk/post/git-set-upstream/
+    set-upstream = !git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD`
+
+    # Switch to a branch, creating it if necessary.
+    go = "!f() { git switch $1 2>/dev/null || git switch -c $1; }; f"
+
+    # Find branches containing commit
+    fb = "!f() { git branch -a --contains $1; }; f"
+
+    # Find tags containing commit
+    ft = "!f() { git describe --always --contains $1; }; f"
+
+    # Find commits by source code
+    fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+
+    # Find commits by commit message
+    fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
+    # Remove branches that have already been merged with main.
+    # a.k.a. ‘delete merged’
+    dm = "!f() { git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; }; f"
+
+    # List contributors with number of commits.
+    contributors = shortlog --summary --numbered
+
+[apply]
+
+	# Detect whitespace errors when applying a patch.
+	whitespace = fix
+
+[branch]
+
+	# Show most recently changed branches first.
+	sort = -committerdate
+
+[core]
+
+    # Use custom `.gitignore`
+    excludesfile = ~/.gitignore.global
+
+    # Treat spaces before tabs and all kinds of trailing whitespace as an error
+    # [default] trailing-space: looks for spaces at the end of a line
+    # [default] space-before-tab: looks for spaces before tabs at the beginning of a line
+    whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+
+    # Make `git rebase` safer on OS X
+    # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
+    trustctime = false
+
+    # Editor
+    editor = vim
+
+    # Pager
+    pager = delta
+
+[color]
+
+    # Use colors in Git commands that are capable of colored output when
+    # outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
+    ui = auto
+
+[color "branch"]
+
+    current = yellow reverse
+    local   = yellow
+    remote  = green
+
+[color "status"]
+
+    added     = yellow
+    changed   = green
+    untracked = cyan
+
+[diff]
+
+    # Detect copies as well as renames
+    renames = copies
+    compactionHeuristic = true
+
+[diff "bin"]
+
+    # Use `hexdump` to diff binary files
+    textconv = hexdump -v -C
+
+[help]
+
+    # Automatically correct and execute mistyped commands.
+    autocorrect = 1
+
+[push]
+
+    # https://git-scm.com/docs/git-config#git-config-pushdefault
+	default = current
+
+    # Make `git push` push relevant annotated tags when pushing branches out.
+    followTags = true
+
+
+[interactive]
+
+    diffFilter   = delta --color-only
+
+[color "diff-highlight"]
+
+    oldNormal    = red bold
+    oldHighlight = red bold 52
+    newNormal    = green bold
+    newHighlight = green bold 22
+
+[color "diff"]
+
+    meta         = 11
+    frag         = magenta bold
+    func         = 146 bold
+    commit       = yellow bold
+    old          = red bold
+    new          = green bold
+    whitespace   = red reverse
+
+
+# URL shorthands
+[url "git@github.com:"]
+
+    insteadOf     = "gh:"
+    pushInsteadOf = "github:"
+    pushInsteadOf = "git://github.com/"
+
+[url "git://github.com/"]
+
+    insteadOf     = "github:"
+
+[url "git@gist.github.com:"]
+
+    insteadOf     = "gst:"
+    pushInsteadOf = "gist:"
+    pushInsteadOf = "git://gist.github.com/"
+
+[url "git://gist.github.com/"]
+
+    insteadOf     = "gist:"
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[pull]
+	rebase = false

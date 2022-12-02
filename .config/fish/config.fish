@@ -1,30 +1,73 @@
-set fish_greeting
+# To change login shell to fish:
+# echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
+# chsh -s /opt/homebrew/bin/fish
 
-# Path
-test -d /opt/homebrew/bin ; and set -g fish_user_paths "/opt/homebrew/bin" $fish_user_paths
+# Disable default greeting message ⋊>
+# https://fishshell.com/docs/current/faq.html#how-do-i-change-the-greeting-message
+set -U fish_greeting
+
+
+# Programming languages/libraries
+
+# Dotfiles
+fish_add_path $HOME/.dotfiles/bin
+
+# Homebrew
+# https://brew.sh/
+fish_add_path /opt/homebrew/bin
+
+# Openssl
+# https://www.openssl.org/
+fish_add_path /opt/homebrew/openssl@3/bin
+
+# Node.js with Volta
+# https://volta.sh/
+fish_add_path $HOME/.volta/bin
+
+# Ruby with rbenv
+# https://github.com/rbenv/rbenv
+status --is-interactive; and rbenv init - fish | source
+
+# Rust
+# https://www.rust-lang.org/
+fish_add_path $HOME/.cargo/bin
 
 # Utility
-function ..      ; cd .. ; end
-function ...     ; cd ../../ ; end
-function ....    ; cd ../../../ ; end
-function .....   ; cd ../../../../ ; end
-function ......  ; cd ../../../../../ ; end
-function ip      ; curl -s http://checkip.dyndns.com/ | sed 's/[^0-9\.]//g' ; end
-function localip ; ipconfig getifaddr en0 ; end
+alias g=git
+alias help='tldr'
+alias ..="cd .."
+alias ...="cd ../../"
+alias ....="cd ../../.."
 
-## Commands that depend on other libraries
-test -x /opt/homebrew/bin/hub ; and function g    ; hub $argv ; end
-test -x /opt/homebrew/bin/lsd ; and function ls   ; lsd $argv ; end
-test -x /opt/homebrew/bin/btm ; and function top  ; btm ; end
-test -x /opt/homebrew/bin/bat ; and function cat  ; bat --style=header,grid $argv; end
+# Replacement for X
 
-# Load gituserconfig
-test -e $HOME/.gituserconfig ; and source $HOME/.gituserconfig
+# https://github.com/ogham/exa
+function ls -w exa
+  exa -al -hg --icons --color=always --group-directories-first $argv
+end
 
-# Init starship, which is The minimal, blazing-fast, and infinitely customizable prompt for any shell!
-# https://starship.rs/guide/#%F0%9F%9A%80-installation
-test -d /usr/local/Cellar/starship; and set -gx STARSHIP_CONFIG $HOME/.config/starship.toml && starship init fish | source
+# https://github.com/sharkdp/bat
+function cat -w bat
+  bat --style=header,grid $argv;
+end
 
-# Init asdf, which it Extendable version manager
-# https://github.com/asdf-vm/asdf
-test -e /opt/homebrew/opt/asdf/asdf.fish ; and source /opt/homebrew/opt/asdf/asdf.fish
+# https://github.com/ClementTsang/bottom
+function top -w btm
+  btm
+end
+
+# https://github.com/dalance/procs
+function ps -w procs
+  procs $argv
+end
+
+# https://github.com/denilsonsa/prettyping
+function ping -w  prettyping
+  prettyping --nolegend $argv
+end
+
+
+# Terminal prompt with Starship
+# Note: Must be end of the file
+# https://starship.rs/
+starship init fish | source

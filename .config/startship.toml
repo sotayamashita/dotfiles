@@ -1,24 +1,25 @@
-# Inserts a blank line between shell prompts
-add_newline = true
-
 format = """
 $directory\
 $git_branch\
-$git_commit\
-$git_state\
 $git_status\
-$time\
-\n\
+$line_break\
 $character"""
 
 [character]
 success_symbol = "[➜](bold green)"
 error_symbol   = "[✗](bold red)"
 
-[directory]
-truncate_to_repo = false
-
-[time]
-disabled    = false
-use_12hr    = false
-time_format = "%T"
+# https://gist.github.com/ryo-ARAKI/48a11585299f9032fa4bda60c9bba593#file-starship-toml-L35
+[git_status]
+conflicted = "⚔️ "
+ahead      = "🏎️ 💨 ×${count}"
+behind     = "🐢 ×${count}"
+diverged   = "🔱 🏎️ 💨 ×${ahead_count} 🐢 ×${behind_count}"
+untracked  = "🛤️  ×${count}"
+stashed    = "📦 "
+modified   = "📝 ×${count}"
+staged     = "🗃️  ×${count}"
+renamed    = "📛 ×${count}"
+deleted    = "🗑️  ×${count}"
+style      = "bright-white"
+format     = "$all_status$ahead_behind"
