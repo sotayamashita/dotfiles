@@ -18,6 +18,8 @@ links() {
         printf "%s → %s\n"
         ln -sf "${DOTFILES_DIR_PATH}/${link%%:*}" "${link##*:}"
     done
+
+    RETVAL="0"
 }
 
 main() {
