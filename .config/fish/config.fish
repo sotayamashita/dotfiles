@@ -33,7 +33,7 @@ status --is-interactive; and rbenv init - fish | source
 fish_add_path $HOME/.cargo/bin
 
 # Utility
-alias g=git
+alias g=gh
 alias help='tldr'
 alias ..="cd .."
 alias ...="cd ../../"
