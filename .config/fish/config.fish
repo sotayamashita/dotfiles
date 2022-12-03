@@ -35,9 +35,23 @@ fish_add_path $HOME/.cargo/bin
 # Utility
 alias g=git
 alias help='tldr'
-alias ..="cd .."
-alias ...="cd ../../"
-alias ....="cd ../../.."
+
+# Navigation
+function ws
+  cd ~/Documents/workspace
+end
+
+function ..
+  cd ..
+end
+
+function ...
+  cd ../../
+end
+
+function ....
+  cd ../../..
+end
 
 # Replacement for X
 
