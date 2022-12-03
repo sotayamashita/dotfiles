@@ -1,11 +1,14 @@
-format = """
+format="""
 $directory\
 $git_branch\
 $git_status\
 $battery\
-$time\
 $line_break\
 $character"""
+
+right_format="""
+$time
+"""
 
 [character]
 success_symbol = "[➜](bold green)"
@@ -25,8 +28,8 @@ style     = "bold yellow"
 
 [time]
 disabled    = false
-format      = 'at [\[$time\]]($style)'
-time_format = "%m/%d %T"
+style       = "gray"
+format      = '[$time]($style)'
 
 # https://gist.github.com/ryo-ARAKI/48a11585299f9032fa4bda60c9bba593#file-starship-toml-L35
 [git_status]
