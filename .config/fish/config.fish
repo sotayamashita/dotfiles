@@ -14,7 +14,7 @@ fish_add_path $HOME/.dotfiles/bin
 
 # Homebrew
 # https://brew.sh/
-fish_add_path /opt/homebrew/bin
+fish_add_path /opt/homebrew/sbin
 
 # Openssl
 # https://www.openssl.org/
@@ -33,7 +33,7 @@ status --is-interactive; and rbenv init - fish | source
 fish_add_path $HOME/.cargo/bin
 
 # Utility
-alias g=gh
+alias g=git
 alias help='tldr'
 alias ..="cd .."
 alias ...="cd ../../"
