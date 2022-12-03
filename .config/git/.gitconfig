@@ -3,6 +3,10 @@
     path = ~/.gitconfig.user
     path = ~/.gitconfig.alias
 
+    # Sign Git commits with SSH
+    # https://developer.1password.com/docs/ssh/git-commit-signing/
+    path = ~/.gitconfig.signing
+
     # git-delta custom themes
     # https://dandavison.github.io/delta/custom-themes.html
     path = ~/.gitconfig.delta

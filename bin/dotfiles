@@ -5,6 +5,7 @@ RETVAL="0"
 readonly DOTFILES_DIR_PATH="$PWD"
 
 symbolic_links() {
+
     # Symbolic source and target links
     links=(
         ".config/fish/config.fish:.config/fish/config.fish"
