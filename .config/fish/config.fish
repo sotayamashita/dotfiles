@@ -33,10 +33,20 @@ status --is-interactive; and rbenv init - fish | source
 fish_add_path $HOME/.cargo/bin
 
 # Utility
-alias g=git
-alias help='tldr'
+function g -w git
+  git $argv
+end
+
+function help
+  tldr $argv
+end
+
+function path 
+  echo $PATH | tr -s " " "\n"
+end
 
 # Navigation
+
 function ws
   cd ~/Documents/workspace
 end
