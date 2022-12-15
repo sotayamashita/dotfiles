@@ -19,7 +19,7 @@ brew_formula_exists() {
 install_formula_if_needed() {
     if ! brew_formula_exists ${1}; then
         info "Installing: ${1}"
-        $BREW_PATH/brew install ${1}
+        brew install ${1}
     fi
 }
 
