@@ -48,6 +48,7 @@ install_cask_if_needed slack
 install_cask_if_needed divvy
 install_cask_if_needed spotify
 install_cask_if_needed deepl
+install_cask_if_needed cloudflare-warp
 
 # Dev
 install_cask_if_needed iterm2
