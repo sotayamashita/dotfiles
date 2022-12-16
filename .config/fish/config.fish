@@ -1,6 +1,7 @@
 # To change login shell to fish:
 # echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
 # chsh -s /opt/homebrew/bin/fish
+# echo $SHELL
 
 # Disable default greeting message ⋊>
 # https://fishshell.com/docs/current/faq.html#how-do-i-change-the-greeting-message
@@ -34,60 +35,60 @@ fish_add_path $HOME/.cargo/bin
 
 # Utility
 function g -w git
-  git $argv
+    git $argv
 end
 
 function help
-  tldr $argv
+    tldr $argv
 end
 
-function path 
-  echo $PATH | tr -s " " "\n"
+function path
+    echo $PATH | tr -s " " "\n"
 end
 
 # Navigation
 
 function ws
-  cd ~/Documents/workspace
+    cd ~/Documents/workspace
 end
 
 function ..
-  cd ..
+    cd ..
 end
 
 function ...
-  cd ../../
+    cd ../../
 end
 
 function ....
-  cd ../../..
+    cd ../../..
 end
 
 # Replacement for X
 
 # https://github.com/ogham/exa
 function ls -w exa
-  exa -al -hg --icons --color=always --group-directories-first $argv
+    exa -al -hg --icons --color=always --group-directories-first $argv
 end
 
 # https://github.com/sharkdp/bat
 function cat -w bat
-  bat --style=header,grid $argv;
+    bat --style=header,grid $argv
 end
 
 # https://github.com/ClementTsang/bottom
 function top -w btm
-  btm
+    btm
 end
 
 # https://github.com/dalance/procs
 function ps -w procs
-  procs $argv
+    procs $argv
 end
 
 # https://github.com/denilsonsa/prettyping
-function ping -w  prettyping
-  prettyping --nolegend $argv
+function ping -w prettyping
+    prettyping --nolegend $argv
 end
 
 
