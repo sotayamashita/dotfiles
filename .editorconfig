@@ -11,6 +11,9 @@ insert_final_newline = true
 # Remove white space at the end of a line
 trim_trailing_whitespace = true
 
+[*.sh]
+indent_size = 2
+
 [*.fish]
 # https://github.com/fish-shell/fish-shell/blob/master/.editorconfig
 indent_size  = 4
