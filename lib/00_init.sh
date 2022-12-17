@@ -19,8 +19,12 @@ main() {
 
   path="${HOME}/.ssh/config"
   if ! exists ${path}; then
+    # https://developer.1password.com/docs/ssh/get-started/#step-4-configure-your-ssh-or-git-client
     info "Creating a file '${path}' ..."
-    touch ${path}
+    cat <<EOS >~/.ssh/config
+Host github.com
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+EOS
   fi
   success "${path} already exists."
 
