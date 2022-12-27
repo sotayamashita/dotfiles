@@ -19,7 +19,8 @@ fish_add_path /opt/homebrew/sbin
 
 # Openssl
 # https://www.openssl.org/
-fish_add_path /opt/homebrew/openssl@3/bin
+# https://github.com/puma/puma/issues/2603
+fish_add_path /opt/homebrew/opt/openssl@3/bin
 
 # Node.js with Volta
 # https://volta.sh/
@@ -44,6 +45,10 @@ end
 
 function path
     echo $PATH | tr -s " " "\n"
+end
+
+function localserver
+    python3 -m http.server $argv
 end
 
 # Navigation
