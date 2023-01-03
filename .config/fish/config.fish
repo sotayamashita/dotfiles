@@ -33,6 +33,10 @@ status --is-interactive; and rbenv init - fish | source
 # https://www.rust-lang.org/
 fish_add_path $HOME/.cargo/bin
 
+# Golang
+# https://go.dev/doc/install
+fish_add_path /usr/local/go/bin
+
 # Utility
 function g -w git
     git $argv
