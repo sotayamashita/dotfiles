@@ -33,7 +33,6 @@ main() {
   install_cask divvy
   install_cask spotify
   install_cask deepl
-  install_cask cloudflare-warp
 
   # Dev
   install_cask iterm2

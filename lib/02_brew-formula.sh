@@ -53,6 +53,7 @@ main() {
   # Language version manager
   install_formula rbenv
   install_formula ruby-build
+  install_formula deno
 
   # Modern Alternatives of CLI
   install_formula bottom   # better `top`  -- `btm`
