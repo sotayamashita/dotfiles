@@ -54,6 +54,7 @@ main() {
   install_formula rbenv
   install_formula ruby-build
   install_formula deno
+  install_formula pyenv
 
   # Modern Alternatives of CLI
   install_formula bottom   # better `top`  -- `btm`
