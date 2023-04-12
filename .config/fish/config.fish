@@ -43,6 +43,10 @@ function g -w git
     git $argv
 end
 
+function pn -w pnpm
+    pnpm $argv
+end
+
 function help
     tldr $argv
 end
