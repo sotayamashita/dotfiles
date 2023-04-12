@@ -48,6 +48,7 @@ function g -w git
     git $argv
 end
 
+# https://pnpm.io/installation#using-a-shorter-alias
 function pn -w pnpm
     pnpm $argv
 end
