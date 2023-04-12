@@ -38,6 +38,11 @@ fish_add_path $HOME/.cargo/bin
 # https://go.dev/doc/install
 fish_add_path /usr/local/go/bin
 
+# Python
+# https://github.com/pyenv/pyenv
+fish_add_path $HOME/.pyenv/bin
+pyenv init - | source
+
 # Utility
 function g -w git
     git $argv
