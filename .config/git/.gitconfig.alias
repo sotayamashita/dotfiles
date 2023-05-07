@@ -21,7 +21,8 @@
     ca = !git add -A && git commit -av
 
     # diff
-    d = diff                      # diff unstaged chnages
+    # Ignore package-lock and yarn.lock
+    d = diff -- ':!package-lock.json' ':!yarn.lock'
 
     # log
     l    = log --pretty=oneline -n 20 --graph --abbrev-commit
