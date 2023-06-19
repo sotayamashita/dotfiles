@@ -43,6 +43,10 @@ fish_add_path /usr/local/go/bin
 fish_add_path $HOME/.pyenv/bin
 pyenv init - | source
 
+# Docker Desktop
+# Added by Docker Desktop automatically
+source $HOME/.docker/init-fish.sh | true
+
 # Utility
 function g -w git
     git $argv
@@ -104,6 +108,7 @@ end
 function ping -w prettyping
     prettyping --nolegend $argv
 end
+
 
 
 # Terminal prompt with Starship
