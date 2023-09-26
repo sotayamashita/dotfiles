@@ -87,6 +87,10 @@ function ....
     cd ../../..
 end
 
+function icloud
+    cd ~/Library/Mobile\ Documents/com~apple\~CloudDocs
+end
+
 # Replacement for X
 
 # https://github.com/ogham/exa
