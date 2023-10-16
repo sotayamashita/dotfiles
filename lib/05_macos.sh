@@ -153,6 +153,7 @@ main() {
   #
 
   # Desktop & Stage Manager > Click wallpeper to reveal desktop
+  # Note: Stage Manager should be disabled
   # See: https://derflounder.wordpress.com/2023/09/26/managing-the-click-wallpaper-to-reveal-desktop-setting-in-macos-sonoma/
   defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 
