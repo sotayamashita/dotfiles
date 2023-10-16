@@ -27,7 +27,7 @@ main() {
     exit 1
   fi
 
-  # Close System Preferences, to prevent it from overriding settings we’re about to change
+  # Close System Preferences, to prevent it from overriding settings we are about to change
   osascript -e 'tell application "System Preferences" to quit'
 
   # Ask for the administrator password upfront
@@ -146,6 +146,15 @@ main() {
   defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
   defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
   defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+
+  #
+  # System Preferences > Desktop & Stage Manager
+  #
+
+  # Desktop & Stage Manager > Click wallpeper to reveal desktop
+  # See: https://derflounder.wordpress.com/2023/09/26/managing-the-click-wallpaper-to-reveal-desktop-setting-in-macos-sonoma/
+  defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 
   #
   # Kill affected applications
