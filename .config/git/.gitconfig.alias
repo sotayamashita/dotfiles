@@ -39,7 +39,7 @@
 
     # reset
     unstage  = reset HEAD         # remove files from index (tracking)
-    uncommit = reset --soft HEAD^ # go back before last commit, with files in uncommitted state 
+    uncommit = reset --soft HEAD^ # go back before last commit, with files in uncommitted state
 
     # stash
     ss = stash                    # stash changes
@@ -76,7 +76,7 @@
     fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
 
     # Remove branches that have already been merged with main.
-    # a.k.a. ‘delete merged’
+    # a.k.a. 'delete merged'
     dm = "!f() { git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; }; f"
 
     # List contributors with number of commits.
