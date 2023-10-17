@@ -24,7 +24,8 @@ fish_add_path /opt/homebrew/opt/openssl@3/bin
 
 # Node.js with Volta
 # https://volta.sh/
-fish_add_path $HOME/.volta/bin
+set -l VOLTA_HOME $HOME/.volta
+test -d $VOLTA_HOME; and fish_add_path $VOLTA_HOME/bin
 
 # Ruby with rbenv
 # https://github.com/rbenv/rbenv
@@ -32,16 +33,26 @@ status --is-interactive; and rbenv init - fish | source
 
 # Rust
 # https://www.rust-lang.org/
-fish_add_path $HOME/.cargo/bin
+set -l CARGO_HOME $HOME/.cargo
+test -d $CARGO_HOME; and fish_add_path $CARGO_HOME/bin
 
 # Golang
 # https://go.dev/doc/install
-fish_add_path /usr/local/go/bin
+set -l GO_HOME /usr/local/go
+test -d $GO_HOME; and fish_add_path $GO_HOME/bin
 
 # Python
 # https://github.com/pyenv/pyenv
-fish_add_path $HOME/.pyenv/bin
-pyenv init - | source
+set -l PYTHON_HOME $HOME/.pyenv
+if test -d $PYTHON_HOME
+    fish_add_path $HOME/.pyenv/bin
+    pyenv init - | source
+end
+
+# Mojo
+# https://docs.modular.com/mojo/manual/get-started/hello-world.html
+set -l MODULAR_HOME $HOME/.modular
+test -d $MODULAR_HOME; and fish_add_path $MODULAR_HOME/pkg/packages.modular.com_mojo/bin
 
 # Docker Desktop
 # Added by Docker Desktop automatically

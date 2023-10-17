@@ -14,6 +14,7 @@ main() {
     ".config/git/.gitconfig.user:.gitconfig.user"
     ".config/git/.gitconfig.delta:.gitconfig.delta"
     ".config/git/.gitignore.global:.gitignore.global"
+    ".config/git/.gitattributes.global:.gitattributes.global"
     ".config/iterm2/com.googlecode.iterm2.plist:.config/iterm2/com.googlecode.iterm2.plist"
     ".config/starship.toml:.config/starship.toml"
   )
