@@ -54,10 +54,6 @@ end
 set -l MODULAR_HOME $HOME/.modular
 test -d $MODULAR_HOME; and fish_add_path $MODULAR_HOME/pkg/packages.modular.com_mojo/bin
 
-# Docker Desktop
-# Added by Docker Desktop automatically
-source $HOME/.docker/init-fish.sh | true
-
 # Utility
 function g -w git
     git $argv
