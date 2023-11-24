@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# macOS defaults are summarized here:
+# https://macos-defaults.com/
+
 . $(dirname "$0")/helper/logger.sh
 . $(dirname "$0")/helper/check.sh
 
@@ -39,6 +42,16 @@ main() {
     sleep 60
     kill -0 "$$" || exit
   done 2>/dev/null &
+
+  #
+  # Finder
+  #
+
+  # Finder: Show hidden files by default
+  defaults write com.apple.finder AppleShowAllFiles -bool true
+
+  # Finder: Show path bar
+  defaults write com.apple.finder ShowPathbar -bool true
 
   #
   # System Preferences > Dock (*Reset required)
@@ -160,7 +173,7 @@ main() {
   #
   # Kill affected applications
   #
-  for app in "Dock"; do
+  for app in "Dock" "Finder"; do
     killall "${app}" &>/dev/null
   done
   success "Done. Note that some of these changes require a logout/restart to take effect."
