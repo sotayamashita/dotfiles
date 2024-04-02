@@ -25,7 +25,18 @@ fish_add_path /opt/homebrew/opt/openssl@3/bin
 # Node.js with Volta
 # https://volta.sh/
 set -l VOLTA_HOME $HOME/.volta
-test -d $VOLTA_HOME; and fish_add_path $VOLTA_HOME/bin
+if test -d $VOLTA_HOME
+    fish_add_path $VOLTA_HOME/bin
+    volta completions fish | source
+end
+
+# Python with pyenv
+# https://github.com/pyenv/pyenv
+set -l PYTHON_HOME $HOME/.pyenv
+if test -d $PYTHON_HOME
+    fish_add_path $HOME/.pyenv/bin
+    pyenv init - | source
+end
 
 # Ruby with rbenv
 # https://github.com/rbenv/rbenv
@@ -41,18 +52,18 @@ test -d $CARGO_HOME; and fish_add_path $CARGO_HOME/bin
 set -l GO_HOME /usr/local/go
 test -d $GO_HOME; and fish_add_path $GO_HOME/bin
 
-# Python
-# https://github.com/pyenv/pyenv
-set -l PYTHON_HOME $HOME/.pyenv
-if test -d $PYTHON_HOME
-    fish_add_path $HOME/.pyenv/bin
-    pyenv init - | source
-end
-
 # Mojo
 # https://docs.modular.com/mojo/manual/get-started/hello-world.html
 set -l MODULAR_HOME $HOME/.modular
-test -d $MODULAR_HOME; and fish_add_path $MODULAR_HOME/pkg/packages.modular.com_mojo/bin
+if test -d $MODULAR_HOME
+    fish_add_path $MODULAR_HOME/pkg/packages.modular.com_mojo/bin
+end
+
+# Flutter
+set -l FLUTTER_HOME $HOME/development/flutter
+if test -d $FLUTTER_HOME
+    fish_add_path $FLUTTER_HOME/bin
+end
 
 # Utility
 function g -w git
@@ -125,7 +136,9 @@ function ping -w prettyping
     prettyping --nolegend $argv
 end
 
-
+# Created by `pipx` on 2024-03-10 05:06:23
+set PATH $PATH /Users/sotayamashita/.local/bin
+source /Users/sotayamashita/.config/op/plugins.sh
 
 # Terminal prompt with Starship
 # Note: Must be end of the file
