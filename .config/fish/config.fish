@@ -111,9 +111,9 @@ end
 
 # Replacement for X
 
-# https://github.com/ogham/exa
-function ls -w exa
-    exa -al -hg --icons --color=always --group-directories-first $argv
+# https://github.com/eza-community/eza
+function ls -w eza
+    eza -al -hg --icons --color=always --group-directories-first $argv
 end
 
 # https://github.com/sharkdp/bat
