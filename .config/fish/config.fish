@@ -40,17 +40,25 @@ end
 
 # Ruby with rbenv
 # https://github.com/rbenv/rbenv
-status --is-interactive; and rbenv init - fish | source
+set -l RBENV_HOME $HOME/.rbenv
+if test -d $RBENV_HOME
+    status --is-interactive; and rbenv init - fish | source
+end
 
 # Rust
 # https://www.rust-lang.org/
 set -l CARGO_HOME $HOME/.cargo
-test -d $CARGO_HOME; and fish_add_path $CARGO_HOME/bin
+if test -d $CARGO_HOME
+    fish_add_path $CARGO_HOME/bin
+end
 
 # Golang
 # https://go.dev/doc/install
 set -l GO_HOME /usr/local/go
-test -d $GO_HOME; and fish_add_path $GO_HOME/bin
+if test -d $GO_HOME
+    fish_add_path $GO_HOME/bin
+end
+
 
 # Mojo
 # https://docs.modular.com/mojo/manual/get-started/hello-world.html
@@ -111,36 +119,67 @@ end
 
 # Replacement for X
 
+# Replacement for ls
 # https://github.com/eza-community/eza
 function ls -w eza
-    eza -al -hg --icons --color=always --group-directories-first $argv
+    if command -v eza >/dev/null 2>&1
+        eza -al -hg --icons --color=always --group-directories-first $argv
+    else
+        echo "eza is not installed. Using ls instead." >&2
+        echo "To install eza: brew install eza" >&2
+        command ls $argv
+    end
 end
 
+# Replacement for cat
 # https://github.com/sharkdp/bat
 function cat -w bat
-    bat --style=header,grid $argv
+    if command -v bat >/dev/null 2>&1
+        bat --style=header,grid $argv
+    else
+        echo "bat is not installed. Using cat instead." >&2
+        echo "To install bat: brew install bat" >&2
+        command cat $argv
+    end
 end
 
+# Replacement for top
 # https://github.com/ClementTsang/bottom
 function top -w btm
-    btm
+    if command -v btm >/dev/null 2>&1
+        btm
+    else
+        echo "btm is not installed. Using top instead." >&2
+        echo "To install btm: brew install bottom" >&2
+        command top $argv
+    end
 end
 
+# Replacement for ps
 # https://github.com/dalance/procs
 function ps -w procs
-    procs $argv
+    if command -v procs >/dev/null 2>&1
+        procs $argv
+    else
+        echo "procs is not installed. Using ps instead." >&2
+        echo "To install procs: brew install procs" >&2
+        command ps $argv
+    end
 end
 
+# Replacement for ping
 # https://github.com/denilsonsa/prettyping
 function ping -w prettyping
-    prettyping --nolegend $argv
+    if command -v prettyping >/dev/null 2>&1
+        prettyping --nolegend $argv
+    else
+        echo "prettyping is not installed. Using ping instead." >&2
+        echo "To install prettyping: brew install prettyping" >&2
+        command ping $argv
+    end
 end
 
-# Created by `pipx` on 2024-03-10 05:06:23
-set PATH $PATH /Users/sotayamashita/.local/bin
-source /Users/sotayamashita/.config/op/plugins.sh
-
 # Terminal prompt with Starship
-# Note: Must be end of the file
+# Note: Must be end of the file 
 # https://starship.rs/
 starship init fish | source
