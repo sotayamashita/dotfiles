@@ -40,17 +40,25 @@ end
 
 # Ruby with rbenv
 # https://github.com/rbenv/rbenv
-status --is-interactive; and rbenv init - fish | source
+set -l RBENV_HOME $HOME/.rbenv
+if test -d $RBENV_HOME
+    status --is-interactive; and rbenv init - fish | source
+end
 
 # Rust
 # https://www.rust-lang.org/
 set -l CARGO_HOME $HOME/.cargo
-test -d $CARGO_HOME; and fish_add_path $CARGO_HOME/bin
+if test -d $CARGO_HOME
+    fish_add_path $CARGO_HOME/bin
+end
 
 # Golang
 # https://go.dev/doc/install
 set -l GO_HOME /usr/local/go
-test -d $GO_HOME; and fish_add_path $GO_HOME/bin
+if test -d $GO_HOME
+    fish_add_path $GO_HOME/bin
+end
+
 
 # Mojo
 # https://docs.modular.com/mojo/manual/get-started/hello-world.html
@@ -118,6 +126,7 @@ end
 
 # Replacement for X
 
+# Replacement for ls
 # https://github.com/eza-community/eza
 if command -v eza &>/dev/null
     function ls -w eza
@@ -125,6 +134,7 @@ if command -v eza &>/dev/null
     end
 end
 
+# Replacement for cat
 # https://github.com/sharkdp/bat
 if command -v bat &>/dev/null
     function cat -w bat
@@ -132,6 +142,7 @@ if command -v bat &>/dev/null
     end
 end
 
+# Replacement for top
 # https://github.com/ClementTsang/bottom
 if command -v btm &>/dev/null
     function top -w btm
@@ -139,6 +150,7 @@ if command -v btm &>/dev/null
     end
 end
 
+# Replacement for ps
 # https://github.com/dalance/procs
 if command -v procs &>/dev/null
     function ps -w procs
@@ -146,6 +158,7 @@ if command -v procs &>/dev/null
     end
 end
 
+# Replacement for ping
 # https://github.com/denilsonsa/prettyping
 if command -v prettyping &>/dev/null
     function ping -w prettyping
@@ -153,11 +166,7 @@ if command -v prettyping &>/dev/null
     end
 end
 
-# Created by `pipx` on 2024-03-10 05:06:23
-set PATH $PATH /Users/sotayamashita/.local/bin
-source /Users/sotayamashita/.config/op/plugins.sh
-
 # Terminal prompt with Starship
-# Note: Must be end of the file
+# Note: Must be end of the file 
 # https://starship.rs/
 starship init fish | source
