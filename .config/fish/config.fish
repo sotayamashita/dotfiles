@@ -60,9 +60,16 @@ if test -d $MODULAR_HOME
 end
 
 # Flutter
+# https://flutter.dev/
 set -l FLUTTER_HOME $HOME/development/flutter
 if test -d $FLUTTER_HOME
     fish_add_path $FLUTTER_HOME/bin
+end
+
+# ngrok
+# https://ngrok.com/
+if command -v ngrok &>/dev/null
+    eval "$(ngrok completion)"
 end
 
 # Utility
@@ -112,28 +119,38 @@ end
 # Replacement for X
 
 # https://github.com/eza-community/eza
-function ls -w eza
-    eza -al -hg --icons --color=always --group-directories-first $argv
+if command -v eza &>/dev/null
+    function ls -w eza
+        eza -al -hg --icons --color=always --group-directories-first $argv
+    end
 end
 
 # https://github.com/sharkdp/bat
-function cat -w bat
-    bat --style=header,grid $argv
+if command -v bat &>/dev/null
+    function cat -w bat
+        bat --style=header,grid $argv
+    end
 end
 
 # https://github.com/ClementTsang/bottom
-function top -w btm
-    btm
+if command -v btm &>/dev/null
+    function top -w btm
+        btm
+    end
 end
 
 # https://github.com/dalance/procs
-function ps -w procs
-    procs $argv
+if command -v procs &>/dev/null
+    function ps -w procs
+        procs $argv
+    end
 end
 
 # https://github.com/denilsonsa/prettyping
-function ping -w prettyping
-    prettyping --nolegend $argv
+if command -v prettyping &>/dev/null
+    function ping -w prettyping
+        prettyping --nolegend $argv
+    end
 end
 
 # Created by `pipx` on 2024-03-10 05:06:23
