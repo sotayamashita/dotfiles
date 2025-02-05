@@ -73,6 +73,12 @@ if test -d $FLUTTER_HOME
     fish_add_path $FLUTTER_HOME/bin
 end
 
+# pipx
+# https://github.com/pypa/pipx
+if test -d $HOME/.local/bin
+    fish_add_path $HOME/.local/bin
+end
+
 # Utility
 function g -w git
     git $argv
@@ -183,3 +189,8 @@ end
 # Note: Must be end of the file 
 # https://starship.rs/
 starship init fish | source
+
+
+
+# Added by Windsurf
+fish_add_path /Users/sotayamashita/.codeium/windsurf/bin
