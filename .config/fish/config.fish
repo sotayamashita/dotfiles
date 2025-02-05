@@ -68,6 +68,7 @@ if test -d $MODULAR_HOME
 end
 
 # Flutter
+# https://flutter.dev/
 set -l FLUTTER_HOME $HOME/development/flutter
 if test -d $FLUTTER_HOME
     fish_add_path $FLUTTER_HOME/bin
@@ -77,6 +78,17 @@ end
 # https://github.com/pypa/pipx
 if test -d $HOME/.local/bin
     fish_add_path $HOME/.local/bin
+end
+
+# ngrok
+# https://ngrok.com/
+if command -v ngrok &>/dev/null
+    eval "$(ngrok completion)"
+end
+
+# windsurf
+if test -d $HOME/.codeium/windsurf/bin
+    fish_add_path /Users/sotayamashita/.codeium/windsurf/bin
 end
 
 # Utility
@@ -127,61 +139,41 @@ end
 
 # Replacement for ls
 # https://github.com/eza-community/eza
-function ls -w eza
-    if command -v eza >/dev/null 2>&1
+if command -v eza &>/dev/null
+    function ls -w eza
         eza -al -hg --icons --color=always --group-directories-first $argv
-    else
-        echo "eza is not installed. Using ls instead." >&2
-        echo "To install eza: brew install eza" >&2
-        command ls $argv
     end
 end
 
 # Replacement for cat
 # https://github.com/sharkdp/bat
-function cat -w bat
-    if command -v bat >/dev/null 2>&1
+if command -v bat &>/dev/null
+    function cat -w bat
         bat --style=header,grid $argv
-    else
-        echo "bat is not installed. Using cat instead." >&2
-        echo "To install bat: brew install bat" >&2
-        command cat $argv
     end
 end
 
 # Replacement for top
 # https://github.com/ClementTsang/bottom
-function top -w btm
-    if command -v btm >/dev/null 2>&1
+if command -v btm &>/dev/null
+    function top -w btm
         btm
-    else
-        echo "btm is not installed. Using top instead." >&2
-        echo "To install btm: brew install bottom" >&2
-        command top $argv
     end
 end
 
 # Replacement for ps
 # https://github.com/dalance/procs
-function ps -w procs
-    if command -v procs >/dev/null 2>&1
+if command -v procs &>/dev/null
+    function ps -w procs
         procs $argv
-    else
-        echo "procs is not installed. Using ps instead." >&2
-        echo "To install procs: brew install procs" >&2
-        command ps $argv
     end
 end
 
 # Replacement for ping
 # https://github.com/denilsonsa/prettyping
-function ping -w prettyping
-    if command -v prettyping >/dev/null 2>&1
+if command -v prettyping &>/dev/null
+    function ping -w prettyping
         prettyping --nolegend $argv
-    else
-        echo "prettyping is not installed. Using ping instead." >&2
-        echo "To install prettyping: brew install prettyping" >&2
-        command ping $argv
     end
 end
 
@@ -190,7 +182,3 @@ end
 # https://starship.rs/
 starship init fish | source
 
-
-
-# Added by Windsurf
-fish_add_path /Users/sotayamashita/.codeium/windsurf/bin
