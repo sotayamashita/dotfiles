@@ -94,8 +94,8 @@ end
 
 # Google Cloud SDK
 # https://cloud.google.com/sdk/docs/install
-if [ -f '$HOME/google-cloud-sdk/path.fish.inc' ]
-    . '$HOME/google-cloud-sdk/path.fish.inc'
+if [ -f "$HOME/google-cloud-sdk/path.fish.inc" ]
+    . "$HOME/google-cloud-sdk/path.fish.inc"
 end
 
 # Utility
