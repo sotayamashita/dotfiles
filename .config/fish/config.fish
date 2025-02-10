@@ -80,15 +80,22 @@ if test -d $HOME/.local/bin
     fish_add_path $HOME/.local/bin
 end
 
+# Windsurf
+# https://codeium.com/windsurf
+if test -d $HOME/.codeium/windsurf/bin
+    fish_add_path $HOME/.codeium/windsurf/bin
+end
+
 # ngrok
 # https://ngrok.com/
 if command -v ngrok &>/dev/null
     eval "$(ngrok completion)"
 end
 
-# windsurf
-if test -d $HOME/.codeium/windsurf/bin
-    fish_add_path /Users/sotayamashita/.codeium/windsurf/bin
+# Google Cloud SDK
+# https://cloud.google.com/sdk/docs/install
+if [ -f '$HOME/google-cloud-sdk/path.fish.inc' ]
+    . '$HOME/google-cloud-sdk/path.fish.inc'
 end
 
 # Utility
