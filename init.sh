@@ -8,12 +8,6 @@ if ! command -v xcrun >/dev/null 2>&1; then
     xcode-select --install
 fi
 
-# Install brew if not installed
-if ! command -v brew &>/dev/null; then
-    echo "Installing brew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
-
 # Install brew packages
 source ./brew.sh
 
