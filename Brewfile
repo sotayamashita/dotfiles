@@ -35,6 +35,7 @@ cask "divvy"
 cask "spotify"
 cask "deepl"
 cask "ollama"
+cask "arc"
 
 # Fonts
 cask "font-fira-code-nerd-font"
