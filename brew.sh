@@ -14,7 +14,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Install brew packages
 echo "--- Installing brew packages ---"
-brew bundle --file="./Brewfile"
+# Install packages using ~/.Brewfile
+brew bundle --global
+
 echo "✨ Brew packages installed"
 
 # Add fish to /etc/shells if not present
