@@ -1,28 +1,35 @@
-# To change login shell to fish:
-# echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
-# chsh -s /opt/homebrew/bin/fish
-# echo $SHELL
+# Load aliases
+. ~/.config/fish/aliases.fish
 
-# Disable default greeting message ⋊>
+# ------------------------------
+# Shell Configuration
+# ------------------------------
+# Disable default greeting message
 # https://fishshell.com/docs/current/faq.html#how-do-i-change-the-greeting-message
 set -U fish_greeting
 
-
-# Programming languages/libraries
-
-# Dotfiles
+# Add dotfiles to path
 fish_add_path $HOME/.dotfiles/bin
 
+# Add local bin to path
+fish_add_path $HOME/.local/bin
+
+# ------------------------------
+# Package Managers & System Tools
+# ------------------------------
 # Homebrew
 # https://brew.sh/
 fish_add_path /opt/homebrew/sbin
 
-# Openssl
+# OpenSSL
 # https://www.openssl.org/
-# https://github.com/puma/puma/issues/2603
 fish_add_path /opt/homebrew/opt/openssl@3/bin
 
-# Node.js with Volta
+# ------------------------------
+# Programming Languages & SDKs
+# ------------------------------
+
+# Node.js (Volta)
 # https://volta.sh/
 set -l VOLTA_HOME $HOME/.volta
 if test -d $VOLTA_HOME
@@ -30,15 +37,15 @@ if test -d $VOLTA_HOME
     volta completions fish | source
 end
 
-# Python with pyenv
+# Python (pyenv)
 # https://github.com/pyenv/pyenv
 set -l PYTHON_HOME $HOME/.pyenv
 if test -d $PYTHON_HOME
-    fish_add_path $HOME/.pyenv/bin
+    fish_add_path $PYTHON_HOME/bin
     pyenv init - | source
 end
 
-# Ruby with rbenv
+# Ruby (rbenv)
 # https://github.com/rbenv/rbenv
 set -l RBENV_HOME $HOME/.rbenv
 if test -d $RBENV_HOME
@@ -52,13 +59,12 @@ if test -d $CARGO_HOME
     fish_add_path $CARGO_HOME/bin
 end
 
-# Golang
+# Go
 # https://go.dev/doc/install
 set -l GO_HOME /usr/local/go
 if test -d $GO_HOME
     fish_add_path $GO_HOME/bin
 end
-
 
 # Mojo
 # https://docs.modular.com/mojo/manual/get-started/hello-world.html
@@ -74,13 +80,11 @@ if test -d $FLUTTER_HOME
     fish_add_path $FLUTTER_HOME/bin
 end
 
-# pipx
-# https://github.com/pypa/pipx
-if test -d $HOME/.local/bin
-    fish_add_path $HOME/.local/bin
-end
+# ------------------------------
+# Development Tools
+# ------------------------------
 
-# Windsurf
+# Windsurf 
 # https://codeium.com/windsurf
 if test -d $HOME/.codeium/windsurf/bin
     fish_add_path $HOME/.codeium/windsurf/bin
@@ -89,103 +93,19 @@ end
 # ngrok
 # https://ngrok.com/
 if command -v ngrok &>/dev/null
-    eval "$(ngrok completion)"
+    eval (ngrok completion)
 end
 
-# Google Cloud SDK
+# Google Cloud SDK 
 # https://cloud.google.com/sdk/docs/install
-if [ -f "$HOME/google-cloud-sdk/path.fish.inc" ]
+if test -f "$HOME/google-cloud-sdk/path.fish.inc"
     . "$HOME/google-cloud-sdk/path.fish.inc"
 end
 
-# Utility
-function g -w git
-    git $argv
-end
-
-# https://pnpm.io/installation#using-a-shorter-alias
-function pn -w pnpm
-    pnpm $argv
-end
-
-function help
-    tldr $argv
-end
-
-function path
-    echo $PATH | tr -s " " "\n"
-end
-
-function localserver
-    python3 -m http.server $argv
-end
-
-# Navigation
-
-function ws
-    cd ~/Documents/workspace
-end
-
-function ..
-    cd ..
-end
-
-function ...
-    cd ../../
-end
-
-function ....
-    cd ../../..
-end
-
-function icloud
-    cd ~/Library/Mobile\ Documents/com~apple\~CloudDocs
-end
-
-# Replacement for X
-
-# Replacement for ls
-# https://github.com/eza-community/eza
-if command -v eza &>/dev/null
-    function ls -w eza
-        eza -al -hg --icons --color=always --group-directories-first $argv
-    end
-end
-
-# Replacement for cat
-# https://github.com/sharkdp/bat
-if command -v bat &>/dev/null
-    function cat -w bat
-        bat --style=header,grid $argv
-    end
-end
-
-# Replacement for top
-# https://github.com/ClementTsang/bottom
-if command -v btm &>/dev/null
-    function top -w btm
-        btm
-    end
-end
-
-# Replacement for ps
-# https://github.com/dalance/procs
-if command -v procs &>/dev/null
-    function ps -w procs
-        procs $argv
-    end
-end
-
-# Replacement for ping
-# https://github.com/denilsonsa/prettyping
-if command -v prettyping &>/dev/null
-    function ping -w prettyping
-        prettyping --nolegend $argv
-    end
-end
-
-# Terminal prompt with Starship
-# Note: Must be end of the file 
+# ------------------------------
+# Shell Prompt
+# ------------------------------
+# Starship
 # https://starship.rs/
+# Note: Must be at the end of the file
 starship init fish | source
-

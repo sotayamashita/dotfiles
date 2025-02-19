@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -euo pipefail
+#!/usr/bin/env bash
 
 # Ask for confirmation before proceeding
 seek_confirmation() {
@@ -18,10 +16,11 @@ is_confirmed() {
   return 1
 }
 
+# Ask for confirmation before proceeding
 seek_confirmation "Warning: This step may modify your macOS system defaults."
 if ! is_confirmed; then
-  info "Skipped"
-  exit 1
+  info "Finish without modifying any settings"
+  exit 0
 fi
 
 # Close System Preferences, to prevent it from overriding settings we are about to change
@@ -31,14 +30,20 @@ osascript -e 'tell application "System Preferences" to quit'
 sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
-while true; do
-  sudo -n true
-  sleep 60
-  kill -0 "$$" || exit
-done 2>/dev/null &
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
 
 #
-# System Preferences > Dock (*Reset required)
+#  > System Settings > Sound
+# 
+
+# Sound > Play sound on startup, disable
+sudo nvram SystemAudioVolume=" "
+
+
+
+#
+#  > System Settings > Dock (*Reset required)
 # - https://github.com/yannbertrand/macos-defaults
 #
 
@@ -55,7 +60,7 @@ defaults write com.apple.dock "autohide" -bool "true"
 defaults write com.apple.dock "show-recents" -bool "false"
 
 #
-# System Preferences > Keyboard > Shortcuts (Note: Required a restart)
+#  > System Settings > > Keyboard > Shortcuts (Note: Required a restart)
 # - https://apple.stackexchange.com/a/91680
 #
 
@@ -135,17 +140,16 @@ defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 #
-# System Preferences > Trackpad
+#  > System Settings > Trackpad
 #
 
 # Trackpad > Enable Tap to click for this user and for the login screen
-# See: https://github.com/mathiasbynens/dotfiles/blob/main/.macos#L127-L130
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 #
-# System Preferences > Desktop & Stage Manager
+#  > System Settings > Desktop & Stage Manager
 #
 
 # Desktop & Stage Manager > Click wallpeper to reveal desktop
