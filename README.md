@@ -14,7 +14,7 @@ cd; mkdir ~/.setupmac && curl -#L https://github.com/sotayamashita/dotfiles/tarb
 4. Find GitHub SSH Key on 1Password
 5. Set up commit signing
 
-_[Learn more about the 1Password SSH Agent](https://developer.1password.com/docs/ssh/agent/)_
+_[Learn more about the 1Password SSH Agent](https://developer.1password.com/docs/ssh/agent/)_<br/>
 _[Learn more about Sign Git commits with SSH](https://developer.1password.com/docs/ssh/agent/)_
 
 ### Divvy
