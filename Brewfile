@@ -16,6 +16,7 @@ brew "delta"
 brew "node"
 brew "python"
 brew "go"
+brew "starship"
 
 # Applications
 cask "1password"
