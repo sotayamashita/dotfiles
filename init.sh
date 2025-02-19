@@ -3,17 +3,17 @@
 set -euo pipefail
 
 # Get current execuing directory absolutely
-DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install xcode-select if not installed
-if ! command -v xcode-select &>/dev/null; then
-    log "Installing xcode-select..."
+if ! command -v xcrun >/dev/null 2>&1; then
+    echo "Installing xcode-select..."
     xcode-select --install
 fi
 
 # Install brew if not installed
 if ! command -v brew &>/dev/null; then
-    log "Installing brew..."
+    echo "Installing brew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.zprofile
     source ~/.zprofile
@@ -21,7 +21,7 @@ fi
 
 # Install brew packages
 echo "Installing packages from Brewfile..."
-brew bundle --file="${DOTFILES_ROOT}/Brewfile"
+brew bundle --file="$CURRENT_DIR/Brewfile"
 
 # Add fish to /etc/shells if not present
 if ! grep -q "/opt/homebrew/bin/fish" /etc/shells; then
