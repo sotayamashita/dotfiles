@@ -1,11 +1,11 @@
 # dotfiles
 
-Configuration for macOS .
+Configuration for .
 
 ## Install
 
 ```bash
-git clone https://github.com/sotayamashita/dotfiles.git ~/Projects/dotfiles
+git clone -b next https://github.com/sotayamashita/dotfiles.git ~/Projects/dotfiles
 cd ~/Projects/dotfiles
 ./scripts/init.sh
 ```
