@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
+echo "--- Setting macOS preferences ---"
+
 # Close System Preferences, to prevent it from overriding settings we are about to change
 osascript -e 'tell application "System Preferences" to quit'
 
