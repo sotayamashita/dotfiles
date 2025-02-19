@@ -16,8 +16,7 @@ fish_add_path $HOME/.local/bin
 # ------------------------------
 # Homebrew
 # https://brew.sh/
-set BREW_PREFIX $(brew --prefix)
-fish_add_path $BREW_PREFIX/bin
+fish_add_path /opt/homebrew/bin
 
 # OpenSSL
 # https://www.openssl.org/
