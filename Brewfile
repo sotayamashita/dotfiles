@@ -1,6 +1,5 @@
-# taps
+# Taps
 tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
 
 # CLI tools
 brew "fish"
@@ -36,4 +35,5 @@ cask "deepl"
 cask "ollama"
 
 # Fonts
-brew "font-fira-code-nerd-font"
+cask "font-fira-code-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
