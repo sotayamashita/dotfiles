@@ -1,5 +1,6 @@
 # taps
 tap "homebrew/bundle"
+tap "homebrew/cask-fonts"
 
 # CLI tools
 brew "fish"
