@@ -7,15 +7,18 @@ osascript -e 'tell application "System Preferences" to quit'
 sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+while true; do
+  sudo -n true
+  sleep 60
+  kill -0 "$$" || exit
+done 2>/dev/null &
 
 #
 #  > System Settings > Sound
-# 
+#
 
 # Sound > Play sound on startup, disable
 sudo nvram SystemAudioVolume=" "
-
 
 #
 #  > System Settings > Dock (*Reset required)
@@ -138,4 +141,5 @@ defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool fa
 for app in "Dock"; do
   killall "${app}" &>/dev/null
 done
+
 echo "✨ macOS setup completed! Note: that some of these changes require a logout/restart to take effect."

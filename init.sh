@@ -34,3 +34,5 @@ if [[ "$SHELL" != "/opt/homebrew/bin/fish" ]]; then
     echo "Changing default shell to fish..."
     chsh -s /opt/homebrew/bin/fish
 fi
+
+echo "✨ Initialization completed!"
