@@ -32,4 +32,6 @@ _[Learn more about Divvy](https://mizage.com/downloads/DivvyMacHelp.pdf)_
 
 1. Open iTerm
 2. Open Settings
+3. Set Appearance > General > Theme to Minimal
+4. Set Profiles > Text > Font Size to 14
 3. Set Profiles > Text > Font to Fira Code Nerd Font
