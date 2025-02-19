@@ -35,3 +35,12 @@ _[Learn more about Divvy](https://mizage.com/downloads/DivvyMacHelp.pdf)_
 3. Set Appearance > General > Theme to Minimal
 4. Set Profiles > Text > Font Size to 14
 3. Set Profiles > Text > Font to Fira Code Nerd Font
+
+### Google Japanese IME
+
+_Note: Restart is required_
+
+1. Open Google Japanese IME
+2. Open Settings
+3. Set Language > Input Method to Google Japanese IME's input method
+4. Remove default input method

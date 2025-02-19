@@ -19,6 +19,7 @@ brew "go"
 brew "starship"
 
 # Applications
+cask "google-japanese-ime"
 cask "1password"
 cask "1password-cli"
 cask "visual-studio-code"
