@@ -35,4 +35,7 @@ if [[ "$SHELL" != "/opt/homebrew/bin/fish" ]]; then
     chsh -s /opt/homebrew/bin/fish
 fi
 
+# Remove app from Dock
+defaults write com.apple.dock persistent-apps -array && killall Dock
+
 echo "✨ Initialization completed!"

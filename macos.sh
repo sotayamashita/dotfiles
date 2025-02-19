@@ -37,6 +37,9 @@ defaults write com.apple.dock "autohide" -bool "true"
 # Dock > Show recent applications in Dock, false
 defaults write com.apple.dock "show-recents" -bool "false"
 
+# No GUI support. Remove all apps from Dock
+defaults write com.apple.dock persistent-apps -array
+
 #
 #  > System Settings > > Keyboard > Shortcuts (Note: Required a restart)
 # - https://apple.stackexchange.com/a/91680
