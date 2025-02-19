@@ -9,7 +9,7 @@ brew "fzf"
 brew "ripgrep"
 brew "fd"
 brew "bat"
-brew "exa"
+brew "eza"
 brew "delta"
 
 # Development
