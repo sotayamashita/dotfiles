@@ -8,9 +8,6 @@
 # https://fishshell.com/docs/current/faq.html#how-do-i-change-the-greeting-message
 set -U fish_greeting
 
-# Add dotfiles to path
-fish_add_path $HOME/.dotfiles/bin
-
 # Add local bin to path
 fish_add_path $HOME/.local/bin
 
