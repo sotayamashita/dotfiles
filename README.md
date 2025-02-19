@@ -1,13 +1,12 @@
 # dotfiles
 
-Configuration for .
+For 
 
 ## Install
 
 ```bash
-git clone -b next https://github.com/sotayamashita/dotfiles.git ~/Projects/dotfiles
-cd ~/Projects/dotfiles
-./scripts/init.sh
+cd; curl -#L https://github.com/sotayamashita/dotfiles/tarball/next | tar -xzv --strip-components 1
+~/dotfiles/init.sh
 ```
 
 ## Structure
