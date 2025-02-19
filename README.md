@@ -28,7 +28,7 @@ _[Learn more about Sign Git commits with SSH](https://developer.1password.com/do
 
 _[Learn more about Divvy](https://mizage.com/downloads/DivvyMacHelp.pdf)_
 
-## iTerms
+### iTerms
 
 1. Open iTerm
 2. Open Settings
