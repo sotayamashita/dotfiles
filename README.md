@@ -27,3 +27,9 @@ _[Learn more about Sign Git commits with SSH](https://developer.1password.com/do
 3. Set <kbd>Option + D</kbd> as global shortcut
 
 _[Learn more about Divvy](https://mizage.com/downloads/DivvyMacHelp.pdf)_
+
+## iTerms
+
+1. Open iTerm
+2. Open Settings
+3. Set Profiles > Text > Font to Fira Code Nerd Font
