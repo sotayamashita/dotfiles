@@ -22,7 +22,7 @@ done 2>/dev/null &
 #
 
 # Sound > Play sound on startup, disable
-sudo nvram SystemAudioVolume=" "
+sudo nvram StartupMute=%01
 
 #
 #  > System Settings > Dock (*Reset required)
