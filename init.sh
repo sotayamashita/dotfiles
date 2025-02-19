@@ -2,9 +2,6 @@
 
 set -euo pipefail
 
-# Get current execuing directory absolutely
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 # Install xcode-select if not installed
 if ! command -v xcrun >/dev/null 2>&1; then
     echo "Installing xcode-select..."
@@ -15,13 +12,10 @@ fi
 if ! command -v brew &>/dev/null; then
     echo "Installing brew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.zprofile
-    source ~/.zprofile
 fi
 
 # Install brew packages
-echo "Installing packages from Brewfile..."
-brew bundle --file="$CURRENT_DIR/Brewfile"
+source ./brew.sh
 
 # Add fish to /etc/shells if not present
 if ! grep -q "/opt/homebrew/bin/fish" /etc/shells; then
