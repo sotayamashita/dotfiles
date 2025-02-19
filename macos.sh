@@ -1,28 +1,4 @@
-#!/bin/bash
-
-set -euo pipefail
-
-# Ask for confirmation before proceeding
-seek_confirmation() {
-  warning "$@"
-  printf "\n"
-  read -rp "? Continue (y/n) " -n 1
-  printf "\n"
-}
-
-# Test whether the result of an `seek_confirmation` is a confirmation
-is_confirmed() {
-  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-    return 0
-  fi
-  return 1
-}
-
-seek_confirmation "Warning: This step may modify your macOS system defaults."
-if ! is_confirmed; then
-  info "Skipped"
-  exit 1
-fi
+#!/usr/bin/env bash
 
 # Close System Preferences, to prevent it from overriding settings we are about to change
 osascript -e 'tell application "System Preferences" to quit'
@@ -38,7 +14,14 @@ while true; do
 done 2>/dev/null &
 
 #
-# System Preferences > Dock (*Reset required)
+#  > System Settings > Sound
+#
+
+# Sound > Play sound on startup, disable
+sudo nvram SystemAudioVolume=" "
+
+#
+#  > System Settings > Dock (*Reset required)
 # - https://github.com/yannbertrand/macos-defaults
 #
 
@@ -54,8 +37,11 @@ defaults write com.apple.dock "autohide" -bool "true"
 # Dock > Show recent applications in Dock, false
 defaults write com.apple.dock "show-recents" -bool "false"
 
+# No GUI support. Remove all apps from Dock
+defaults write com.apple.dock persistent-apps -array
+
 #
-# System Preferences > Keyboard > Shortcuts (Note: Required a restart)
+#  > System Settings > > Keyboard > Shortcuts (Note: Required a restart)
 # - https://apple.stackexchange.com/a/91680
 #
 
@@ -135,17 +121,16 @@ defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 #
-# System Preferences > Trackpad
+#  > System Settings > Trackpad
 #
 
 # Trackpad > Enable Tap to click for this user and for the login screen
-# See: https://github.com/mathiasbynens/dotfiles/blob/main/.macos#L127-L130
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 #
-# System Preferences > Desktop & Stage Manager
+#  > System Settings > Desktop & Stage Manager
 #
 
 # Desktop & Stage Manager > Click wallpeper to reveal desktop
@@ -159,4 +144,5 @@ defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool fa
 for app in "Dock"; do
   killall "${app}" &>/dev/null
 done
-echo "Done. Note that some of these changes require a logout/restart to take effect."
+
+echo "✨ macOS setup completed! Note: that some of these changes require a logout/restart to take effect."
