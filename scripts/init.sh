@@ -9,7 +9,7 @@ if ! command -v xcrun >/dev/null 2>&1; then
 fi
 
 # Install brew packages
-source ./brew.sh
+source ./scripts/brew.sh
 
 # Remove app from Dock
 defaults write com.apple.dock persistent-apps -array && killall Dock

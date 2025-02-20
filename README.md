@@ -1,7 +1,7 @@
 For 
 
 ```bash
-cd; mkdir ~/.setupmac && curl -#L https://github.com/sotayamashita/dotfiles/tarball/next | tar -xzv --strip-components 1 --exclude={.config,symlinks,README.md} --strip-components 1 -C ~/.setupmac; ~/.setupmac/init.sh; ~/.setupmac/macos.sh; rm -rf ~/.setupmac
+cd; curl -#L https://github.com/sotayamashita/dotfiles/tarball/next | tar -xzv --strip-components 1 --exclude={README.md} --strip-components 1; ~/scripts/init.sh; ~/scripts/macos.sh; rm -rf ~/scripts
 ```
 
 ## Manual Setup

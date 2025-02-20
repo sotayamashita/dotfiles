@@ -60,33 +60,29 @@ echo "Starting symlink creation..."
 # Create symlinks for .config directory
 if [ -d ".config" ]; then
     echo "--- Processing .config files ---"
-    for file in .config/.*; do
-        # Skip . and .. directory entries
-        [[ "$(basename "$file")" =~ ^\.\.?$ ]] && continue
+    for file in .config/{.,}*; do
         if [ -e "$file" ]; then
             create_symlink "$file" "$HOME/.config/$(basename "$file")"
         fi
     done
-    # Also process non-dot files
-    for file in .config/*; do
-        [[ -e "$file" ]] && create_symlink "$file" "$HOME/.config/$(basename "$file")"
-    done
 fi
 
-# Create symlinks for symlinks directory
-if [ -d "symlinks" ]; then
-    echo "--- Processing symlinks files ---"
-    for file in symlinks/.*; do
-        # Skip . and .. directory entries
-        [[ "$(basename "$file")" =~ ^\.\.?$ ]] && continue
-        if [ -e "$file" ]; then
-            create_symlink "$file" "$HOME/$(basename "$file")"
-        fi
-    done
-    # Also process non-dot files
-    for file in symlinks/*; do
-        [[ -e "$file" ]] && create_symlink "$file" "$HOME/$(basename "$file")"
-    done
-fi
+# Create symlinks for dotfiles in root directory
+echo "--- Processing dotfiles ---"
+dotfiles=(
+    .Brewfile
+    .gitattributes.global
+    .gitconfig
+    .gitconfig.alias
+    .gitconfig.delta
+    .gitconfig.user
+    .gitignore.global
+)
+
+for file in "${dotfiles[@]}"; do
+    if [ -e "$file" ]; then
+        create_symlink "$file" "$HOME/$file"
+    fi
+done
 
 echo "✨ Symlink creation completed"
