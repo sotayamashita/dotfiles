@@ -11,6 +11,9 @@ brew "fd"
 brew "bat"
 brew "eza"
 brew "delta"
+brew "bottom"
+brew "procs"
+brew "prettyping"
 
 # Development
 brew "node"
