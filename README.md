@@ -6,16 +6,34 @@ cd; curl -#L https://github.com/sotayamashita/dotfiles/tarball/next | tar -xzv -
 
 ## Manual Setup
 
-### 1Password
+### Enable SSH Agent in 1Password
 
-1. Open 1Password
-2. Open Settings
-3. Enable "Use the SSH Agent"
-4. Find GitHub SSH Key on 1Password
-5. Set up commit signing
+1. `open -a "1Password"`
+2. <kbd>⌘ + ,</kbd>
+3. Enable Developer > Use the SSH Agent
 
 _[Learn more about the 1Password SSH Agent](https://developer.1password.com/docs/ssh/agent/)_<br/>
-_[Learn more about Sign Git commits with SSH](https://developer.1password.com/docs/ssh/agent/)_
+
+### Clone repository
+
+```bash
+git clone git@github.com:sotayamashita/dotfiles.git ~/Projects/dotfiles
+cd ~/Projects/dotfiles
+```
+
+### Create symbolic links
+
+```bash
+./scripts/symlinks
+```
+
+### Configure Git Commit Singing
+
+```bash
+./scripts/signing.sh
+```
+
+_[Learn more about Sign Git commits with SSH](https://developer.1password.com/docs/ssh/git-commit-signing/)_
 
 ### Divvy
 
