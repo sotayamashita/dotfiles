@@ -1,5 +1,4 @@
 [include]
-
     path = ~/.gitconfig.user
     path = ~/.gitconfig.alias
 
@@ -7,26 +6,18 @@
     # https://developer.1password.com/docs/ssh/git-commit-signing/
     path = ~/.gitconfig.signing
 
-    # git-delta custom themes
-    # https://dandavison.github.io/delta/custom-themes.html
-    path = ~/.gitconfig.delta
-
 [init]
-
     defaultBranch = main
 
 [apply]
-
 	# Detect whitespace errors when applying a patch.
 	whitespace = fix
 
 [branch]
-
 	# Show most recently changed branches first.
 	sort = -committerdate
 
 [core]
-
     # Use custom `.gitignore`
     excludesfile = ~/.gitignore.global
 
@@ -50,41 +41,34 @@
     pager = delta
 
 [color]
-
     # Use colors in Git commands that are capable of colored output when
     # outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
     ui = auto
 
 [color "branch"]
-
     current = yellow reverse
     local   = yellow
     remote  = green
 
 [color "status"]
-
     added     = yellow
     changed   = green
     untracked = cyan
 
 [diff]
-
     # Detect copies as well as renames
     renames = copies
     compactionHeuristic = true
 
 [diff "bin"]
-
     # Use `hexdump` to diff binary files
     textconv = hexdump -v -C
 
 [help]
-
     # Automatically correct and execute mistyped commands.
     autocorrect = 1
 
 [push]
-
     # https://git-scm.com/docs/git-config#git-config-pushdefault
 	default = current
 
@@ -93,18 +77,19 @@
 
 
 [interactive]
-
     diffFilter   = delta --color-only
 
-[color "diff-highlight"]
+[delta]
+    # use n and N to move between diff sections
+    navigate = true
 
+[color "diff-highlight"]
     oldNormal    = red bold
     oldHighlight = red bold 52
     newNormal    = green bold
     newHighlight = green bold 22
 
 [color "diff"]
-
     meta         = 11
     frag         = magenta bold
     func         = 146 bold
@@ -113,30 +98,25 @@
     new          = green bold
     whitespace   = red reverse
 
-
 # URL shorthands
 [url "git@github.com:"]
-
     insteadOf     = "gh:"
     pushInsteadOf = "github:"
     pushInsteadOf = "git://github.com/"
 
 [url "git://github.com/"]
-
     insteadOf     = "github:"
 
 [url "git@gist.github.com:"]
-
     insteadOf     = "gst:"
     pushInsteadOf = "gist:"
     pushInsteadOf = "git://gist.github.com/"
 
 [url "git://gist.github.com/"]
-
     insteadOf     = "gist:"
 
 [merge]
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 
 [diff]
     colorMoved = default

@@ -1,5 +1,4 @@
 [alias]
-
     # List aliases.
     aliases = config --get-regexp alias
 
