@@ -2,15 +2,21 @@
 
 set -euo pipefail
 
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Source utility.sh using the script directory as base
+source "${SCRIPT_DIR}/utility.sh"
+
 # Check if ~/.gitconfig.signing exists
 if [ -f ~/.gitconfig.signing ]; then
-    echo "~/.gitconfig.signing already exists"
+    info "~/.gitconfig.signing already exists so skipping signing configuration"
     exit 1
 fi
 
 # Check if 1Password CLI is installed
 if ! command -v op &> /dev/null; then
-    echo "Error: 1Password CLI is not installed"
+    error "1Password CLI is not installed so install it and try again"
     exit 1
 fi
 
@@ -27,7 +33,7 @@ read -p "Enter your GitHub GPG signing key name in 1Password: " signingkeyName
 PUBLIC_KEY=$(op item get $signingkeyName --fields label=public_key)
 
 # Create .gitconfig.signing file
-echo "--- Creating .gitconfig.signing file ---"
+info "--- Creating .gitconfig.signing file ---"
 cat <<EOF > ~/.gitconfig.signing
 [user]
   signingkey = $PUBLIC_KEY
@@ -42,4 +48,4 @@ cat <<EOF > ~/.gitconfig.signing
   gpgsign = true
 EOF
 
-echo "✨ Git signing configuration created"
+info "✨ Git signing configuration created"

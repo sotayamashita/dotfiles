@@ -2,7 +2,13 @@
 
 set -euo pipefail
 
-echo "--- Setting macOS preferences ---"
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Source utility.sh using the script directory as base
+source "${SCRIPT_DIR}/utility.sh"
+
+info "--- Setting macOS preferences ---"
 
 # Close System Preferences, to prevent it from overriding settings we are about to change
 osascript -e 'tell application "System Preferences" to quit'
@@ -149,4 +155,4 @@ for app in "Dock"; do
   killall "${app}" &>/dev/null
 done
 
-echo "✨ macOS setup completed! Note: that some of these changes require a logout/restart to take effect."
+info "✨ macOS setup completed! Note: that some of these changes require a logout/restart to take effect."

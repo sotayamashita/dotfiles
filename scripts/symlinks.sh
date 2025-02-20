@@ -2,6 +2,12 @@
 
 set -euo pipefail
 
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Source utility.sh using the script directory as base
+source "${SCRIPT_DIR}/utility.sh"
+
 # Helper function: Create symbolic links
 create_symlink() {
     local source="$1"
@@ -21,46 +27,58 @@ create_symlink() {
     
     # Check if source exists
     if [ ! -e "$source" ]; then
-        echo "Error: Source file does not exist: $source" >&2
+        error "Source file does not exist, $source"
         return 1
     fi
     
     # Check if we have write permission to target directory
     local target_dir="$(dirname "$target")"
     if [ ! -w "$target_dir" ]; then
-        echo "Error: No write permission to target directory: $target_dir" >&2
+        error "No write permission to target directory, $target_dir"
         return 1
     fi
     
-    # Handle existing target
-    if [ -e "$target" ]; then
+    # Check if target exists (with more detailed checks)
+    debug "Checking target, $target"
+    if [ -e "$target" ] || [ -L "$target" ]; then  # Check both existence and if it's a symlink
+        debug "File type for $target:"
+        # ls -la "$target"
+        
         if [ -L "$target" ]; then
-            echo "Updating existing symlink: $target"
-            rm "$target"
+            info "Updating existing symlink: $target"
+            rm "$target" || {
+                error "Failed to remove existing symlink, $target (errno=$?)" >&2
+                ls -la "$target" >&2
+                return 1
+            }
         else
             local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
-            echo "Creating backup: $backup"
-            if ! mv "$target" "$backup"; then
-                echo "Error: Failed to create backup" >&2
+            info "Creating backup: $backup"
+            mv -v "$target" "$backup" || {
+                error "Failed to create backup (errno=$?)" >&2
+                ls -la "$target" >&2
                 return 1
-            fi
+            }
         fi
+    else
+        debug "Target does not exist or is broken symlink"
     fi
     
     # Create symlink
-    if ! ln -s "$source" "$target"; then
-        echo "Error: Failed to create symlink" >&2
+    info "Creating new symlink: $source -> $target"
+    ln -s "$source" "$target" || {
+        error "Failed to create symlink (errno=$?)" >&2
         return 1
-    fi
-    echo "Created symlink: $source -> $target"
+    }
+    info "Successfully created symlink: $source -> $target"
 }
 
-echo "Starting symlink creation..."
+info "Starting symlink creation..."
 
 # Create symlinks for .config directory
 if [ -d ".config" ]; then
-    echo "--- Processing .config files ---"
-    for file in .config/{.,}*; do
+    info "--- Processing .config files ---"
+    for file in .config/*; do
         if [ -e "$file" ]; then
             create_symlink "$file" "$HOME/.config/$(basename "$file")"
         fi
@@ -68,7 +86,7 @@ if [ -d ".config" ]; then
 fi
 
 # Create symlinks for dotfiles in root directory
-echo "--- Processing dotfiles ---"
+info "--- Processing dotfiles ---"
 dotfiles=(
     .Brewfile
     .gitattributes.global
@@ -85,4 +103,4 @@ for file in "${dotfiles[@]}"; do
     fi
 done
 
-echo "✨ Symlink creation completed"
+info "✨ Symlink creation completed"
