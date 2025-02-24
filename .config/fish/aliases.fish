@@ -14,7 +14,7 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 
 # Project directories
-alias prj="cd ~/Documents/Projects"
+alias prj="cd ~/Projects"
 alias icloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs"
 
 # ------------------------------
