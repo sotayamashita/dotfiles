@@ -1,5 +1,30 @@
 #!/usr/bin/env bash
 
+# macOS Configuration File Locations
+# --------------------------------
+#
+# User-specific preferences:
+# ~/Library/Preferences/
+#
+# System-wide preferences:
+# /Library/Preferences/
+#
+# Common preference files:
+# - com.apple.symbolichotkeys.plist : Keyboard shortcuts and hotkeys
+# - com.apple.finder.plist          : Finder settings
+# - com.apple.dock.plist            : Dock configuration
+# - com.apple.Terminal.plist        : Terminal settings
+#
+# Note: After modifying plist files, reload preferences with:
+# killall cfprefsd
+#
+# Important: Always backup preference files before modification
+#
+# To modify plist files programmatically, use:
+# - defaults write [domain] [key] [value]
+# - /usr/bin/plutil command
+# - /usr/libexec/PlistBuddy command
+
 set -euo pipefail
 
 # Get the directory where this script is located
@@ -51,7 +76,7 @@ defaults write com.apple.dock "show-recents" -bool "false"
 defaults write com.apple.dock persistent-apps -array
 
 #
-#  > System Settings > > Keyboard > Shortcuts (Note: Required a restart)
+#  > System Settings > Keyboard > Shortcuts (Note: Required a restart)
 # - https://apple.stackexchange.com/a/91680
 #
 
@@ -95,16 +120,40 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 61
 "
 
 # Keyboard > Shortcuts > Screenshots > Save picture of screen as file, disable
-# Note: Replacing it with CleanShotX
+# Note: Disable it for CleanShotX
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 28 "
   <dict>
     <key>enabled</key><false/>
   </dict>
 "
 
+# Keyboard > Shortcuts > Screenshots > Copy picture of screen to the clipboard, disable
+# Note: Disable it for CleanShotX
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 29 "
+  <dict>
+    <key>enabled</key><false/>
+  </dict>
+"
+
 # Keyboard > Shortcuts > Screenshots > Save picture of selected area as file, disable
-# Note: Replacing it with CleanShotX
+# Note: Disable it for CleanShotX
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 30 "
+  <dict>
+    <key>enabled</key><false/>
+  </dict>
+"
+
+# Keyboard > Shortcuts > Screenshots > Copy picture of selected area to the clipboard, disable
+# Note: Disable it for CleanShotX
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 31 "
+  <dict>
+    <key>enabled</key><false/>
+  </dict>
+"
+
+# Keyboard > Shortcuts > Screenshots > Screenshot and recording options, disable
+# Note: Disable it for CleanShotX
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 184 "
   <dict>
     <key>enabled</key><false/>
   </dict>
@@ -147,6 +196,7 @@ defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 # Note: Stage Manager should be disabled
 # See: https://derflounder.wordpress.com/2023/09/26/managing-the-click-wallpaper-to-reveal-desktop-setting-in-macos-sonoma/
 defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+
 
 #
 # Kill affected applications
