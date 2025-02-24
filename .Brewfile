@@ -39,6 +39,7 @@ cask "spotify"
 cask "deepl"
 cask "ollama"
 cask "arc"
+cask "notion-calendar"
 
 # Fonts
 cask "font-fira-code-nerd-font"
