@@ -62,3 +62,8 @@ _Note: Restart is required_
 2. Open Settings
 3. Set Language > Input Method to Google Japanese IME's input method
 4. Remove default input method
+
+## References
+
+- [mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)
+- [diimdeep/dotfiles](https://github.com/diimdeep/dotfiles)
