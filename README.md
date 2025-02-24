@@ -6,6 +6,11 @@ cd; curl -#L https://github.com/sotayamashita/dotfiles/tarball/main | tar -xzv -
 
 ## Manual Setup
 
+### What to install
+
+- Kindle from App Store
+
+
 ### Enable SSH Agent in 1Password
 
 1. `open -a "1Password"`
