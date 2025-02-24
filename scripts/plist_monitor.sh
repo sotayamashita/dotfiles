@@ -1,27 +1,31 @@
 #!/usr/bin/env bash
+#
+# Monitors changes to macOS plist files by capturing the state before and after
+# modifications. Creates a diff of the changes and saves them to a timestamped
+# directory on the Desktop.
+#
+# This script is useful for:
+# - Debugging preference changes for dotfiles
+# - Documenting system modifications
+# - Identifying what settings are modified by GUI changes
+#
+# Usage:
+#   ./plist_monitor.sh <plist-name>
+#   Example: ./plist_monitor.sh com.apple.symbolichotkeys
 
 set -euo pipefail
 
-# Check if an argument is provided
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <plist-name>"
-    echo "Example: $0 com.apple.symbolichotkeys"
-    exit 1
-fi
+# Constants should be all caps and declared at the top
+readonly DESKTOP_PATH="$HOME/Desktop"
+readonly TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
-PLIST_NAME=$1
-DESKTOP_PATH="$HOME/Desktop"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BASENAME=$(basename "$PLIST_NAME" .plist)
-OUTPUT_DIR="$DESKTOP_PATH/${BASENAME}_monitor_${TIMESTAMP}"
-
-# Create output directory
-mkdir -p "$OUTPUT_DIR"
-
-# Function to capture current state
+# Function to capture current state - improve error handling
 capture_state() {
     local output_file="$1"
-    defaults read "$PLIST_NAME" > "$output_file"
+    if ! defaults read "$PLIST_NAME" > "$output_file"; then
+        echo "Error: Failed to read plist $PLIST_NAME" >&2
+        exit 1
+    fi
     echo "Current state saved to: $output_file"
 }
 
@@ -40,36 +44,55 @@ compare_states() {
     fi
 }
 
-# Capture initial state
-BEFORE_FILE="$OUTPUT_DIR/before.txt"
-capture_state "$BEFORE_FILE"
+main() {
+    # Check if an argument is provided with better error message
+    if [[ $# -ne 1 ]]; then
+        echo "Error: Missing plist name argument" >&2
+        echo "Usage: $0 <plist-name>" >&2
+        echo "Example: $0 com.apple.symbolichotkeys" >&2
+        exit 1
+    fi
 
-echo "Monitoring $PLIST_NAME for changes..."
-echo "Please make your changes in System Settings now."
-echo "Press Enter when you're done to see the differences..."
-read
+    readonly PLIST_NAME="$1"
+    readonly BASENAME=$(basename "$PLIST_NAME" .plist)
+    readonly OUTPUT_DIR="${DESKTOP_PATH}/${BASENAME}_monitor_${TIMESTAMP}"
 
-# Capture after state
-AFTER_FILE="$OUTPUT_DIR/after.txt"
-capture_state "$AFTER_FILE"
+    # Create output directory
+    mkdir -p "$OUTPUT_DIR"
 
-# Compare and show differences
-DIFF_FILE="$OUTPUT_DIR/changes.diff"
-compare_states "$BEFORE_FILE" "$AFTER_FILE" "$DIFF_FILE"
+    # Capture initial state
+    BEFORE_FILE="$OUTPUT_DIR/before.txt"
+    capture_state "$BEFORE_FILE"
 
-# Create a summary file
-SUMMARY_FILE="$OUTPUT_DIR/summary.txt"
-{
-    echo "Plist Monitor Results"
-    echo "===================="
-    echo "Target Plist: $PLIST_NAME"
-    echo "Timestamp: $(date)"
-    echo "-------------------"
-    echo "Changes detected:"
+    echo "Monitoring $PLIST_NAME for changes..."
+    echo "Please make your changes in System Settings now."
+    echo "Press Enter when you're done to see the differences..."
+    read
+
+    # Capture after state
+    AFTER_FILE="$OUTPUT_DIR/after.txt"
+    capture_state "$AFTER_FILE"
+
+    # Compare and show differences
+    DIFF_FILE="$OUTPUT_DIR/changes.diff"
+    compare_states "$BEFORE_FILE" "$AFTER_FILE" "$DIFF_FILE"
+
+    # Create a summary file with better formatting
+    readonly SUMMARY_FILE="$OUTPUT_DIR/summary.txt"
+    {
+        printf "Plist Monitor Results\n"
+        printf "====================\n"
+        printf "Target Plist: %s\n" "$PLIST_NAME"
+        printf "Timestamp: %s\n" "$(date)"
+        printf "-------------------\n"
+        printf "Changes detected:\n\n"
+        grep '^[+-]' "$DIFF_FILE" | grep -v '^[+-][-+]'
+    } > "$SUMMARY_FILE"
+
     echo
-    grep '^[+-]' "$DIFF_FILE" | grep -v '^[+-][-+]'
-} > "$SUMMARY_FILE"
+    echo "Monitor session completed."
+    echo "All files are saved in: $OUTPUT_DIR"
+}
 
-echo
-echo "Monitor session completed."
-echo "All files are saved in: $OUTPUT_DIR"
+# Execute main function
+main "$@"
