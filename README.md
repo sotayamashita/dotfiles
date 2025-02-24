@@ -1,4 +1,4 @@
-For 
+# :fish: on 
 
 ```bash
 cd; curl -#L https://github.com/sotayamashita/dotfiles/tarball/main | tar -xzv --strip-components 1 --exclude={README.md} --strip-components 1; ~/scripts/init.sh; ~/scripts/macos.sh; rm -rf ~/scripts
