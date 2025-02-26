@@ -1,5 +1,5 @@
 # Set theme
-theme = 'Gitlab Dark'
+theme = 'GitLab-Dark'
 
 # Set font
 font-family = 'FiraCode Nerd Font Mono'
