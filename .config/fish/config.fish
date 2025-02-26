@@ -8,6 +8,9 @@
 # https://fishshell.com/docs/current/faq.html#how-do-i-change-the-greeting-message
 set -U fish_greeting
 
+# Set XDG_CONFIG_HOME
+set -gx XDG_CONFIG_HOME $HOME/.config
+
 # Add local bin to path
 fish_add_path $HOME/.local/bin
 
