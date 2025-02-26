@@ -44,3 +44,6 @@ cask "notion-calendar"
 # Fonts
 cask "font-fira-code-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
+cask "font-plemol-jp"
+cask "font-plemol-jp-nf"
+cask "font-plemol-jp-hs"
