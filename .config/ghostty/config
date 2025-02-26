@@ -1,8 +1,8 @@
 # Set theme
-theme = 'xcodedarkhc'
+theme = xcodedarkhc
 
 # Set font
-font-family = 'FiraCode Nerd Font Mono'
+font-family = FiraCode Nerd Font Mono
 
 # Disable ligatures
 font-feature = -dlig
@@ -14,7 +14,7 @@ macos-titlebar-proxy-icon = hidden
 macos-titlebar-style = tabs
 
 # Quick Terminal
-quick-terminal-position = "top"
-quick-terminal-screen = "main"
+quick-terminal-position = top
+quick-terminal-screen = main
 quick-terminal-animation-duration = 0.3
-keybind = "global:cmd+shift+t=toggle_quick_terminal"
+keybind = global:cmd+shift+t=toggle_quick_terminal
