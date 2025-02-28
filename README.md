@@ -1,12 +1,18 @@
 # dotfiles
 
-## Simplified Setup
+A streamlined configuration management system for macOS development environments.
 
-Run this single command to start the automated setup process:
+## Quick Start
+
+Run this single command to begin the automated setup:
 
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/sotayamashita/dotfiles/main/bootstrap.sh)"
 ```
+
+## How It Works
+
+This repository uses a multi-stage setup process to handle SSH dependency constraints on fresh macOS installations:
 
 ```mermaid
 flowchart TD
@@ -49,42 +55,54 @@ flowchart TD
     class InstallPrereq,SetupCore1,SetupCore2,SetupMacOS1,SetupMacOS2,SetupSSH,CloneRepo,RunInstallers,CleanupTemp action;
 ```
 
-## Setup Process Details
+### Setup Process Stages
 
-This dotfiles repository uses a multi-stage setup process due to SSH dependency constraints on a fresh macOS installation:
+1. **Initial Setup**
+   - Downloads and applies basic configuration
+   - Installs essential tools (Xcode Command Line Tools, Homebrew)
+   - No SSH required at this stage
 
-1. **Initial Setup**: Downloads and applies basic configuration without requiring SSH
-2. **SSH Configuration**: Sets up 1Password SSH Agent for GitHub authentication
-3. **Complete Setup**: Clones the repository via SSH for proper version control
+2. **SSH Configuration**
+   - Sets up 1Password SSH Agent for GitHub authentication
+   - Prepares secure access for repository cloning
 
-### Manual Setup (Alternative)
+3. **Complete Setup**
+   - Clones the repository via SSH for proper version control
+   - Installs all tools and applies full configuration
+   - Configures macOS preferences
 
-If you prefer to run the setup manually, follow these steps:
+## Manual Setup Alternative
 
-#### Stage 1: Initial Setup (without SSH)
+If you prefer more control, you can run the setup process manually:
+
+### Stage 1: Initial Setup (No SSH Required)
 
 ```bash
-cd; curl -#L https://github.com/sotayamashita/dotfiles/tarball/main | tar -xzv --strip-components 1 --exclude={README.md} --strip-components 1; ~/scripts/modules/core/symlinks.sh; ~/scripts/modules/core/brew.sh; rm -rf ~/scripts
+cd
+curl -#L https://github.com/sotayamashita/dotfiles/tarball/main | tar -xzv --strip-components 1 --exclude={README.md}
+~/scripts/modules/core/symlinks.sh
+~/scripts/modules/core/brew.sh
+rm -rf ~/scripts
 ```
 
 This will:
-- Download the repository as a tarball directly to your home directory
-- Install essential tools (xcode-select, Homebrew)
+- Download the repository as a tarball to your home directory
+- Install essential tools
 - Apply basic configuration
-- Remove the temporary scripts directory
+- Clean up temporary files
 
-#### Stage 2: Complete Setup (with SSH)
+### Stage 2: Complete Setup (SSH Required)
 
-After the initial setup, follow these steps for a complete installation:
+After completing the initial setup:
 
-1. **Set up 1Password SSH Agent**:
+1. **Configure 1Password SSH Agent**:
    - Install 1Password from Homebrew
    - Enable SSH Agent in 1Password:
      1. `open -a "1Password"`
-     2. <kbd>⌘ + ,</kbd>
-     3. Enable Developer > Use the SSH Agent
+     2. Press <kbd>⌘ + ,</kbd> to open Preferences
+     3. Navigate to Developer > Use the SSH Agent and enable it
 
-   _[Learn more about the 1Password SSH Agent](https://developer.1password.com/docs/ssh/agent/)_
+   [Learn more about 1Password SSH Agent](https://developer.1password.com/docs/ssh/agent/)
 
 2. **Clone repository to permanent location**:
    ```bash
@@ -99,11 +117,11 @@ After the initial setup, follow these steps for a complete installation:
    ./scripts/modules/macos/preferences.sh
    ```
 
-   _[Learn more about Sign Git commits with SSH](https://developer.1password.com/docs/ssh/git-commit-signing/)_
+   [Learn more about signing Git commits with SSH](https://developer.1password.com/docs/ssh/git-commit-signing/)
 
-## Directory Structure
+## Repository Structure
 
-```bash
+```
 dotfiles/
 ├── .config/          # Configuration files
 ├── installers/       # Individual tool installers
@@ -122,10 +140,10 @@ dotfiles/
     └── installers/   # External tool installers
 ```
 
-## Cross-Platform Support
+## Platform Support
 
-This dotfiles repository supports macOS:
+This dotfiles repository is optimized for:
 
 - **macOS**: Full support with macOS-specific configurations
 
-The bootstrap process automatically applies the appropriate configurations.
+The bootstrap process automatically applies the appropriate configurations for your system.
