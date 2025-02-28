@@ -15,31 +15,37 @@ brew "bottom"
 brew "procs"
 brew "prettyping"
 
+# Foundamental
+cask "google-japanese-ime"
+cask "raycast"
+cask "divvy"
+cask "spotify"
+cask "deepl"
+cask "slack"
+cask "cleanshot"
+cask "obsidian"
+cask "notion-calendar"
+cask "1password"
+
+# Browser
+cask "arc"
+cask "google-chrome"
+
 # Development
+cask "cursor"
+cask "iterm2"
+cask "ghostty"
+cask "docker"
+cask "1password-cli"
 brew "node"
 brew "python"
 brew "go"
 brew "starship"
 
-# Applications
-cask "google-japanese-ime"
-cask "1password"
-cask "1password-cli"
-cask "cursor"
-cask "iterm2"
-cask "ghostty"
-cask "docker"
-cask "google-chrome"
-cask "slack"
-cask "cleanshot"
-cask "raycast"
-cask "obsidian"
-cask "divvy"
-cask "spotify"
-cask "deepl"
+# LLM
 cask "ollama"
-cask "arc"
-cask "notion-calendar"
+cask "claude"
+cask "chatgpt"
 
 # Fonts
 cask "font-fira-code-nerd-font"
