@@ -31,7 +31,7 @@ fish_add_path /opt/homebrew/opt/openssl@3/bin
 
 # Node.js (Volta)
 # https://volta.sh/
-set -l VOLTA_HOME $HOME/.volta
+set -gx VOLTA_HOME $HOME/.volta
 if test -d $VOLTA_HOME
     fish_add_path $VOLTA_HOME/bin
     volta completions fish | source
