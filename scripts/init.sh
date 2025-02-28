@@ -17,7 +17,10 @@ fi
 # Install brew packages
 source "${SCRIPT_DIR}/brew.sh"
 
+# Install custom tools using their recommended installation methods
+source "${SCRIPT_DIR}/install_tools.sh"
+
 # Remove app from Dock
-source "${SCRIPT_DIR}/rm-app-from-dock.sh"
+source "${SCRIPT_DIR}/dock-clear-apps.sh"
 
 info "✨ Initialization completed!"

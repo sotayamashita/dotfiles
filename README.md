@@ -40,6 +40,16 @@ cd ~/Projects/dotfiles
 
 _[Learn more about Sign Git commits with SSH](https://developer.1password.com/docs/ssh/git-commit-signing/)_
 
+### カスタムインストーラーの追加方法
+
+Homebrew以外の方法でツールをインストールする場合は、以下の手順でカスタムインストーラーを追加できます：
+
+1. `installers` ディレクトリに新しいシェルスクリプトを作成します（例: `tool_name.sh`）
+2. スクリプトに実行権限を付与します: `chmod +x installers/tool_name.sh`
+3. スクリプト内でツールの公式推奨インストール方法を実装します
+
+カスタムインストーラーは `scripts/init.sh` の実行時に自動的に実行されます。
+
 ### Divvy
 
 1. Open Divvy
