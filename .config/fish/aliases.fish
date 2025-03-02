@@ -37,8 +37,8 @@ end
 # File viewing
 # https://github.com/sharkdp/bat
 if has_command bat
-    alias cat="bat --style=header,grid"
-    alias less="bat --style=plain"
+    alias cat="bat --style=header,grid --paging=never"
+    alias less="bat --style=plain --paging=never"
 end
 
 # System monitoring
