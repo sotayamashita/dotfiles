@@ -1,3 +1,6 @@
+# Shell Integration Injection
+shell-integration = fish
+
 # Set theme
 theme = xcodedarkhc
 
