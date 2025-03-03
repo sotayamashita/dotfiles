@@ -99,7 +99,6 @@ setup_symlinks() {
             ".gitignore.global"
             ".gitattributes.global"
             ".Brewfile"
-            # ".config" を削除
         )
     fi
     
