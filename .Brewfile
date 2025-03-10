@@ -16,6 +16,7 @@ brew "procs"
 brew "prettyping"
 
 # Foundamental
+cask "zoom"
 cask "google-japanese-ime"
 cask "raycast"
 cask "divvy"
@@ -33,6 +34,7 @@ cask "google-chrome"
 
 # Development
 cask "cursor"
+cask "windsurf"
 cask "iterm2"
 cask "ghostty"
 cask "docker"

@@ -109,3 +109,6 @@ end
 # https://starship.rs/
 # Note: Must be at the end of the file
 starship init fish | source
+
+# Added by Windsurf
+fish_add_path /Users/sotayamashita/.codeium/windsurf/bin
