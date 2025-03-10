@@ -80,6 +80,11 @@ if test -d $FLUTTER_HOME
     fish_add_path $FLUTTER_HOME/bin
 end
 
+set -l BUN_HOME $HOME/.bun
+if test -d $BUN_HOME
+    fish_add_path $BUN_HOME/bin
+end
+
 # ------------------------------
 # Development Tools
 # ------------------------------
