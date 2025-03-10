@@ -12,6 +12,13 @@ create_file_symlink() {
     local source_file="$1"
     local target_file="$2"
     
+    # Ensure all parent directories exist
+    local target_dir=$(dirname "$target_file")
+    if [ ! -d "$target_dir" ]; then
+        info "Creating directory structure: $target_dir"
+        mkdir -p "$target_dir"
+    fi
+    
     if [ -L "$target_file" ]; then
         info "Symlink already exists: $target_file"
     elif [ -f "$target_file" ]; then
@@ -26,119 +33,51 @@ create_file_symlink() {
     fi
 }
 
-# Create a symlink for a directory
-create_dir_symlink() {
-    local source_dir="$1"
-    local target_dir="$2"
-    
-    if [ -L "$target_dir" ]; then
-        info "Symlink already exists: $target_dir"
-    elif [ -d "$target_dir" ]; then
-        backup_dir "$target_dir"
-        ln -sf "$source_dir" "$target_dir"
-        info "Created symlink for directory: $target_dir -> $source_dir"
-    elif [ -f "$target_dir" ]; then
-        warn "Target is a file, not a directory: $target_dir"
-    else
-        ln -sf "$source_dir" "$target_dir"
-        info "Created symlink for directory: $target_dir -> $source_dir"
-    fi
-}
-
-# Setup symlinks for .config directory contents
-setup_config_symlinks() {
-    info "Setting up .config symlinks..."
-    
-    # Create .config directory if it doesn't exist
-    ensure_dir_exists "$HOME/.config"
-    
-    # Find source directory
-    local source_config_dir="$DOTFILES_FINAL_DIR/.config"
-    if [ ! -d "$source_config_dir" ]; then
-        if [ -d "$DOTFILES_HOME_DIR/.config" ]; then
-            source_config_dir="$DOTFILES_HOME_DIR/.config"
-        else
-            warn "Source .config directory does not exist"
-            return 1
-        fi
-    fi
-    
-    # Process all files and directories in .config
-    for source_item in "$source_config_dir"/*; do
-        if [ -e "$source_item" ]; then
-            local item_name=$(basename "$source_item")
-            local target_item="$HOME/.config/$item_name"
-            
-            # Create appropriate symlink based on item type
-            if [ -f "$source_item" ]; then
-                create_file_symlink "$source_item" "$target_item"
-            elif [ -d "$source_item" ]; then
-                create_dir_symlink "$source_item" "$target_item"
-            else
-                warn "Unknown item type: $source_item"
-            fi
-        fi
-    done
-    
-    info "✅ .config symlinks created"
-}
+# Define target files and directories to symlink
+SYMLINK_TARGETS=(
+    ".config/fish/config.fish"
+    ".config/fish/aliases.fish"
+    ".config/starship.toml"
+    ".config/ghostty/config"
+    ".gitconfig"
+    ".gitconfig.alias"
+    ".gitconfig.user"
+    ".gitignore.global"
+    ".gitattributes.global"
+    ".Brewfile"
+)
 
 # Setup symlinks
 setup_symlinks() {
     info "Setting up symlinks..."
     
-    # Define files to symlink
-    local files=("$@")
-    
-    # Use default files if no arguments provided
-    if [ ${#files[@]} -eq 0 ]; then
-        files=(
-            ".gitconfig"
-            ".gitconfig.alias"
-            ".gitconfig.user"
-            ".gitignore.global"
-            ".gitattributes.global"
-            ".Brewfile"
-        )
+    # Find source directory
+    local source_dir="$DOTFILES_FINAL_DIR"
+    if [ ! -d "$source_dir" ]; then
+        if [ -d "$DOTFILES_HOME_DIR" ]; then
+            source_dir="$DOTFILES_HOME_DIR"
+        else
+            warn "Source directory does not exist"
+            return 1
+        fi
     fi
     
-    # Create symlinks
-    for file in "${files[@]}"; do
-        # Skip .config as it will be handled separately
-        if [ "$file" = ".config" ]; then
-            continue
-        fi
+    # Process each target directly
+    for target in "${SYMLINK_TARGETS[@]}"; do
+        local source_file="$source_dir/$target"
+        local target_file="$HOME/$target"
         
-        local source_file="$DOTFILES_FINAL_DIR/$file"
-        local target_file="$HOME/$file"
-        
-        # Skip if source doesn't exist
-        if [ ! -f "$source_file" ] && [ ! -d "$source_file" ]; then
-            if [ -f "$DOTFILES_HOME_DIR/$file" ] || [ -d "$DOTFILES_HOME_DIR/$file" ]; then
-                source_file="$DOTFILES_HOME_DIR/$file"
-            else
-                warn "Source file/directory does not exist: $source_file"
-                continue
-            fi
-        fi
-        
-        # Create appropriate symlink based on file type
-        if [ -f "$source_file" ]; then
+        if [ -e "$source_file" ]; then
             create_file_symlink "$source_file" "$target_file"
-        elif [ -d "$source_file" ]; then
-            create_dir_symlink "$source_file" "$target_file"
         else
-            warn "Unknown file type: $source_file"
+            warn "Source file does not exist: $source_file"
         fi
     done
-    
-    # Always process .config directory contents
-    setup_config_symlinks
     
     info "✅ Symlinks created"
 }
 
 # Run the function if this script is executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    setup_symlinks "$@"
+    setup_symlinks
 fi 
