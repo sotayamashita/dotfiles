@@ -7,3 +7,4 @@ oderwat.indent-rainbow
 streetsidesoftware.code-spell-checker
 yoavbls.pretty-ts-errors
 yzhang.markdown-all-in-one
+bierner.markdown-mermaid
