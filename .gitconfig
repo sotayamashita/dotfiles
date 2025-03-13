@@ -38,9 +38,6 @@
     # Editor
     editor = vim
 
-    # Pager
-    pager = delta
-
 [color]
     # Use colors in Git commands that are capable of colored output when
     # outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
@@ -76,14 +73,6 @@
     # Make `git push` push relevant annotated tags when pushing branches out.
     followTags = true
 
-
-[interactive]
-    diffFilter   = delta --color-only
-
-[delta]
-    # use n and N to move between diff sections
-    navigate = true
-
 [color "diff-highlight"]
     oldNormal    = red bold
     oldHighlight = red bold 52
@@ -115,9 +104,6 @@
 
 [url "git://gist.github.com/"]
     insteadOf     = "gist:"
-
-[merge]
-    conflictstyle = zdiff3
 
 [diff]
     colorMoved = default
