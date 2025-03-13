@@ -42,6 +42,7 @@ SYMLINK_TARGETS=(
     ".gitconfig"
     ".gitconfig.alias"
     ".gitconfig.user"
+    ".gitconfig.diff-so-fancy"
     ".gitignore.global"
     ".gitattributes.global"
     ".Brewfile"

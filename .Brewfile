@@ -43,6 +43,7 @@ brew "node"
 brew "python"
 brew "go"
 brew "starship"
+brew "diff-so-fancy"
 
 # LLM
 cask "ollama"

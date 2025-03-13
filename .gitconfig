@@ -1,6 +1,7 @@
 [include]
     path = ~/.gitconfig.user
     path = ~/.gitconfig.alias
+    path = ~/.gitconfig.diff-so-fancy
 
     # Sign Git commits with SSH
     # https://developer.1password.com/docs/ssh/git-commit-signing/
