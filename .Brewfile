@@ -33,6 +33,7 @@ cask "arc"
 cask "google-chrome"
 
 # Development
+cask "visual-studio-code"
 cask "cursor"
 cask "windsurf"
 cask "iterm2"
