@@ -167,6 +167,9 @@ setup_repository() {
     
     # Create Projects directory if it doesn't exist
     mkdir -p "$(dirname "$DOTFILES_FINAL_DIR")"
+
+    # Create Tools directory if it doesn't exist
+    mkdir -p "$DOTFILES_FINAL_DIR/Tools"
     
     # Check if repository already exists
     if [ -d "$DOTFILES_FINAL_DIR/.git" ]; then

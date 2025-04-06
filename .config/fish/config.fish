@@ -31,10 +31,9 @@ fish_add_path /opt/homebrew/opt/openssl@3/bin
 
 # Node.js (Volta)
 # https://volta.sh/
-set -gx VOLTA_HOME $HOME/.volta
+set -gx VOLTA_HOME "$HOME/.volta"
 if test -d $VOLTA_HOME
-    fish_add_path $VOLTA_HOME/bin
-    volta completions fish | source
+    set -gx PATH "$VOLTA_HOME/bin" $PATH
 end
 
 # Python (pyenv)
@@ -114,6 +113,3 @@ end
 # https://starship.rs/
 # Note: Must be at the end of the file
 starship init fish | source
-
-# Added by Windsurf
-fish_add_path /Users/sotayamashita/.codeium/windsurf/bin
