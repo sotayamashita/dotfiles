@@ -20,7 +20,10 @@ info "--- Installing Rust ---"
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 # Update PATH for the current session
-source "$HOME/.cargo/env"
+source "$HOME/.cargo/env" || {
+    error "Failed to update PATH for the current session"
+    exit 1
+}
 
 # Verify installation
 if command -v rustc &>/dev/null; then

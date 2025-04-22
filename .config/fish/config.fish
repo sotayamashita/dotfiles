@@ -85,6 +85,10 @@ if test -d $BUN_HOME
     fish_add_path $BUN_HOME/bin
 end
 
+if test -f $HOME/.local/bin/mise
+    $HOME/.local/bin/mise activate fish | source
+end
+
 # ------------------------------
 # Development Tools
 # ------------------------------

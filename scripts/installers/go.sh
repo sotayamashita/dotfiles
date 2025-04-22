@@ -39,6 +39,12 @@ curl -fsSLO "https://go.dev/dl/${PKG_FILE}"
 info "Running sudo installer …"
 sudo installer -pkg "${PKG_FILE}" -target /
 
+# Update PATH for the current session
+source "/usr/local/go/bin/go" || {
+    error "Failed to update PATH for the current session"
+    exit 1
+}
+
 # Verify installation
 if command -v go &>/dev/null; then
     info "Go $(go version) installed successfully"
