@@ -38,10 +38,10 @@ end
 
 # Python (pyenv)
 # https://github.com/pyenv/pyenv
-set -l PYTHON_HOME $HOME/.pyenv
-if test -d $PYTHON_HOME
-    fish_add_path $PYTHON_HOME/bin
-    pyenv init - | source
+set -Ux PYENV_ROOT $HOME/.pyenv
+if test -d $PYENV_ROOT
+    fish_add_path $PYENV_ROOT/bin
+    pyenv init - fish | source
 end
 
 # Ruby (rbenv)
@@ -60,6 +60,7 @@ end
 
 # Go
 # https://go.dev/doc/install
+# see: scripts/installers/go.sh
 set -l GO_HOME /usr/local/go
 if test -d $GO_HOME
     fish_add_path $GO_HOME/bin
