@@ -44,6 +44,7 @@ cask "docker"
 cask "1password-cli"
 brew "starship"
 brew "diff-so-fancy"
+brew "tealdeer"
 
 # LLM
 cask "ollama"
