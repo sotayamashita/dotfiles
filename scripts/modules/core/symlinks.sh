@@ -37,6 +37,7 @@ create_file_symlink() {
 SYMLINK_TARGETS=(
     ".config/fish/config.fish"
     ".config/fish/aliases.fish"
+    ".config/borders/bordersrc"
     ".config/starship.toml"
     ".config/ghostty/config"
     ".gitconfig"

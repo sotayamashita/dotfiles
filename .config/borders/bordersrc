@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# Borders configuration file.
+# Controls the appearance of window borders in the system.
+#
+# To apply changes, run: `brew services restart felixkratz/formulae/borders`
+#
+
+options=(
+  style=round
+  width=6.0
+  hidpi=on
+  active_color=0xc0ff00f2
+  inactive_color=0xff0080ff
+)
+
+borders "${options[@]}"

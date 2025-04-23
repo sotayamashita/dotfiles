@@ -27,6 +27,8 @@ cask "cleanshot"
 cask "obsidian"
 cask "notion-calendar"
 cask "1password"
+tap "FelixKratz/formulae"
+brew "borders"
 
 # Browser
 cask "arc"
