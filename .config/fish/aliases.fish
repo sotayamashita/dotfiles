@@ -63,5 +63,5 @@ end
 # Help
 # https://github.com/tealdeer-rs/tealdeer
 if has_command help
-    alias help="tealdeer"
+    alias help="tldr"
 end
