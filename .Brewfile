@@ -42,9 +42,11 @@ cask "iterm2"
 cask "ghostty"
 cask "docker"
 cask "1password-cli"
+cask "figma"
 brew "starship"
 brew "diff-so-fancy"
 brew "tealdeer"
+
 
 # LLM
 cask "ollama"
