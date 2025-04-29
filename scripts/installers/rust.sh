@@ -8,8 +8,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Source utils.sh using the script directory as base
 source "${SCRIPT_DIR}/../lib/utils.sh"
 
+readonly cmd="$HOME/.cargo/bin/rustc"
+
 # Check if Rust is already installed
-if command -v rustc &>/dev/null; then
+if command -v $cmd &>/dev/null; then
     info "Rust is already installed. Skipping installation."
     exit 0
 fi
@@ -26,9 +28,9 @@ source "$HOME/.cargo/env" || {
 }
 
 # Verify installation
-if command -v rustc &>/dev/null; then
+if command -v $cmd &>/dev/null; then
     info "✨ Rust installed successfully!"
-    rustc --version
+    $cmd --version
 else
     error "Failed to install Rust."
     exit 1

@@ -11,8 +11,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Source utils.sh using the script directory as base
 source "${SCRIPT_DIR}/../lib/utils.sh"
 
+readonly cmd="/usr/local/go/bin/go"
+
 # Check if Go is already installed
-if command -v go &>/dev/null; then
+if command -v $cmd &>/dev/null; then
     info "Go is already installed. Skipping installation."
     exit 0
 fi
@@ -46,10 +48,10 @@ source "/usr/local/go/bin/go" || {
 }
 
 # Verify installation
-if command -v go &>/dev/null; then
-    info "Go $(go version) installed successfully"
-elif [[ -x /usr/local/go/bin/go ]]; then
-    info "Go installed at /usr/local/go/bin/go"
+if command -v $cmd &>/dev/null; then
+    info "Go $($cmd version) installed successfully"
+elif [[ -x $cmd ]]; then
+    info "Go installed at $cmd"
     warn "Add /usr/local/go/bin to your PATH or start a new terminal session. See: ~/.config/fish/config.fish"
 else
     error "Installer finished but Go binary not found ❌"

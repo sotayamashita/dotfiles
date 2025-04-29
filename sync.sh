@@ -4,6 +4,9 @@
 
 set -euo pipefail
 
+# --- Constants ---
+readonly DOTFILES_FINAL_DIR="$HOME/Projects/dotfiles"
+
 # --- Determine script's directory to reliably source libraries ---
 # This ensures that the script can find the 'scripts/' directory
 # regardless of where it's called from (as long as it's within the repo).

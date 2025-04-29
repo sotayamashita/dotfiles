@@ -8,8 +8,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Source utils.sh using the script directory as base
 source "${SCRIPT_DIR}/../lib/utils.sh"
 
+readonly cmd="$HOME/.local/bin/mise"
+
 # Check if mise is already installed
-if command -v mise &>/dev/null; then
+if command -v $cmd &>/dev/null; then
     info "mise is already installed. Skipping installation."
     mise --version
     mise doctor
@@ -22,10 +24,10 @@ info "--- Installing mise ---"
 curl https://mise.run | sh
 
 # Verify installation
-if command -v mise &>/dev/null; then
+if command -v $cmd &>/dev/null; then
     info "✨ mise installed successfully!"
-    mise --version
-    mise doctor
+    $cmd --version
+    $cmd doctor
 else
     error "Failed to install mise."
     exit 1
