@@ -62,10 +62,6 @@ setup_symlinks() {
             return 1
         fi
     fi
-
-    echo "=========================="
-    echo "source_dir: $source_dir"
-    echo "=========================="
     
     # Process each target directly
     for target in "${SYMLINK_TARGETS[@]}"; do
