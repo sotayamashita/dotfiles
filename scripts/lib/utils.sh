@@ -38,7 +38,7 @@ info()  { printf "%s %s\n" "$(_log_prefix "$GREEN" "INFO")" "$1" >&2; }
 warn()  { printf "%s %s\n" "$(_log_prefix "$YELLOW" "WARN")" "$1" >&2; }
 error() { printf "%s %s\n" "$(_log_prefix "$RED" "ERROR")" "$1" >&2; exit 1; } # Exit on error
 debug() { printf "%s %s\n" "$(_log_prefix "$BLUE" "DEBUG")" "$1" >&2; }
-step()  { printf "\n%s --- %s ---\n" "$(_log_prefix "$CYAN" "STEP")" "$1" >&2; } # Added Step function
+step()  { printf "\n\n\n\n%s --- %s ---\n" "$(_log_prefix "$CYAN" "STEP")" "$1" >&2; } # Added Step function
 
 # --- Checks ---
 command_exists() { command -v "$1" >/dev/null 2>&1; }
