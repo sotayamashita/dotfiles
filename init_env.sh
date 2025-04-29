@@ -165,6 +165,7 @@ main() {
         info "✅ 1Password CLI already installed."
     fi
 
+
     # Configure SSH for 1Password Agent
     step "Configuring SSH for 1Password Agent"
     local ssh_dir="$HOME/.ssh"
@@ -211,6 +212,7 @@ main() {
     fi
     info "SSH configuration check complete."
     info "IMPORTANT: Ensure the 1Password desktop app is running and the SSH agent is enabled in its Developer settings."
+    open -a "1Password"
 
     # Check for dotfiles repository
     step "Checking dotfiles repository"
