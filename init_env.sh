@@ -11,28 +11,36 @@ readonly REQUIRED_COMMANDS=("curl" "git" "sudo")
 readonly REQUIRED_MACOS_APPS=("Xcode Command Line Tools" "Homebrew" "1Password CLI")
 
 # --- Minimal Logging & Helpers ---
-_log_prefix() {
+_log_prefix_val() {
     local color_start=""
     local color_end=""
-    if [ -t 1 ]; then # Check if stdout is a terminal
+    # Check if STDERR is a terminal for color decision
+    if [ -t 2 ]; then
         case "$1" in
-            INFO) color_start='\033[0;32m'; color_end='\033[0m';; # Green
-            WARN) color_start='\033[0;33m'; color_end='\033[0m';; # Yellow
+            INFO)  color_start='\033[0;32m'; color_end='\033[0m';; # Green
+            WARN)  color_start='\033[0;33m'; color_end='\033[0m';; # Yellow
             ERROR) color_start='\033[0;31m'; color_end='\033[0m';; # Red
-            STEP) color_start='\033[0;34m'; color_end='\033[0m';; # Blue
+            STEP)  color_start='\033[0;34m'; color_end='\033[0m';; # Blue
         esac
     fi
-    echo -e "${color_start}[$1]${color_end}" >&2
+    # Use printf to handle colors and return the value (no automatic newline)
+    printf "%b[%s]%b" "${color_start}" "$1" "${color_end}"
 }
-info() { echo "$(_log_prefix INFO) $1" >&2; }
-warn() { echo "$(_log_prefix WARN) $1" >&2; }
-error() { echo "$(_log_prefix ERROR) $1" >&2; exit 1; }
-step() { echo -e "\n$(_log_prefix STEP) --- $1 ---" >&2; }
-command_exists() { command -v "$1" >/dev/null 2>&1; }
+
+# Logging functions now capture the prefix and print the full line to stderr
+info()  { echo "$(_log_prefix_val INFO) $1" >&2; }
+warn()  { echo "$(_log_prefix_val WARN) $1" >&2; }
+error() { echo "$(_log_prefix_val ERROR) $1" >&2; exit 1; }
+# step now correctly incorporates the newline BEFORE the prefix returned by _log_prefix_val
+step()  { echo -e "\n$(_log_prefix_val STEP) --- $1 ---" >&2; }
+
+# Other helpers remain the same
 is_macos() { [[ "$(uname -s)" == "Darwin" ]]; }
+command_exists() { command -v "$1" >/dev/null 2>&1; }
+
 
 main() {
-    echo "===== Initializing Environment for Dotfiles Setup ====="
+    info "===== Initializing Environment for Dotfiles Setup ====="
 
     # Check for essential commands
     step "Checking essential commands"
