@@ -1,5 +1,5 @@
 # Taps
-tap "homebrew/bundle"
+tap "FelixKratz/formulae"
 
 # CLI tools
 brew "fish"
@@ -25,9 +25,7 @@ cask "deepl"
 cask "slack"
 cask "cleanshot"
 cask "obsidian"
-cask "notion-calendar"
 cask "1password"
-tap "FelixKratz/formulae"
 brew "borders"
 
 # Browser
