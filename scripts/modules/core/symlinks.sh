@@ -7,9 +7,6 @@ set -euo pipefail
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$SCRIPT_DIR/../../lib/utils.sh" || { echo "[ERROR] Failed to source utils.sh" >&2; exit 1; }
 
-# Constants
-readonly DOTFILES_FINAL_DIR="$HOME/Projects/dotfiles"
-
 # Create a symlink for a file
 create_file_symlink() {
     local source_file="$1"
