@@ -13,8 +13,7 @@ readonly cmd="$HOME/.local/bin/mise"
 # Check if mise is already installed
 if command -v $cmd &>/dev/null; then
     info "mise is already installed. Skipping installation."
-    mise --version
-    mise doctor
+    $cmd --version
     exit 0
 fi
 
