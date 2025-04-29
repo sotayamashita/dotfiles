@@ -19,6 +19,7 @@ fish_add_path $HOME/.local/bin
 # ------------------------------
 # Homebrew
 # https://brew.sh/
+# Determine Homebrew prefix based on architecture
 set -l BREW_PREFIX (uname -m | grep -q arm64; and echo /opt/homebrew; or echo /usr/local)
 fish_add_path $BREW_PREFIX/bin
 
