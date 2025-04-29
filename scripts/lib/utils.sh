@@ -13,9 +13,6 @@ readonly DOTFILES_SCRIPTS_DIR="${DOTFILES_FINAL_DIR}/scripts"
 : "${DOTFILES_HOME_DIR:="$HOME"}"
 # DOTFILES_STATE_FILE is likely no longer needed
 
-echo "DOTFILES_FINAL_DIR: $DOTFILES_FINAL_DIR"
-echo "DOTFILES_SCRIPTS_DIR: $DOTFILES_SCRIPTS_DIR"
-
 # --- Colors ---
 # Check if stderr is a terminal before using colors
 if [ -t 2 ]; then
