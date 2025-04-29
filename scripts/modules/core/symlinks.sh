@@ -19,10 +19,9 @@ create_file_symlink() {
         mkdir -p "$target_dir"
     fi
     
-    if [ -L "$target_file" ]; then
-        info "Symlink already exists: $target_file"
-    elif [ -f "$target_file" ]; then
+    if [ -f "$target_file" ]; then
         backup_file "$target_file"
+        info "Backup file: $target_file"
         ln -sf "$source_file" "$target_file"
         info "Created symlink for file: $target_file -> $source_file"
     elif [ -d "$target_file" ]; then
