@@ -307,7 +307,7 @@ main() {
     ensure_ssh_config_for_1password
     ensure_dotfiles_repo_cloned
     echo
-    echo "Environment preparation complete!" >&2
+    info "Environment preparation complete!" >&2
     info "Dotfiles repository is available at: $DOTFILES_FINAL_DIR"
     info "Next step: Change into the repository directory and run the main setup script."
     info "Example:"
