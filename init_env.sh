@@ -152,7 +152,7 @@ main() {
 
     if ! command_exists op; then
         info "1Password CLI ('op') not found. Attempting installation via Homebrew..."
-        if brew install --cask 1password/tap/1password-cli; then
+        if brew install --quiet --cask 1password/tap/1password-cli; then
             info "1Password CLI installation finished."
             # Verify command exists now
             if ! command_exists op; then
@@ -165,9 +165,94 @@ main() {
         info "✅ 1Password CLI already installed."
     fi
 
+    # Configure SSH for 1Password Agent
+    step "Configuring SSH for 1Password Agent"
+    local ssh_dir="$HOME/.ssh"
+    local ssh_config_file="$ssh_dir/config"
+    local agent_config_line='IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"'
+
+    if [ ! -d "$ssh_dir" ]; then
+        info "Creating directory: $ssh_dir"
+        mkdir "$ssh_dir" || error "Failed to create $ssh_dir"
+        chmod 700 "$ssh_dir" || warn "Failed to set permissions on $ssh_dir"
+    else
+        if [[ $(stat -f "%Lp" "$ssh_dir") != 700 ]]; then
+            info "Correcting permissions for $ssh_dir"
+            chmod 700 "$ssh_dir" || warn "Failed to set permissions on $ssh_dir"
+        fi
+    fi
+
+    if [ ! -f "$ssh_config_file" ]; then
+        info "Creating SSH config file: $ssh_config_file"
+        (
+            echo "Host *"
+            echo "  $agent_config_line"
+        ) > "$ssh_config_file"
+        chmod 600 "$ssh_config_file" || warn "Failed to set permissions on $ssh_config_file"
+        info "✅ SSH config created for 1Password Agent."
+    else
+        if grep -qF "$agent_config_line" "$ssh_config_file"; then
+            info "✅ SSH config already contains 1Password Agent setting."
+        else
+            info "Adding 1Password Agent setting to $ssh_config_file"
+            if ! grep -qE "^\s*Host\s+\*" "$ssh_config_file"; then
+                echo "" >> "$ssh_config_file"
+                echo "Host *" >> "$ssh_config_file"
+            fi
+            echo "" >> "$ssh_config_file"
+            echo "# Added by init_env.sh for 1Password" >> "$ssh_config_file"
+            echo "  $agent_config_line" >> "$ssh_config_file"
+            info "✅ 1Password Agent setting added."
+        fi
+        if [[ $(stat -f "%Lp" "$ssh_config_file") != 600 ]]; then
+            info "Correcting permissions for $ssh_config_file"
+            chmod 600 "$ssh_config_file" || warn "Failed to set permissions on $ssh_config_file"
+        fi
+    fi
+    info "SSH configuration check complete."
+    info "IMPORTANT: Ensure the 1Password desktop app is running and the SSH agent is enabled in its Developer settings."
+
+    # Check for dotfiles repository
+    step "Checking dotfiles repository"
+    local projects_dir
+    projects_dir=$(dirname "$DOTFILES_FINAL_DIR")
+
+    if [ ! -d "$projects_dir" ]; then
+        info "Creating parent directory: $projects_dir"
+        mkdir -p "$projects_dir" || error "Failed to create directory: $projects_dir"
+    fi
+
+    if [ -d "$DOTFILES_FINAL_DIR" ]; then
+        if [ -d "$DOTFILES_FINAL_DIR/.git" ]; then
+            info "Directory exists: $DOTFILES_FINAL_DIR"
+            local current_remote_url
+            current_remote_url=$( (cd "$DOTFILES_FINAL_DIR" && git config --get remote.origin.url) 2>/dev/null || echo "Not a git repo or no remote origin" )
+
+            if [[ "$current_remote_url" == "$DOTFILES_SSH_URL" ]]; then
+                info "✅ Repository already cloned with correct SSH remote URL."
+                return 0
+            else
+                error "Directory '$DOTFILES_FINAL_DIR' exists but is either not a git repository or has the wrong remote origin URL ('$current_remote_url')."
+                return 1
+            fi
+        else
+            error "Directory '$DOTFILES_FINAL_DIR' exists but is not a git repository."
+            return 1
+        fi
+    else
+        info "Repository not found locally. Cloning via SSH from $DOTFILES_SSH_URL..."
+        if git clone "$DOTFILES_SSH_URL" "$DOTFILES_FINAL_DIR"; then
+            info "✅ Repository cloned successfully to $DOTFILES_FINAL_DIR"
+            return 0
+        else
+            error "Failed to clone repository using SSH."
+            return 1
+        fi
+    fi
+
     echo # Newline for clarity
 
-    echo "🎉🎉🎉 Environment preparation complete! 🎉🎉🎉"
+    info "🎉🎉🎉 Environment preparation complete! 🎉🎉🎉"
     info "Dotfiles repository is available at: $DOTFILES_FINAL_DIR"
     info "Next step: Run the main setup script inside the repository."
     info "Example:"
