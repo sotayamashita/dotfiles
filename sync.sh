@@ -47,22 +47,8 @@ set_fish_as_default_shell() {
     # 3. Check if the fish path is already in /etc/shells
     if ! grep -qFx "$fish_path" /etc/shells; then
         info "Adding $fish_path to /etc/shells (requires sudo)"
-        # Check if we can get sudo access non-interactively first
-        if sudo -n true > /dev/null 2>&1; then
-            # Append using sudo tee -a
-            if sudo echo "$fish_path" | sudo tee -a /etc/shells > /dev/null; then
-                info "✅ Successfully added $fish_path to /etc/shells"
-            else
-                error "Failed to add $fish_path to /etc/shells even with sudo."
-                # return 1 # error function exits
-            fi
-        else
-            warn "sudo access required to modify /etc/shells."
-            warn "Please run 'echo \"$fish_path\" | sudo tee -a /etc/shells' manually,"
-            warn "or run sync.sh with sudo privileges (not generally recommended)."
-            warn "Skipping default shell change for now."
-            return 1 # Skip changing shell if /etc/shells wasn't updated
-        fi
+        sudo /bin/bash -c "echo $(command -v fish) >> /etc/shells"
+        chsh -s "$(command -v fish)"
     else
         info "✅ Fish path '$fish_path' already exists in /etc/shells."
     fi
