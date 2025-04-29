@@ -10,9 +10,17 @@ source "$SCRIPT_DIR/../../lib/utils.sh"
 # Install Homebrew packages
 install_brew_packages() {
     info "Installing Homebrew packages..."
+
+    # Determine Homebrew prefix based on architecture
+    local brew_prefix
+    if [[ "$(uname -m)" == "arm64" ]]; then
+        brew_prefix="/opt/homebrew"
+    else
+        brew_prefix="/usr/local"
+    fi
     
     # Check if Homebrew is installed
-    if ! command_exists brew; then
+    if ! command_exists ${brew_prefix}/bin/brew; then
         error "Homebrew is not installed. Please install it first."
     fi
     
@@ -28,7 +36,7 @@ install_brew_packages() {
     
     # Install packages from Brewfile
     info "Installing packages from Brewfile: $brewfile"
-    brew bundle --file="$brewfile"
+    ${brew_prefix}/bin/brew bundle --file="$brewfile"
     
     info "✅ Homebrew packages installed"
 }
