@@ -13,15 +13,6 @@ readonly DOTFILES_SCRIPTS_DIR="${DOTFILES_FINAL_DIR}/scripts"
 : "${DOTFILES_HOME_DIR:="$HOME"}"
 # DOTFILES_STATE_FILE is likely no longer needed
 
-# --- Load Brew Path ---
-if is_macos; then
-    if [[ $(uname -m) == "arm64" ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    else
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
-fi
-
 # --- Colors ---
 # Check if stderr is a terminal before using colors
 if [ -t 2 ]; then
@@ -60,6 +51,15 @@ get_macos_version() {
 get_mac_architecture() {
     if is_macos; then uname -m; else echo "Not macOS"; fi # e.g., arm64 or x86_64
 }
+
+# --- Load Brew Path ---
+if is_macos; then
+    if [[ $(uname -m) == "arm64" ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    else
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+fi
 
 # --- Filesystem Operations ---
 ensure_dir_exists() {

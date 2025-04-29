@@ -18,8 +18,6 @@ source "${SCRIPT_DIR}/scripts/lib/utils.sh" || { echo "[ERROR] Failed to source 
 set_fish_as_default_shell() {
     step "Setting Fish as default shell"
 
-    command -v brew
-
     # 1. Check if fish is installed (command should exist after brew bundle)
     if ! command_exists fish; then
         warn "Fish shell ('fish') command not found. Skipping default shell change."
