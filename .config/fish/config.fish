@@ -19,11 +19,12 @@ fish_add_path $HOME/.local/bin
 # ------------------------------
 # Homebrew
 # https://brew.sh/
-fish_add_path /opt/homebrew/bin
+set -l BREW_PREFIX (uname -m | grep -q arm64; and echo /opt/homebrew; or echo /usr/local)
+fish_add_path $BREW_PREFIX/bin
 
 # OpenSSL
 # https://www.openssl.org/
-fish_add_path /opt/homebrew/opt/openssl@3/bin
+fish_add_path $BREW_PREFIX/opt/openssl@3/bin
 
 # ------------------------------
 # Programming Languages & SDKs

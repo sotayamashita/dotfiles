@@ -7,6 +7,22 @@ set -euo pipefail
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$SCRIPT_DIR/../../lib/utils.sh" || { echo "[ERROR] Failed to source utils.sh" >&2; exit 1; }
 
+# Define target files and directories to symlink
+SYMLINK_TARGETS=(
+    ".config/fish/config.fish"
+    ".config/fish/aliases.fish"
+    ".config/borders/bordersrc"
+    ".config/starship.toml"
+    ".config/ghostty/config"
+    ".gitconfig"
+    ".gitconfig.alias"
+    ".gitconfig.user"
+    ".gitconfig.delta"
+    ".gitignore.global"
+    ".gitattributes.global"
+    ".Brewfile"
+)
+
 # Create a symlink for a file
 create_file_symlink() {
     local source_file="$1"
@@ -31,22 +47,6 @@ create_file_symlink() {
         info "Created symlink for file: $target_file -> $source_file"
     fi
 }
-
-# Define target files and directories to symlink
-SYMLINK_TARGETS=(
-    ".config/fish/config.fish"
-    ".config/fish/aliases.fish"
-    ".config/borders/bordersrc"
-    ".config/starship.toml"
-    ".config/ghostty/config"
-    ".gitconfig"
-    ".gitconfig.alias"
-    ".gitconfig.user"
-    ".gitconfig.delta"
-    ".gitignore.global"
-    ".gitattributes.global"
-    ".Brewfile"
-)
 
 # Setup symlinks
 setup_symlinks() {
