@@ -52,15 +52,6 @@ get_mac_architecture() {
     if is_macos; then uname -m; else echo "Not macOS"; fi # e.g., arm64 or x86_64
 }
 
-# --- Load Brew Path ---
-if is_macos; then
-    if [[ $(uname -m) == "arm64" ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    else
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
-fi
-
 # --- Filesystem Operations ---
 ensure_dir_exists() {
     local dir="$1"

@@ -14,6 +14,15 @@ cd "$SCRIPT_DIR" || exit 1 # Change into the script's directory (dotfiles root)
 # shellcheck source=scripts/lib/utils.sh
 source "${SCRIPT_DIR}/scripts/lib/utils.sh" || { echo "[ERROR] Failed to source utils.sh" >&2; exit 1; }
 
+# --- Load Brew Path ---
+if is_macos; then
+    if [[ $(uname -m) == "arm64" ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    else
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+fi
+
 # --- Function to set Fish as default shell ---
 set_fish_as_default_shell() {
     step "Setting Fish as default shell"
