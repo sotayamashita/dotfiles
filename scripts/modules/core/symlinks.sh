@@ -64,7 +64,7 @@ setup_symlinks() {
         fi
     fi
 
-    ecoh "=========================="
+    echo "=========================="
     echo "source_dir: $source_dir"
     echo "=========================="
     
