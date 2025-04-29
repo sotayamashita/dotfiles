@@ -27,7 +27,6 @@ curl https://mise.run | sh
 if command -v $cmd &>/dev/null; then
     info "✨ mise installed successfully!"
     $cmd --version
-    $cmd doctor
 else
     error "Failed to install mise."
     exit 1
