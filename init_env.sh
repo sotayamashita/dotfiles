@@ -30,16 +30,14 @@ _log_prefix_val() {
 }
 
 # Logging functions now capture the prefix and print the full line to stderr
-info()  { echo "$(_log_prefix_val INFO) $1" >&2; }
-warn()  { echo "$(_log_prefix_val WARN) $1" >&2; }
-error() { echo "$(_log_prefix_val ERROR) $1" >&2; exit 1; }
-# step now correctly incorporates the newline BEFORE the prefix returned by _log_prefix_val
-step()  { echo -e "\n$(_log_prefix_val STEP) --- $1 ---" >&2; }
-
+info()   { echo "$(_log_prefix_val INFO) $1" >&2; }
+warn()   { echo "$(_log_prefix_val WARN) $1" >&2; }
+error()  { echo "$(_log_prefix_val ERROR) $1" >&2; exit 1; }
+step()   { echo -e "\n$(_log_prefix_val STEP) --- $1 ---" >&2; }
+prompt() { echo -e "\n$(_log_prefix_val PROMPT) $1" >&2; }
 # Other helpers
 is_macos() { [[ "$(uname -s)" == "Darwin" ]]; }
 command_exists() { command -v "$1" >/dev/null 2>&1; }
-
 
 # --- Prerequisite and Setup Functions ---
 
@@ -192,6 +190,50 @@ ensure_1password_cli() {
     else
         info "✅ 1Password CLI already installed."
     fi
+    return 0
+}
+
+prompt_enable_1password_ssh_agent() {
+    step "ACTION REQUIRED: Enable 1Password SSH Agent"
+    if ! is_macos; then
+        info "Not macOS, skipping 1Password SSH Agent prompt."
+        return 0
+    fi
+
+    info "The next steps require the 1Password SSH Agent to be enabled within the 1Password app."
+    info "Instructions:"
+    info " 1. Open the 1Password application."
+    info " 2. Go to Preferences/Settings (usually Cmd + ,)."
+    info " 3. Navigate to the 'Developer' section."
+    info " 4. Ensure 'Integrate with 1Password CLI' is enabled."
+    info " 5. Ensure 'Use the SSH Agent' is enabled."
+    info " See: https://developer.1password.com/docs/ssh/get-started#step-3-turn-on-the-1password-ssh-agent"
+    echo "" # Add a newline for spacing
+
+    local open_app_response
+    local confirm_response
+
+    # Ask user if they want to open the app
+    prompt "Would you like this script to try opening the 1Password app for you? (y/N)"
+    read -r open_app_response
+    # Convert to lowercase for easier checking
+    open_app_response=$(echo "$open_app_response" | tr '[:upper:]' '[:lower:]')
+
+    if [[ "$open_app_response" =~ ^y(es)?$ ]]; then
+        info "Attempting to open 1Password..."
+        if ! open -a "1Password"; then
+            warn "Could not open 1Password automatically. Please open it manually."
+        fi
+    else
+        info "Okay, please open 1Password manually."
+    fi
+
+    # Wait for user confirmation
+    prompt "Please follow the instructions above to enable the SSH Agent in 1Password."
+    prompt "Once you have enabled the 'Use the SSH Agent' setting, press Enter to continue..."
+    read -r confirm_response # We just need the user to press Enter
+
+    info "Thank you. Proceeding with SSH configuration..."
     return 0
 }
 
@@ -351,6 +393,7 @@ main() {
     ensure_xcode_clt
     ensure_homebrew
     ensure_1password_cli
+    prompt_enable_1password_ssh_agent
     ensure_ssh_config_for_1password
     ensure_dotfiles_repo_cloned
 
