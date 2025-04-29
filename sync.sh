@@ -41,7 +41,7 @@ set_fish_as_default_shell() {
         # Check if we can get sudo access non-interactively first
         if sudo -n true > /dev/null 2>&1; then
             # Append using sudo tee -a
-            if echo "$fish_path" | sudo tee -a /etc/shells > /dev/null; then
+            if sudo echo "$fish_path" | sudo tee -a /etc/shells > /dev/null; then
                 info "✅ Successfully added $fish_path to /etc/shells"
             else
                 error "Failed to add $fish_path to /etc/shells even with sudo."
