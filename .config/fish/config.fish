@@ -1,3 +1,8 @@
+# Locale
+set -Ux LANG        ja_JP.UTF-8
+set -Ux LC_CTYPE    ja_JP.UTF-8
+set -Ux LC_MESSAGES ja_JP.UTF-8
+
 # Load aliases
 . ~/.config/fish/aliases.fish
 
