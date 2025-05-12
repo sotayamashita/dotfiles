@@ -87,6 +87,8 @@ if test -d $BUN_HOME
     fish_add_path $BUN_HOME/bin
 end
 
+set -gx MISE_QUIET 1
+
 if test -f $HOME/.local/bin/mise
     $HOME/.local/bin/mise activate fish | source
 end
