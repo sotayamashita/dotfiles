@@ -9,6 +9,11 @@ source "$SCRIPT_DIR/../../lib/utils.sh" || { echo "[ERROR] Failed to source util
 
 # Define target files and directories to symlink
 SYMLINK_TARGETS=(
+    ".claude/CLAUDE.md"
+    ".claude/commands/act.md"
+    ".claude/commands/plan.md"
+    ".claude/docs/python.md"
+    ".claude/docs/source-control.md"
     ".config/fish/config.fish"
     ".config/fish/aliases.fish"
     ".config/borders/bordersrc"

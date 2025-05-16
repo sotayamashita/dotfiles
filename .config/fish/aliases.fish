@@ -65,3 +65,8 @@ end
 if has_command help
     alias help="tldr"
 end
+
+# Claude Code
+if has_command $HOME/.claude/local/claude
+    alias claude="$HOME/.claude/local/claude"
+end
