@@ -87,13 +87,19 @@ if test -d $FLUTTER_HOME
     fish_add_path $FLUTTER_HOME/bin
 end
 
+# Claude Code
+# https://www.anthropic.com/claude-code
+set -l CLAUDE_HOME $HOME/.claude
+if test -f $CLAUDE_HOME/local/claude
+    alias claude="$CLAUDE_HOME/local/claude"
+end
+
 set -l BUN_HOME $HOME/.bun
 if test -d $BUN_HOME
     fish_add_path $BUN_HOME/bin
 end
 
 set -gx MISE_QUIET 1
-
 if test -f $HOME/.local/bin/mise
     $HOME/.local/bin/mise activate fish | source
 end
