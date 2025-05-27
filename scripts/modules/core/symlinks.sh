@@ -13,6 +13,7 @@ SYMLINK_TARGETS=(
     ".claude/commands/brainstorm.md"
     ".claude/commands/act.md"
     ".claude/commands/plan.md"
+    ".claude/docs/python.md"
     ".config/fish/config.fish"
     ".config/fish/aliases.fish"
     ".config/borders/bordersrc"
