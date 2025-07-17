@@ -38,18 +38,11 @@ fish_add_path $BREW_PREFIX/opt/openssl@3/bin
 
 # Node.js (Volta)
 # https://volta.sh/
-set -gx VOLTA_HOME "$HOME/.volta"
-if test -d $VOLTA_HOME
-    set -gx PATH "$VOLTA_HOME/bin" $PATH
-end
+# -> Use mise instead of Volta for Node.js version management
 
 # Python (pyenv)
 # https://github.com/pyenv/pyenv
-set -Ux PYENV_ROOT $HOME/.pyenv
-if test -d $PYENV_ROOT
-    fish_add_path $PYENV_ROOT/bin
-    pyenv init - fish | source
-end
+# -> Use mise instead of pyenv for Python version management
 
 # Ruby (rbenv)
 # https://github.com/rbenv/rbenv
@@ -90,8 +83,8 @@ end
 # Claude Code
 # https://www.anthropic.com/claude-code
 set -l CLAUDE_HOME $HOME/.claude
-if test -f $CLAUDE_HOME/local/claude
-    alias claude="$CLAUDE_HOME/local/claude"
+if test -x $CLAUDE_HOME/local/claude
+    fish_add_path $CLAUDE_HOME/local
 end
 
 set -l BUN_HOME $HOME/.bun
