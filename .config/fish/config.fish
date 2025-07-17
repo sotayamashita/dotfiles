@@ -133,4 +133,3 @@ end
 # https://starship.rs/
 # Note: Must be at the end of the file
 starship init fish | source
-alias claude="/Users/sotayamashita/.claude/local/claude"

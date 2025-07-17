@@ -67,6 +67,6 @@ if has_command help
 end
 
 # Claude Code
-if has_command $HOME/.claude/local/claude
-    alias claude="$HOME/.claude/local/claude"
+if has_command ~/.claude/local/claude
+    alias claude="~/.claude/local/claude"
 end
