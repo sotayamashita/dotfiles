@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      // Finder
+      "Bash(rg:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(tail:*)",
+      "Bash(xargs:*)",
+      /**
+       * Context7 MCP Server
+       * @see: https://github.com/upstash/context7
+       */
+      "mcp__context7__get-library-docs",
+      /**
+       * Deepwiki MCP Server
+       * @see: https://cognition.ai/blog/deepwiki-mcp-server
+       */
+      "mcp__deepwiki__read_wiki_structure",
+      "mcp__deepwiki__read_wiki_contents",
+      "mcp__deepwiki__ask_question"
+    ],
+    "deny": [
+      // CRITICAL: Prevent reading the .env file
+      "Read(.env*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "deepwiki"
+  ],
+  "env": {
+    "DISABLE_BUG_COMMAND": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_TELEMETRY": "1"
+  },
+  "includeCoAuthoredBy": false
+}
