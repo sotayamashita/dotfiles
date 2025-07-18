@@ -1,6 +1,4 @@
-## MCP Server
-
-### Claude Code Writing Rules
+## Claude Code Writing Rules
 
 Key principles for effective CLAUDE.md files[^1][^2]:
 
@@ -10,6 +8,8 @@ Key principles for effective CLAUDE.md files[^1][^2]:
 - Focus on essential, actionable guidance
 - Iterate and refine based on effectiveness
 - Add emphasis with "IMPORTANT" or "CRITICAL" when necessary
+
+## MCP Server
 
 ### Deepwiki
 
@@ -50,7 +50,7 @@ _[Learn more about Playwright MCP](https://github.com/microsoft/playwright-mcp)_
 - [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) - Curated list of commands, files, and workflows
 - [Claude Code Templates](https://github.com/davila7/claude-code-templates) - CLI tool for quick project setup and monitoring
 - [Claude Crash Course Templates](https://github.com/bhancockio/claude-crash-course-templates) - Essential templates for rapid AI-driven development
-- [Claude Code: Subagent Deep Dive](https://cuong.io/blog/2025/06/24-claude-code-subagent-deep-dive) -
+- [Claude Code: Subagent Deep Dive](https://cuong.io/blog/2025/06/24-claude-code-subagent-deep-dive) - Advanced techniques for parallel task execution using Claude Code's Task tool
 
 ## Acknowledgements
 
