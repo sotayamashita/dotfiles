@@ -20,8 +20,6 @@ playwright: npx @playwright/mcp@latest
 
 ### Deepwiki
 
-### Install in Claude Code
-
 ```bash
 claude mcp add --scope user --transport sse deepwiki https://mcp.deepwiki.com/sse
 ```
@@ -30,8 +28,6 @@ _[Learn more about Deepwiki MCP](https://cognition.ai/blog/deepwiki-mcp-server)_
 
 ### Context7
 
-### Install in Claude Code
-
 ```bash
 claude mcp add --scope user context7 npx @upstash/context7-mcp@latest
 ```
@@ -39,8 +35,6 @@ claude mcp add --scope user context7 npx @upstash/context7-mcp@latest
 _[Learn more about Context7 MCP](https://github.com/upstash/context7)_
 
 ### Playwright MCP
-
-### Install in Claude Code
 
 ```bash
 claude mcp add --scope user playwright npx @playwright/mcp@latest
