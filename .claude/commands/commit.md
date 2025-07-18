@@ -3,7 +3,7 @@ description: Commit code with parallel subagent analysis and comprehensive sessi
 argument-hint:
   - commit title or main change
   - optional scope or context
-allowed-tools: Task(*), Bash(*), Read(*), Write(*), Edit(*), MultiEdit(*), Glob(*), Grep(*), LS(*), TodoWrite(*), WebFetch(*), WebSearch(*)
+allowed-tools: Task(*), Bash(*), Read(*), Write(*), Edit(*), MultiEdit(*), Glob(*), Grep(*), LS(*), TodoWrite(*)
 ---
 
 You are to commit the current code changes. Before committing, use a subagent to generate a session summary and include it in the commit message.
@@ -34,13 +34,9 @@ Create a subagent to assess the impact of changes:
 
 Create a subagent to generate comprehensive session summary:
 
-- Call `Bash(date +"%Y-%m-%d")` to get today
-- Call `Bash(date +%s)` for timestamp
-- Create Markdown summary file at `docs/session-{slug}-{timestamp}.md`
 - Include brief recap of key actions and decisions
 - Document efficiency insights and process improvements
 - Record total conversation turns and any interesting observations
-- Analyze cost-effectiveness of the session
 
 ### Task 4: Commit Message Optimization
 
@@ -81,7 +77,7 @@ Run the following commands in parallel:
    Session Summary:
    - [Key actions and decisions from Task 3]
    - [Efficiency insights and improvements]
-   - [Total conversation turns and cost analysis]
+   - [Total conversation turns]
    ```
 
 3. Verify commit succeeded with `git status`

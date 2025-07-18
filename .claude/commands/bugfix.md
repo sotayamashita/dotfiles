@@ -4,7 +4,7 @@ argument-hint:
   - bug description
   - error message
   - issue description
-allowed-tools: Task(*), Bash(*), Read(*), Write(*), Edit(*), MultiEdit(*), Glob(*), Grep(*), LS(*), TodoWrite(*), WebFetch(*), WebSearch(*), mcp__context7__resolve-library-id(*), mcp__context7__get-library-docs(*), mcp__deepwiki__read_wiki_structure(*), mcp__deepwiki__read_wiki_contents(*), mcp__deepwiki__ask_question(*)
+allowed-tools: Task(*), Bash(*), Read(*), Write(*), Edit(*), MultiEdit(*), Glob(*), Grep(*), LS(*), TodoWrite(*), WebSearch(*), mcp__context7__resolve-library-id(*), mcp__context7__get-library-docs(*), mcp__deepwiki__read_wiki_structure(*), mcp__deepwiki__read_wiki_contents(*), mcp__deepwiki__ask_question(*)
 ---
 
 You are to analyze and fix the following bug: $ARGUMENTS
