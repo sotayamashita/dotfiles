@@ -1,4 +1,4 @@
-## Claude Code Writing Rules
+## Writing Rules
 
 Key principles for effective CLAUDE.md files:
 
