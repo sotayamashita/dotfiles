@@ -11,12 +11,19 @@ Key principles for effective CLAUDE.md files:
 
 ## MCP Server
 
+```
+❯ claude mcp list
+deepwiki: https://mcp.deepwiki.com/sse (SSE)
+context7: npx -y @upstash/context7-mcp
+playwright: npx @playwright/mcp@latest
+```
+
 ### Deepwiki
 
 ### Install in Claude Code
 
 ```bash
-claude mcp add --transport sse deepwiki https://mcp.deepwiki.com/sse
+claude mcp add --scope user --transport sse deepwiki https://mcp.deepwiki.com/sse
 ```
 
 _[Learn more about Deepwiki MCP](https://cognition.ai/blog/deepwiki-mcp-server)_
@@ -26,7 +33,7 @@ _[Learn more about Deepwiki MCP](https://cognition.ai/blog/deepwiki-mcp-server)_
 ### Install in Claude Code
 
 ```bash
-claude mcp add context7 npx @upstash/context7-mcp@latest
+claude mcp add --scope user context7 npx @upstash/context7-mcp@latest
 ```
 
 _[Learn more about Context7 MCP](https://github.com/upstash/context7)_
@@ -36,7 +43,7 @@ _[Learn more about Context7 MCP](https://github.com/upstash/context7)_
 ### Install in Claude Code
 
 ```bash
-claude mcp add playwright npx @playwright/mcp@latest
+claude mcp add --scope user playwright npx @playwright/mcp@latest
 ```
 
 _[Learn more about Playwright MCP](https://github.com/microsoft/playwright-mcp)_
