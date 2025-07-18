@@ -2,7 +2,7 @@
 
 ### Claude Code Writing Rules
 
-Key principles for effective CLAUDE.md files[^1]:
+Key principles for effective CLAUDE.md files[^1][^2]:
 
 - Keep content concise and human-readable
 - Use short, declarative bullet points
@@ -52,9 +52,12 @@ _[Learn more about Playwright MCP](https://github.com/microsoft/playwright-mcp)_
 - [Claude Crash Course Templates](https://github.com/bhancockio/claude-crash-course-templates) - Essential templates for rapid AI-driven development
 - [Claude Code: Subagent Deep Dive](https://cuong.io/blog/2025/06/24-claude-code-subagent-deep-dive) -
 
-## Aknowledgements
+## Acknowledgements
 
-- [](https://github.com/harperreed/dotfiles/blob/master/.claude/commands/brainstorm.md) for `.claude/commands/brainstorm`
-- [Cursor Debugging & Planning Guidelines](https://gist.github.com/FirasLatrech/415d243f1ea48f63dfc691c8ceedefc4) for `.claude/commands/bug-fix`
+This configuration draws inspiration and direct implementations from several excellent sources:
+
+- [harperreed's dotfiles](https://github.com/harperreed/dotfiles/blob/master/.claude/commands/brainstorm.md) - Base structure for `.claude/commands/brainstorm`
+- [Cursor Debugging & Planning Guidelines](https://gist.github.com/FirasLatrech/415d243f1ea48f63dfc691c8ceedefc4) - Framework for `.claude/commands/bug-fix`
 
 [^1]: [How to Master Claude MD Files in Claude Code](https://empathyfirstmedia.com/claude-md-file-claude-code/)
+[^2]: [Claude Code: Best practices for agentic coding](https://www.anthropic.com/engineering/claude-code-best-practices)
