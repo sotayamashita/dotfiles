@@ -60,9 +60,9 @@ As the main agent, review all subagent findings and:
 
 Run the following commands in parallel:
 
-1. `git status` - Check repository state
-2. `git diff --cached` - Review staged changes
-3. `git log --oneline -5` - Check recent commit message style
+1. !`git status` - Check repository state
+2. !`git diff` --cached` - Review staged changes
+3. !`git log --oneline -5` - Check recent commit message style
 
 ## Phase 4: Staging and Commit
 
