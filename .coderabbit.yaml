@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# CodeRabbit AI Code Review Configuration
+#
+# This file configures CodeRabbit AI for automated code reviews.
+# CodeRabbit provides intelligent pull request reviews using AI.
+#
+# Usage:
+#   Place this file in your repository root to enable CodeRabbit reviews.
+#
+# Remote Configuration Example:
+#   To use a centralized configuration file:
+#   ```yaml
+#   remote_config:
+#     url: "https://raw.githubusercontent.com/sotayamashita/dotfiles/refs/heads/main/.coderabbit.yaml"
+#   ```
+#
+# Documentation:
+#   https://docs.coderabbit.ai/getting-started/configure-coderabbit/
+language: "en-US"
+reviews:
+  poem: false
+  collapse_walkthrough: true
+  auto_review:
+    drafts: false
+    labels:
+      - "dependencies"
+    ignore_title_keywords:
+      - "WIP"
+      - "Draft"
+      - "DO NOT MERGE"
+      - "Work in Progress"

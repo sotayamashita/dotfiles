@@ -60,13 +60,13 @@ As the main agent, review all subagent findings and:
 
 Run the following commands in parallel:
 
-1. !`git status` - Check repository state
-2. !`git diff` --cached` - Review staged changes
-3. !`git log --oneline -5` - Check recent commit message style
+1. `git status` - Check repository state
+2. `git diff` --cached` - Review staged changes
+3. `git log --oneline -5` - Check recent commit message style
 
 ## Phase 4: Staging and Commit
 
-1. Stage relevant changes using !`git add`
+1. Stage relevant changes using `git add`
 2. Create commit with message format incorporating session summary:
 
    ```
@@ -80,7 +80,7 @@ Run the following commands in parallel:
    - [Total conversation turns]
    ```
 
-3. Verify commit succeeded with !`git status`
+3. Verify commit succeeded with `git status`
 
 ## Success Criteria
 
