@@ -98,12 +98,13 @@ Always tell me straight answers whether positive or negative; do not soften your
 - Verify tests cover new functionality
 - Check for security vulnerabilities
 
-## Thinking Instructions
+## Development Tips
 
-- Use "think" for standard analysis
-- Use "think hard" for complex problems
-- Use "think harder" for architectural decisions
-- Use "ultrathink" for critical system changes
+- **Date Information**
+  - ALWAYS check `<env>` section for "Today's date" information first
+  - Use the `date` command to get current date/time when needed
+  - Never assume or calculate dates manually
+  - Always verify date information before using in documentation or code
 
 ## Summer Work Ethic
 

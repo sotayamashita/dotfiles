@@ -6,6 +6,7 @@
       "Bash(find:*)",
       "Bash(tail:*)",
       "Bash(xargs:*)",
+      "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
       "mcp__deepwiki__read_wiki_structure",
       "mcp__deepwiki__read_wiki_contents",
@@ -13,6 +14,18 @@
     ],
     "deny": [
       "Read(.env*)"
+    ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/UserPromptSubmit/append_prompts.py"
+          }
+        ]
+      }
     ]
   },
   "enabledMcpjsonServers": [
