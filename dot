@@ -1,0 +1,776 @@
+#!/usr/bin/env bash
+#
+# dot - Unified dotfiles management tool
+# A modern, intelligent dotfiles synchronization system
+#
+# Usage:
+#   dot <command> [options]
+#
+# Commands:
+#   install   - Initial setup and installation
+#   sync      - Bidirectional synchronization
+#   update    - Pull latest changes from repository
+#   backup    - Create timestamped backup
+#   restore   - Restore from backup
+#   status    - Show current status
+#   diff      - Show differences
+#   discover  - Find new dotfiles
+#   help      - Show this help message
+
+set -euo pipefail
+
+# --- Constants ---
+readonly DOT_VERSION="2.0.0"
+readonly DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly CONFIG_FILE="${DOTFILES_DIR}/config/dotfiles.yaml"
+readonly STATE_DIR="${HOME}/.local/state/dotfiles"
+readonly BACKUP_DIR="${HOME}/.dotfiles-backup"
+readonly LOG_FILE="${STATE_DIR}/dotfiles.log"
+
+# --- Colors ---
+if [ -t 1 ]; then
+    readonly RED='\033[0;31m'
+    readonly GREEN='\033[0;32m'
+    readonly YELLOW='\033[0;33m'
+    readonly BLUE='\033[0;34m'
+    readonly MAGENTA='\033[0;35m'
+    readonly CYAN='\033[0;36m'
+    readonly BOLD='\033[1m'
+    readonly NC='\033[0m'
+else
+    readonly RED=''
+    readonly GREEN=''
+    readonly YELLOW=''
+    readonly BLUE=''
+    readonly MAGENTA=''
+    readonly CYAN=''
+    readonly BOLD=''
+    readonly NC=''
+fi
+
+# --- Logging Functions ---
+log() {
+    local level="$1"
+    shift
+    local message="$*"
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    # Log to file
+    echo "[${timestamp}] [${level}] ${message}" >> "${LOG_FILE}"
+    
+    # Log to console with colors
+    case "${level}" in
+        INFO)
+            echo -e "${GREEN}[✓]${NC} ${message}"
+            ;;
+        WARN)
+            echo -e "${YELLOW}[!]${NC} ${message}"
+            ;;
+        ERROR)
+            echo -e "${RED}[✗]${NC} ${message}"
+            ;;
+        DEBUG)
+            if [[ "${DEBUG:-0}" == "1" ]]; then
+                echo -e "${BLUE}[D]${NC} ${message}"
+            fi
+            ;;
+        STEP)
+            echo -e "\n${CYAN}━━━${NC} ${BOLD}${message}${NC} ${CYAN}━━━${NC}"
+            ;;
+        *)
+            echo "${message}"
+            ;;
+    esac
+}
+
+info() { log INFO "$@"; }
+warn() { log WARN "$@"; }
+error() { log ERROR "$@"; exit 1; }
+debug() { log DEBUG "$@"; }
+step() { log STEP "$@"; }
+
+# --- Utility Functions ---
+ensure_directories() {
+    mkdir -p "${STATE_DIR}" "${BACKUP_DIR}"
+    touch "${LOG_FILE}"
+}
+
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+is_macos() {
+    [[ "$(uname -s)" == "Darwin" ]]
+}
+
+get_timestamp() {
+    date '+%Y%m%d-%H%M%S'
+}
+
+# --- YAML Parser (Basic) ---
+parse_yaml() {
+    local yaml_file="$1"
+    if ! command_exists yq; then
+        warn "yq not found. Installing via Homebrew..."
+        if is_macos && command_exists brew; then
+            brew install yq
+        else
+            error "Please install yq manually: https://github.com/mikefarah/yq"
+        fi
+    fi
+    yq eval "$2" "$yaml_file"
+}
+
+# --- Core Functions ---
+
+# Initialize the dotfiles system
+cmd_install() {
+    step "Installing Dotfiles"
+    
+    ensure_directories
+    
+    # Check for configuration file
+    if [[ ! -f "${CONFIG_FILE}" ]]; then
+        warn "Configuration file not found. Creating default configuration..."
+        create_default_config
+    fi
+    
+    # Run pre-install hooks
+    run_hooks "pre_install"
+    
+    # Install Homebrew packages (macOS)
+    if is_macos; then
+        install_homebrew_packages
+    fi
+    
+    # Create symlinks
+    create_symlinks
+    
+    # Run installers
+    run_installers
+    
+    # Run post-install hooks
+    run_hooks "post_install"
+    
+    info "Installation complete!"
+    cmd_status
+}
+
+# Sync dotfiles bidirectionally
+cmd_sync() {
+    step "Synchronizing Dotfiles"
+    
+    local dry_run=false
+    local only=""
+    
+    # Parse options
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --dry-run)
+                dry_run=true
+                info "Running in dry-run mode (no changes will be made)"
+                ;;
+            --only=*)
+                only="${1#*=}"
+                info "Syncing only: ${only}"
+                ;;
+            *)
+                warn "Unknown option: $1"
+                ;;
+        esac
+        shift
+    done
+    
+    # Run pre-sync hooks
+    if [[ "${dry_run}" == "false" ]]; then
+        run_hooks "pre_sync"
+    fi
+    
+    # Detect changes
+    info "Detecting changes..."
+    detect_changes "${only}"
+    
+    # Show diff
+    if [[ "${dry_run}" == "true" ]]; then
+        cmd_diff
+        return 0
+    fi
+    
+    # Apply changes
+    apply_changes
+    
+    # Run post-sync hooks
+    run_hooks "post_sync"
+    
+    info "Synchronization complete!"
+}
+
+# Update from repository
+cmd_update() {
+    step "Updating from Repository"
+    
+    # Pull latest changes
+    info "Pulling latest changes..."
+    if git -C "${DOTFILES_DIR}" pull --ff-only; then
+        info "Repository updated successfully"
+    else
+        warn "Could not fast-forward. Manual intervention may be required."
+        return 1
+    fi
+    
+    # Re-sync after update
+    cmd_sync
+}
+
+# Create backup
+cmd_backup() {
+    step "Creating Backup"
+    
+    local timestamp=$(get_timestamp)
+    local backup_path="${BACKUP_DIR}/${timestamp}"
+    
+    info "Creating backup at: ${backup_path}"
+    mkdir -p "${backup_path}"
+    
+    # Read configuration and backup files
+    if [[ -f "${CONFIG_FILE}" ]]; then
+        local files=$(parse_yaml "${CONFIG_FILE}" '.dotfiles[].files[].target')
+        while IFS= read -r target; do
+            target="${target/#\~/$HOME}"
+            if [[ -e "${target}" ]]; then
+                local rel_path="${target#$HOME/}"
+                local backup_file="${backup_path}/${rel_path}"
+                mkdir -p "$(dirname "${backup_file}")"
+                cp -R "${target}" "${backup_file}"
+                debug "Backed up: ${target}"
+            fi
+        done <<< "${files}"
+    fi
+    
+    # Create backup metadata
+    cat > "${backup_path}/metadata.json" <<EOF
+{
+    "timestamp": "${timestamp}",
+    "date": "$(date)",
+    "hostname": "$(hostname)",
+    "user": "$(whoami)",
+    "dotfiles_version": "${DOT_VERSION}"
+}
+EOF
+    
+    info "Backup created successfully: ${backup_path}"
+}
+
+# Restore from backup
+cmd_restore() {
+    step "Restoring from Backup"
+    
+    local backup_name="$1"
+    
+    if [[ -z "${backup_name}" ]]; then
+        # List available backups
+        info "Available backups:"
+        ls -1 "${BACKUP_DIR}" | sort -r | head -10
+        echo
+        read -p "Enter backup name to restore: " backup_name
+    fi
+    
+    local backup_path="${BACKUP_DIR}/${backup_name}"
+    
+    if [[ ! -d "${backup_path}" ]]; then
+        error "Backup not found: ${backup_path}"
+    fi
+    
+    warn "This will overwrite your current dotfiles. Continue? [y/N]"
+    read -r response
+    if [[ ! "${response}" =~ ^[Yy]$ ]]; then
+        info "Restore cancelled"
+        return 0
+    fi
+    
+    # Create current backup before restore
+    info "Creating backup of current state..."
+    cmd_backup
+    
+    # Restore files
+    info "Restoring from ${backup_path}..."
+    find "${backup_path}" -type f ! -name "metadata.json" | while read -r file; do
+        local rel_path="${file#${backup_path}/}"
+        local target="${HOME}/${rel_path}"
+        mkdir -p "$(dirname "${target}")"
+        cp "${file}" "${target}"
+        debug "Restored: ${target}"
+    done
+    
+    info "Restore complete!"
+}
+
+# Show status
+cmd_status() {
+    step "Dotfiles Status"
+    
+    # Repository status
+    echo -e "${BOLD}Repository:${NC}"
+    echo "  Path: ${DOTFILES_DIR}"
+    echo "  Branch: $(git -C "${DOTFILES_DIR}" branch --show-current)"
+    echo "  Status: $(git -C "${DOTFILES_DIR}" status --short | wc -l) changes"
+    echo
+    
+    # Configuration status
+    echo -e "${BOLD}Configuration:${NC}"
+    if [[ -f "${CONFIG_FILE}" ]]; then
+        local dotfile_count=$(parse_yaml "${CONFIG_FILE}" '.dotfiles | length')
+        echo "  Dotfile groups: ${dotfile_count}"
+    else
+        echo "  Configuration file not found"
+    fi
+    echo
+    
+    # Backup status
+    echo -e "${BOLD}Backups:${NC}"
+    if [[ -d "${BACKUP_DIR}" ]]; then
+        local backup_count=$(ls -1 "${BACKUP_DIR}" 2>/dev/null | wc -l)
+        echo "  Total backups: ${backup_count}"
+        if [[ ${backup_count} -gt 0 ]]; then
+            echo "  Latest: $(ls -1t "${BACKUP_DIR}" | head -1)"
+        fi
+    else
+        echo "  No backups found"
+    fi
+    echo
+    
+    # System info
+    echo -e "${BOLD}System:${NC}"
+    echo "  OS: $(uname -s)"
+    echo "  Architecture: $(uname -m)"
+    if is_macos; then
+        echo "  macOS: $(sw_vers -productVersion)"
+    fi
+}
+
+# Show differences
+cmd_diff() {
+    step "Showing Differences"
+    
+    if [[ -f "${CONFIG_FILE}" ]]; then
+        local files=$(parse_yaml "${CONFIG_FILE}" '.dotfiles[].files[]')
+        echo "${files}" | while IFS= read -r file_entry; do
+            local source=$(echo "${file_entry}" | parse_yaml - '.source')
+            local target=$(echo "${file_entry}" | parse_yaml - '.target')
+            
+            source="${DOTFILES_DIR}/${source}"
+            target="${target/#\~/$HOME}"
+            
+            if [[ -e "${source}" ]] && [[ -e "${target}" ]]; then
+                if ! diff -q "${source}" "${target}" >/dev/null 2>&1; then
+                    echo -e "${YELLOW}Modified:${NC} ${target}"
+                    if command_exists colordiff; then
+                        colordiff -u "${source}" "${target}" | head -20
+                    else
+                        diff -u "${source}" "${target}" | head -20
+                    fi
+                    echo
+                fi
+            elif [[ -e "${source}" ]] && [[ ! -e "${target}" ]]; then
+                echo -e "${GREEN}New:${NC} ${target} (will be created)"
+            elif [[ ! -e "${source}" ]] && [[ -e "${target}" ]]; then
+                echo -e "${RED}Removed:${NC} ${target} (exists locally only)"
+            fi
+        done
+    fi
+}
+
+# Discover new dotfiles
+cmd_discover() {
+    step "Discovering New Dotfiles"
+    
+    info "Scanning home directory for configuration files..."
+    
+    local discoveries=()
+    
+    # Common dotfile patterns
+    local patterns=(
+        ".*rc"
+        ".config/*"
+        ".*.conf"
+        ".*.yml"
+        ".*.yaml"
+        ".*.toml"
+    )
+    
+    for pattern in "${patterns[@]}"; do
+        while IFS= read -r file; do
+            # Skip if already managed
+            if ! is_managed_file "${file}"; then
+                discoveries+=("${file}")
+            fi
+        done < <(find "${HOME}" -maxdepth 3 -name "${pattern}" -type f 2>/dev/null)
+    done
+    
+    if [[ ${#discoveries[@]} -eq 0 ]]; then
+        info "No new dotfiles discovered"
+        return 0
+    fi
+    
+    echo -e "${BOLD}Discovered new dotfiles:${NC}"
+    for file in "${discoveries[@]}"; do
+        echo "  - ${file}"
+    done
+    
+    echo
+    warn "Would you like to add these to your dotfiles? [y/N]"
+    read -r response
+    if [[ "${response}" =~ ^[Yy]$ ]]; then
+        for file in "${discoveries[@]}"; do
+            add_to_dotfiles "${file}"
+        done
+        info "Files added to dotfiles configuration"
+    fi
+}
+
+# Show help
+cmd_help() {
+    cat <<EOF
+${BOLD}dot${NC} - Unified Dotfiles Management Tool v${DOT_VERSION}
+
+${BOLD}USAGE:${NC}
+    dot <command> [options]
+
+${BOLD}COMMANDS:${NC}
+    ${GREEN}install${NC}   - Perform initial setup and installation
+    ${GREEN}sync${NC}      - Bidirectional synchronization of dotfiles
+                Options:
+                  --dry-run     Show what would be done without making changes
+                  --only=LIST   Sync only specified groups (comma-separated)
+    ${GREEN}update${NC}    - Pull latest changes from repository and sync
+    ${GREEN}backup${NC}    - Create timestamped backup of current dotfiles
+    ${GREEN}restore${NC}   - Restore dotfiles from a backup
+                Usage: dot restore [backup-name]
+    ${GREEN}status${NC}    - Show current status and statistics
+    ${GREEN}diff${NC}      - Show differences between repo and local files
+    ${GREEN}discover${NC}  - Find new dotfiles to add to repository
+    ${GREEN}help${NC}      - Show this help message
+
+${BOLD}EXAMPLES:${NC}
+    # Initial setup
+    dot install
+    
+    # Sync with dry-run to preview changes
+    dot sync --dry-run
+    
+    # Sync only git and vim configurations
+    dot sync --only=git,vim
+    
+    # Create a backup before major changes
+    dot backup
+    
+    # Restore from specific backup
+    dot restore 20240101-120000
+
+${BOLD}CONFIGURATION:${NC}
+    Configuration file: ${CONFIG_FILE}
+    State directory: ${STATE_DIR}
+    Backup directory: ${BACKUP_DIR}
+
+${BOLD}MORE INFO:${NC}
+    Repository: https://github.com/sotayamashita/dotfiles
+    Issues: https://github.com/sotayamashita/dotfiles/issues
+
+EOF
+}
+
+# --- Helper Functions ---
+
+create_default_config() {
+    mkdir -p "$(dirname "${CONFIG_FILE}")"
+    cat > "${CONFIG_FILE}" <<'EOF'
+# Dotfiles Configuration
+# This file defines which files to manage and how to sync them
+
+dotfiles:
+  - name: git
+    files:
+      - source: .gitconfig
+        target: ~/.gitconfig
+      - source: .gitconfig.alias
+        target: ~/.gitconfig.alias
+      - source: .gitconfig.user
+        target: ~/.gitconfig.user
+      - source: .gitconfig.delta
+        target: ~/.gitconfig.delta
+      - source: .gitignore.global
+        target: ~/.gitignore.global
+      - source: .gitattributes.global
+        target: ~/.gitattributes.global
+    platform: all
+
+  - name: fish
+    files:
+      - source: .config/fish/config.fish
+        target: ~/.config/fish/config.fish
+      - source: .config/fish/aliases.fish
+        target: ~/.config/fish/aliases.fish
+    platform: all
+
+  - name: claude
+    files:
+      - source: .claude/
+        target: ~/.claude/
+        type: directory
+    platform: all
+
+  - name: starship
+    files:
+      - source: .config/starship.toml
+        target: ~/.config/starship.toml
+    platform: all
+
+  - name: ghostty
+    files:
+      - source: .config/ghostty/config
+        target: ~/.config/ghostty/config
+    platform: all
+
+  - name: mise
+    files:
+      - source: .config/mise/config.toml
+        target: ~/.config/mise/config.toml
+    platform: all
+
+  - name: borders
+    files:
+      - source: .config/borders/bordersrc
+        target: ~/.config/borders/bordersrc
+    platform: macos
+
+brew:
+  taps:
+    - homebrew/cask-fonts
+  formulas:
+    - fish
+    - starship
+    - git-delta
+    - yq
+    - colordiff
+  casks:
+    - 1password-cli
+    - visual-studio-code
+    - ghostty
+
+hooks:
+  pre_install: []
+  post_install: []
+  pre_sync: []
+  post_sync: []
+EOF
+    info "Created default configuration at ${CONFIG_FILE}"
+}
+
+install_homebrew_packages() {
+    if ! command_exists brew; then
+        warn "Homebrew not found. Skipping package installation."
+        return 1
+    fi
+    
+    info "Installing Homebrew packages..."
+    
+    # Install taps
+    local taps=$(parse_yaml "${CONFIG_FILE}" '.brew.taps[]')
+    if [[ -n "${taps}" ]]; then
+        echo "${taps}" | while IFS= read -r tap; do
+            info "Tapping ${tap}..."
+            brew tap "${tap}" 2>/dev/null || true
+        done
+    fi
+    
+    # Install formulas
+    local formulas=$(parse_yaml "${CONFIG_FILE}" '.brew.formulas[]')
+    if [[ -n "${formulas}" ]]; then
+        echo "${formulas}" | while IFS= read -r formula; do
+            if ! brew list --formula | grep -q "^${formula}$"; then
+                info "Installing ${formula}..."
+                brew install "${formula}"
+            else
+                debug "${formula} already installed"
+            fi
+        done
+    fi
+    
+    # Install casks
+    local casks=$(parse_yaml "${CONFIG_FILE}" '.brew.casks[]')
+    if [[ -n "${casks}" ]]; then
+        echo "${casks}" | while IFS= read -r cask; do
+            if ! brew list --cask | grep -q "^${cask}$"; then
+                info "Installing ${cask}..."
+                brew install --cask "${cask}"
+            else
+                debug "${cask} already installed"
+            fi
+        done
+    fi
+}
+
+create_symlinks() {
+    info "Creating symlinks..."
+    
+    local dotfiles=$(parse_yaml "${CONFIG_FILE}" '.dotfiles[]')
+    echo "${dotfiles}" | while IFS= read -r group; do
+        local name=$(echo "${group}" | parse_yaml - '.name')
+        local platform=$(echo "${group}" | parse_yaml - '.platform')
+        
+        # Check platform compatibility
+        if [[ "${platform}" != "all" ]]; then
+            if is_macos && [[ "${platform}" != "macos" ]]; then
+                debug "Skipping ${name} (not for macOS)"
+                continue
+            fi
+            if ! is_macos && [[ "${platform}" == "macos" ]]; then
+                debug "Skipping ${name} (macOS only)"
+                continue
+            fi
+        fi
+        
+        local files=$(echo "${group}" | parse_yaml - '.files[]')
+        echo "${files}" | while IFS= read -r file_entry; do
+            local source=$(echo "${file_entry}" | parse_yaml - '.source')
+            local target=$(echo "${file_entry}" | parse_yaml - '.target')
+            local type=$(echo "${file_entry}" | parse_yaml - '.type // "file"')
+            
+            source="${DOTFILES_DIR}/${source}"
+            target="${target/#\~/$HOME}"
+            
+            # Create parent directory
+            mkdir -p "$(dirname "${target}")"
+            
+            # Handle existing files
+            if [[ -e "${target}" ]] && [[ ! -L "${target}" ]]; then
+                local backup="${target}.backup.$(get_timestamp)"
+                warn "Backing up existing file: ${target} -> ${backup}"
+                mv "${target}" "${backup}"
+            fi
+            
+            # Create symlink
+            if [[ "${type}" == "directory" ]]; then
+                ln -sfn "${source}" "${target}"
+            else
+                ln -sf "${source}" "${target}"
+            fi
+            info "Linked: ${target} -> ${source}"
+        done
+    done
+}
+
+run_installers() {
+    local installers_dir="${DOTFILES_DIR}/scripts/installers"
+    
+    if [[ ! -d "${installers_dir}" ]]; then
+        debug "No installers directory found"
+        return 0
+    fi
+    
+    info "Running installers..."
+    for installer in "${installers_dir}"/*.sh; do
+        if [[ -f "${installer}" ]]; then
+            local name=$(basename "${installer}" .sh)
+            info "Running installer: ${name}"
+            if bash "${installer}"; then
+                info "Installer ${name} completed successfully"
+            else
+                warn "Installer ${name} failed"
+            fi
+        fi
+    done
+}
+
+run_hooks() {
+    local hook_type="$1"
+    local hooks=$(parse_yaml "${CONFIG_FILE}" ".hooks.${hook_type}[]")
+    
+    if [[ -z "${hooks}" ]]; then
+        debug "No ${hook_type} hooks defined"
+        return 0
+    fi
+    
+    info "Running ${hook_type} hooks..."
+    echo "${hooks}" | while IFS= read -r hook; do
+        if [[ -f "${DOTFILES_DIR}/${hook}" ]]; then
+            info "Running hook: ${hook}"
+            bash "${DOTFILES_DIR}/${hook}"
+        else
+            warn "Hook not found: ${hook}"
+        fi
+    done
+}
+
+detect_changes() {
+    local only="$1"
+    # Implementation for change detection
+    debug "Detecting changes (filter: ${only:-all})"
+}
+
+apply_changes() {
+    # Implementation for applying changes
+    debug "Applying changes"
+}
+
+is_managed_file() {
+    local file="$1"
+    # Check if file is already managed in configuration
+    return 1  # Placeholder
+}
+
+add_to_dotfiles() {
+    local file="$1"
+    # Add file to dotfiles configuration
+    debug "Adding ${file} to dotfiles"
+}
+
+# --- Main ---
+
+main() {
+    ensure_directories
+    
+    # Get command
+    local cmd="${1:-help}"
+    shift || true
+    
+    # Route to appropriate command
+    case "${cmd}" in
+        install)
+            cmd_install "$@"
+            ;;
+        sync)
+            cmd_sync "$@"
+            ;;
+        update)
+            cmd_update "$@"
+            ;;
+        backup)
+            cmd_backup "$@"
+            ;;
+        restore)
+            cmd_restore "$@"
+            ;;
+        status)
+            cmd_status "$@"
+            ;;
+        diff)
+            cmd_diff "$@"
+            ;;
+        discover)
+            cmd_discover "$@"
+            ;;
+        help|--help|-h)
+            cmd_help
+            ;;
+        version|--version|-v)
+            echo "dot version ${DOT_VERSION}"
+            ;;
+        *)
+            error "Unknown command: ${cmd}. Run 'dot help' for usage."
+            ;;
+    esac
+}
+
+# Run main function
+main "$@"
