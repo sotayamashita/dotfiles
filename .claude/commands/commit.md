@@ -1,91 +1,291 @@
 ---
-description: Commit code with parallel subagent analysis and comprehensive session summary
-argument-hint:
-  - commit title or main change
-  - optional scope or context
-allowed-tools: Task(*), Bash(*), Read(*), Write(*), Edit(*), MultiEdit(*), Glob(*), Grep(*), LS(*), TodoWrite(*)
+description: Commit code with parallel subagent analysis, atomic validation, and best practices
+argument-hint: [scope] [--no-session]
+allowed-tools: Task(*), Bash(git:*, gh:*, ast-grep:*, rg:*), Read(*), Glob(*), Grep(*)
 ---
 
-You are to commit the current code changes. Before committing, use a subagent to generate a session summary and include it in the commit message.
+<purpose>
+You are committing code changes. High-quality commits improve code review efficiency,
+enable effective git bisect debugging, and create a clear project history.
+</purpose>
+
+<approach>
+Use parallel subagents to analyze changes, validate atomicity, and optimize the commit
+message following industry best practices (Conventional Commits, 50/72 rule, atomic commits).
+</approach>
+
+<investigate_before_answering>
+Never speculate about changes you have not inspected. Always run `git diff` and
+`git status` before making claims about what has changed. Give grounded,
+hallucination-free analysis based on actual file contents.
+</investigate_before_answering>
+
+<use_parallel_tool_calls>
+If you intend to call multiple tools and there are no dependencies between
+the tool calls, make all independent calls in parallel. For example:
+- Run Tasks 1-5 simultaneously (no dependencies)
+- Run git status, git diff --cached, git log in parallel (no dependencies)
+Maximize parallel execution for speed and efficiency.
+</use_parallel_tool_calls>
 
 ## Phase 1: Parallel Commit Analysis
 
-Execute the following tasks in parallel using multiple subagents:
+<parallel_execution>
+Execute Tasks 1-5 simultaneously using parallel tool calls. These tasks have no
+dependencies between them and can run concurrently for efficiency.
+</parallel_execution>
 
 ### Task 1: Change Analysis
 
-Create a subagent to analyze all changes in the current commit:
+<context>
+Understanding what changed is the foundation for writing accurate commit messages
+and detecting potential issues before they enter the repository.
+</context>
 
-- Review all staged and unstaged changes using git diff
+<instructions>
+Create a subagent to analyze all changes in the current commit:
+- Review all staged and unstaged changes using `git diff`
 - Categorize changes by type (feature, fix, refactor, docs, etc.)
 - Identify the primary purpose and scope of changes
-- Check for any sensitive information that shouldn't be committed
+- Check for sensitive information (API keys, passwords, tokens) using `rg`
+</instructions>
+
+<tools>
+- `git diff` - View all changes
+- `git diff --cached` - View staged changes
+- `rg` - Search for sensitive patterns (e.g., `rg -i "api.?key|password|secret|token"`)
+</tools>
+
+<output_format>
+- `change_type: string` - Primary type (feat/fix/refactor/docs/etc.)
+- `scope: string` - Affected area/module
+- `files_changed: string[]` - List of modified files
+- `sensitive_detected: boolean` - Whether sensitive info was found
+- `sensitive_details: string[]` - Details if sensitive info detected
+</output_format>
 
 ### Task 2: Codebase Impact Assessment
 
-Create a subagent to assess the impact of changes:
+<context>
+Assessing impact helps identify breaking changes and ensures downstream dependencies
+are considered before committing.
+</context>
 
+<instructions>
+Create a subagent to assess the impact of changes:
 - Analyze affected files and modules
-- Check for breaking changes or API modifications
+- Check for breaking changes or API modifications using `ast-grep`
 - Review test coverage for modified code
-- Identify dependencies that might be affected
+- Identify dependencies that might be affected using `rg`
+</instructions>
+
+<tools>
+- `ast-grep` - Detect API changes, function signature modifications
+- `rg` - Find references to changed functions/classes
+- `git diff --stat` - Overview of change scope
+</tools>
+
+<output_format>
+- `breaking_changes: boolean` - Whether breaking changes detected
+- `breaking_details: string[]` - List of breaking changes
+- `affected_modules: string[]` - Modules impacted by changes
+- `test_coverage: string` - Assessment of test coverage (good/partial/missing)
+</output_format>
 
 ### Task 3: Session Context Generation
 
-Create a subagent to generate comprehensive session summary:
+<context>
+Session context provides valuable metadata about the development process,
+useful for future reference and team communication.
+</context>
 
+<instructions>
+Create a subagent to generate comprehensive session summary:
 - Include brief recap of key actions and decisions
 - Document efficiency insights and process improvements
 - Record total conversation turns and any interesting observations
+</instructions>
+
+<tools>
+- Access to conversation context (no external tools needed)
+</tools>
+
+<output_format>
+- `key_actions: string[]` - Main actions taken during session
+- `decisions: string[]` - Key decisions made
+- `insights: string[]` - Efficiency insights or improvements
+- `conversation_turns: number` - Total turns in conversation
+</output_format>
 
 ### Task 4: Commit Message Optimization
 
-Create a subagent to optimize the commit message:
+<context>
+Well-crafted commit messages following conventions enable automated changelog
+generation, easier code review, and better project history navigation.
+</context>
 
+<instructions>
+Create a subagent to optimize the commit message:
 - Follow conventional commit format (`type(scope): description`)
-- Ensure message accurately reflects changes and their purpose
-- Check that message follows project's commit style from git log
-- Validate message clarity and completeness
+- Check project's commit style from `git log --oneline -10`
+- Look for related issues/PRs using `gh issue list` or `gh pr list`
+- Apply subject line rules:
+  - Maximum 50 characters
+  - Use imperative mood ("Add" not "Added")
+  - Start with lowercase after type
+  - No period at the end
+- Apply body rules:
+  - Wrap at 72 characters
+  - Explain WHY, not just WHAT (the code shows HOW)
+  - Include motivation and context for the change
+</instructions>
+
+<tools>
+- `git log --oneline -10` - Check recent commit style
+- `gh issue list --limit 10` - Find related issues
+- `gh pr list --limit 10` - Find related PRs
+</tools>
+
+<output_format>
+- `subject: string` - Recommended subject (≤50 chars, imperative mood)
+- `body: string` - Recommended body (WHY explained, 72 char wrap)
+- `footer: string` - Footer (Fixes #xxx, BREAKING CHANGE, etc.)
+- `related_issues: string[]` - Related issue/PR numbers
+</output_format>
+
+### Task 5: Atomic Commit Validation
+
+<context>
+Atomic commits (single logical unit of change) enable precise git bisect debugging,
+clean rollbacks, and focused code reviews.
+</context>
+
+<instructions>
+Create a subagent to validate atomic commit principles:
+- Count total files changed and lines modified using `git diff --stat`
+- Identify if changes span multiple types (feat + fix + refactor mixed)
+- Check if unrelated functionality is modified together
+- Evaluate if the change can be described in a single sentence
+- Apply judgment criteria:
+  - Single logical unit of change
+  - No mixing of unrelated concerns
+  - Each file change contributes to the same goal
+</instructions>
+
+<tools>
+- `git diff --stat` - File and line change counts
+- `git diff --name-only` - List of changed files
+</tools>
+
+<output_format>
+- `is_atomic: boolean` - Whether it's a single logical unit
+- `files_count: number` - Number of files changed
+- `lines_changed: number` - Total lines added/removed
+- `split_recommendation: string[]` - Suggested splits (if not atomic)
+- `reasoning: string` - Explanation of the judgment
+</output_format>
 
 ## Phase 2: Synthesis and Validation
 
-As the main agent, review all subagent findings and:
+<decision_flow>
+As the main agent, review all subagent findings and make decisions:
 
-1. Consolidate change analysis and impact assessment
-2. Extract concise session summary suitable for commit message
-3. Validate that all changes are appropriate for commit
-4. Ensure no sensitive information is being committed
+1. **Check Atomic validation result from Task 5**:
+   - If `is_atomic: false`:
+     - Present split recommendations to user
+     - Ask user: "Do you want to split this into multiple commits?"
+     - Options: "Yes, split" / "No, proceed as single commit"
+     - If user chooses to split, provide specific `git add` commands for each split
+   - If `is_atomic: true`: Proceed with single commit
+
+2. **Check for sensitive information from Task 1**:
+   - If `sensitive_detected: true`:
+     - STOP and warn user about detected sensitive information
+     - List specific files and patterns found
+     - Do NOT proceed until user confirms it's safe
+
+3. **Check for breaking changes from Task 2**:
+   - If `breaking_changes: true`:
+     - Ensure commit message includes `BREAKING CHANGE:` footer
+     - Consider if this warrants a major version bump
+
+4. Consolidate change analysis and impact assessment
+5. Validate that all changes are appropriate for commit
+</decision_flow>
 
 ## Phase 3: Pre-Commit Verification
 
-Run the following commands in parallel:
+<pre_commit_verification>
+Run these git commands in parallel using Bash tool:
+- `git status` - Verify repository state
+- `git diff --cached` - Review staged changes (if any already staged)
+- `git log --oneline -5` - Check recent commit style
 
-1. `git status` - Check repository state
-2. `git diff` --cached` - Review staged changes
-3. `git log --oneline -5` - Check recent commit message style
+Use the output to inform the final commit message and ensure consistency
+with project conventions.
+</pre_commit_verification>
 
 ## Phase 4: Staging and Commit
 
+<default_to_action>
+After analysis, proceed directly to staging and committing unless:
+- Atomic validation fails (ask user about splitting)
+- Sensitive information detected (warn and stop)
+- User explicitly requests review before commit
+</default_to_action>
+
 1. Stage relevant changes using `git add`
-2. Create commit with message format incorporating session summary:
 
-   ```
-   type(scope): description
+2. **Ask user about Session Summary**:
+   - Ask: "Do you want to include Session Summary in the commit message?"
+   - Options: "Yes, include" / "No, standard format only"
 
-   [Optional detailed explanation based on change analysis]
+3. Create commit with message format:
 
-   Session Summary:
-   - [Key actions and decisions from Task 3]
-   - [Efficiency insights and improvements]
-   - [Total conversation turns]
-   ```
+<commit_format>
+**Standard format (without Session Summary):**
+```
+type(scope): description
 
-3. Verify commit succeeded with `git status`
+WHY: [Motivation and context for this change]
+
+[Detailed explanation if needed]
+
+[Fixes #xxx | Closes #xxx] (if applicable)
+[BREAKING CHANGE: description] (if applicable)
+```
+
+**With Session Summary (if user chose "Yes"):**
+```
+type(scope): description
+
+WHY: [Motivation and context for this change]
+
+[Detailed explanation if needed]
+
+[Fixes #xxx | Closes #xxx] (if applicable)
+[BREAKING CHANGE: description] (if applicable)
+
+---
+Session Summary:
+- [Key actions and decisions from Task 3]
+- [Efficiency insights and improvements]
+- [Conversation turns: N]
+```
+</commit_format>
+
+4. Verify commit succeeded with `git status`
 
 ## Success Criteria
 
-- [ ] All changes are properly categorized and understood
-- [ ] Commit message follows conventional format
-- [ ] No sensitive information is committed
-- [ ] Session summary is documented
-- [ ] Commit is successfully created and verified
+<success_criteria>
+- [ ] Atomic validation passed (or user approved proceeding as single commit)
+- [ ] No sensitive information detected (or user confirmed safe to commit)
+- [ ] Subject line ≤ 50 characters, imperative mood, no period
+- [ ] Body wrapped at 72 characters
+- [ ] WHY (motivation) is explained, not just WHAT
+- [ ] Conventional commit format followed (`type(scope): description`)
+- [ ] Breaking changes properly documented (if any)
+- [ ] Related issues/PRs referenced (if applicable)
+- [ ] Commit successfully created and verified
+</success_criteria>
