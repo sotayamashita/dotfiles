@@ -65,3 +65,25 @@ end
 if has_command help
     alias help="tldr"
 end
+
+# Claude Code
+# https://docs.anthropic.com/en/docs/claude-code
+if has_command claude
+    function claude --description "Claude Code CLI with auto-update"
+        if has_command brew
+            brew upgrade --cask claude-code 2>/dev/null
+        end
+        command claude $argv
+    end
+end
+
+# Codex
+# https://github.com/openai/codex
+if has_command codex
+    function codex --description "Codex CLI with auto-update"
+        if has_command brew
+            brew upgrade --cask codex 2>/dev/null
+        end
+        command codex $argv
+    end
+end
