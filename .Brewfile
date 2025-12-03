@@ -1,59 +1,99 @@
-# Taps
-tap "FelixKratz/formulae"
-
-# CLI tools
+# ------------------------------
+# Shell
+# ------------------------------
+brew "zsh"
+brew "bash"
 brew "fish"
-brew "git"
-brew "gh"
-brew "fzf"
-brew "ripgrep"
-brew "fd"
-brew "bat"
-brew "eza"
-brew "delta"
-brew "bottom"
-brew "procs"
-brew "prettyping"
+brew "starship"
 
-# Foundamental
-# cask "zoom"
-# cask "google-japanese-ime"
+
+# ------------------------------
+# Apps
+# ------------------------------
+cask "google-chrome"
+cask "docker"
+cask "zed"
+cask "visual-studio-code"
 cask "raycast"
 cask "divvy"
 cask "spotify"
-cask "deepl"
 cask "slack"
 cask "cleanshot"
 cask "obsidian"
 cask "1password"
 brew "borders"
 
-# Browser
-cask "arc"
-cask "google-chrome"
 
-# Development
-cask "visual-studio-code"
-cask "cursor"
-cask "windsurf"
-cask "iterm2"
-cask "ghostty"
-cask "docker"
-cask "1password-cli"
-cask "figma"
-brew "starship"
+# ------------------------------
+# Coding Agent
+# ------------------------------
+brew "codex"
+brew "claude-code"
+
+
+# ------------------------------
+# Git/GitHub
+# ------------------------------
+brew "git"
+brew "gh"
+brew "delta"
 brew "diff-so-fancy"
+
+
+# ------------------------------
+# Fonts
+# ------------------------------
+cask "font-fira-code-nerd-font"
+cask "font-iosevka"
+
+
+# ------------------------------
+# Replacement for X
+# ------------------------------
+# Replacement for `cat`
+# https://github.com/sharkdp/bat
+brew "bat"
+
+# Replacement for `grep`
+# https://github.com/BurntSushi/ripgrep
+brew "ripgrep"
+
+# Replacement for fuzzy finder
+# https://github.com/junegunn/fzf
+brew "fzf"
+
+# Replacement for AST-aware grep
+# https://github.com/ast-grep/ast-grep
+brew "ast-grep"
+
+# Replacement for `ls`
+# https://github.com/ogham/exa
+brew "exa"
+
+# Replacement for `find`
+# https://github.com/sharkdp/fd
+brew "fd"
+
+# Replacement for `sed`
+# https://github.com/chmln/sd
+brew "sd"
+
+# Replacement for `ps`
+# https://github.com/dalance/procs
+brew "procs"
+
+# Replacement for `du -sh`
+# https://github.com/sharkdp/diskus
+brew "diskus"
+
+# Replacement for `htop`
+# https://github.com/ClementTsang/bottom
+brew "bottom"
+
+# Replacement for `tldr`
+# https://github.com/tealdeer-rs/tealdeer
 brew "tealdeer"
 
-
-# LLM
-cask "ollama"
-cask "claude"
-cask "chatgpt"
-
-# Fonts
-cask "font-fira-code-nerd-font"
-cask "font-jetbrains-mono-nerd-font"
-cask "font-plemol-jp"
-cask "font-plemol-jp-nf"
-cask "font-plemol-jp-hs"
+# Replacement for `ping`
+# https://github.com/denilsonsa/prettyping
+brew "prettyping"

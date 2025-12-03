@@ -1,4 +1,9 @@
 [tools]
-1password = "latest"
-node = "22"
-python = "3"
+fnox = "latest"
+java = "latest"
+node = "lts"
+pnpm = "latest"
+python = "3.13"
+ruby = "latest"
+rust = "latest"
+ni = "latest"
