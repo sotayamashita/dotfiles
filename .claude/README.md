@@ -1,5 +1,14 @@
 ## Slash Commands
 
+### Available Commands
+
+| Command | Description | Arguments |
+|---------|-------------|-----------|
+| `/brainstorm` | Develop ideas into detailed specifications through iterative Q&A | - |
+| `/commit` | Commit with parallel subagent analysis and best practices | `[scope] [--no-session]` |
+| `/debug` | Debug and identify root cause with hypothesis tracking | `<bug description>` |
+| `/fix` | Test-driven fix implementation with RGRC cycle | `<fix description>` |
+
 ### Naming Conventions
 - Name files by action (WHAT), not methodology (HOW)
 - Express what the user wants to do, not how it's done internally
