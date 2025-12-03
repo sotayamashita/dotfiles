@@ -1,4 +1,10 @@
 {
+  "env": {
+    "DISABLE_BUG_COMMAND": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_TELEMETRY": "1"
+  },
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(rg:*)",
@@ -16,26 +22,9 @@
       "Read(.env*)"
     ]
   },
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/UserPromptSubmit/append_prompts.py"
-          }
-        ]
-      }
-    ]
-  },
   "enabledMcpjsonServers": [
     "context7",
     "deepwiki"
   ],
-  "env": {
-    "DISABLE_BUG_COMMAND": "1",
-    "DISABLE_ERROR_REPORTING": "1",
-    "DISABLE_TELEMETRY": "1"
-  },
-  "includeCoAuthoredBy": false
+  "alwaysThinkingEnabled": true
 }
