@@ -20,13 +20,3 @@
 language: "en-US"
 reviews:
   poem: false
-  collapse_walkthrough: true
-  auto_review:
-    drafts: false
-    labels:
-      - "dependencies"
-    ignore_title_keywords:
-      - "WIP"
-      - "Draft"
-      - "DO NOT MERGE"
-      - "Work in Progress"
