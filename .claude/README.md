@@ -1,79 +1,39 @@
-## Writing Rules
+## Slash Commands
 
-Global writing principles for all Claude Code configurations:
+### Naming Conventions
+- Name files by action (WHAT), not methodology (HOW)
+- Express what the user wants to do, not how it's done internally
 
-### Prompt/CLAUDE.md/SlashCommand
+| Avoid | Prefer | Reason |
+|-------|--------|--------|
+| `/tdd` | `/fix` | TDD is methodology, fix is action |
+| `/rca` | `/debug` | RCA is methodology, debug is action |
 
-Key principles for effective Prompt/CLAUDE.md/SlashCommand files:
+### Slash Command Relationship
 
-- Keep content concise and human-readable
-- Use short, declarative bullet points
-- Structure with standard Markdown headings (#, ##)
-- Focus on essential, actionable guidance
-- Iterate and refine based on effectiveness
-- Add emphasis with "IMPORTANT" or "CRITICAL" when necessary
+```mermaid
+flowchart LR
+    subgraph Investigation
+        debug["/debug<br/>Root Cause Analysis"]
+    end
 
-### Slash Commands[^1]
+    subgraph Implementation
+        fix["/fix<br/>TDD Approach"]
+    end
 
-Custom slash command file format:
+    subgraph Commit
+        commit["/commit<br/>Create Commit"]
+    end
 
-- **Markdown format** (`.md` extension)
-- **YAML frontmatter** for metadata:
-  - `allowed-tools`: List of tools the command can use
-  - `description`: Brief description of the command
-  - `argument-hint`: Expected arguments (shown during auto-completion)
-- **Dynamic content** with bash commands (`!`) and file references (`@`)
-- **Prompt instructions** as the main content
+    subgraph Artifacts
+        hypotheses[".debug/<br/>hypotheses.md"]
+    end
 
-```markdown
----
-description: "Custom command description"
-allowed-tools: ["Read", "Write", "Bash"]
-argument-hint: "argument [options]"
----
-
-Your command instructions here...
+    debug -->|Root Cause| fix
+    debug -->|Write| hypotheses
+    hypotheses -->|Reference| fix
+    fix -->|Merge Prep| commit
 ```
-
-## MCP Server
-
-Verify your installed MCP servers with:
-
-```bash
-claude mcp list
-```
-
-Expected output after following the installation instructions below:
-
-```
-deepwiki: https://mcp.deepwiki.com/sse (SSE)
-context7: npx -y @upstash/context7-mcp
-playwright: npx @playwright/mcp@latest
-```
-
-### Deepwiki
-
-```bash
-claude mcp add --scope user --transport sse deepwiki https://mcp.deepwiki.com/sse
-```
-
-_[Learn more about Deepwiki MCP](https://cognition.ai/blog/deepwiki-mcp-server)_
-
-### Context7
-
-```bash
-claude mcp add --scope user context7 npx @upstash/context7-mcp@latest
-```
-
-_[Learn more about Context7 MCP](https://github.com/upstash/context7)_
-
-### Playwright MCP
-
-```bash
-claude mcp add --scope user playwright npx @playwright/mcp@latest
-```
-
-_[Learn more about Playwright MCP](https://github.com/microsoft/playwright-mcp)_
 
 ## References
 
@@ -102,6 +62,4 @@ Essential resources for Claude Code development and best practices:
 Special thanks to the following contributors whose work forms the foundation of this configuration:
 
 - **[harperreed](https://github.com/harperreed/dotfiles)** - Base architecture for `.claude/commands/brainstorm` and configuration patterns
-- **[FirasLatrech](https://gist.github.com/FirasLatrech/415d243f1ea48f63dfc691c8ceedefc4)** - Debugging and planning framework for `.claude/commands/bug-fix`
-
-[^1]: https://docs.anthropic.com/en/docs/claude-code/slash-commands#file-format
+- **[FirasLatrech's Cursor Debugging & Planning Guidelines](https://gist.github.com/FirasLatrech/415d243f1ea48f63dfc691c8ceedefc4)** - Debugging and planning framework for `.claude/commands/debug` and `.claude/commands/fix`
