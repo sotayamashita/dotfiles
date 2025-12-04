@@ -1,0 +1,38 @@
+# =============================================================================
+# Dotfiles Symlink Configuration
+# =============================================================================
+# Syntax: gitignore-like glob patterns
+# - Lines starting with # are comments
+# - Empty lines are ignored
+# - * matches any characters except /
+# - ** matches any directory depth
+# - !pattern excludes files matched by previous patterns
+# =============================================================================
+
+# Claude Code
+.claude/**
+!.claude/README.md
+
+# OpenAI Codex
+.codex/config.toml
+
+# Fish shell
+.config/fish/*.fish
+
+# Starship prompt
+.config/starship.toml
+
+# Mise (runtime version manager)
+.config/mise/config.toml
+
+# JankyBorders
+.config/borders/bordersrc
+
+# Git configuration
+.gitconfig
+.gitconfig.*
+.gitignore.global
+.gitattributes.global
+
+# Homebrew
+.Brewfile
