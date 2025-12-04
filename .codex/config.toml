@@ -1,0 +1,20 @@
+# =========================
+# Codex CLI config.toml
+# =========================
+
+# -------------------------
+# Model (string)
+# -------------------------
+model = "gpt-5.1-codex-max"
+
+# -------------------------
+# Reasoning effort (string)
+# -------------------------
+model_reasoning_effort = "medium"
+
+# -------------------------
+# Features
+# https://developers.openai.com/codex/local-config/#feature-flags
+# -------------------------
+[features]
+web_search_request = true
