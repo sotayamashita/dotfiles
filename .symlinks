@@ -36,3 +36,6 @@
 
 # Homebrew
 .Brewfile
+
+# pnpm
+.config/pnpm/rc
