@@ -91,7 +91,7 @@ end
 # PDF to Markdown conversion using docling
 # https://github.com/docling-project/docling
 if has_command mise
-    function pdfToMd --description "Convert PDF to Markdown using mise"
+    function pdf2md --description "Convert PDF to Markdown using mise"
         mise x -- uvx docling --to md --pipeline vlm --vlm-model granite_docling $argv
     end
 end
