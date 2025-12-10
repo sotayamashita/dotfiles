@@ -70,6 +70,12 @@ if test -f "$HOME/google-cloud-sdk/path.fish.inc"
     . "$HOME/google-cloud-sdk/path.fish.inc"
 end
 
+# fnox
+# https://fnox.jdx.dev/guide/shell-integration.html#enable-shell-integration
+if command -v fnox &>/dev/null
+    fnox activate fish | source
+end
+
 # ------------------------------
 # Shell Prompt
 # ------------------------------
