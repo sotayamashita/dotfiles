@@ -1,6 +1,6 @@
 ---
 description: Commit code with parallel subagent analysis, atomic validation, and best practices
-argument-hint: [scope] [--no-session]
+argument-hint: [scope]
 allowed-tools: Task(*), Bash(git:*, gh:*, ast-grep:*, rg:*), Read(*), Glob(*), Grep(*)
 ---
 
@@ -23,7 +23,7 @@ hallucination-free analysis based on actual file contents.
 <use_parallel_tool_calls>
 If you intend to call multiple tools and there are no dependencies between
 the tool calls, make all independent calls in parallel. For example:
-- Run Tasks 1-5 simultaneously (no dependencies)
+- Run Tasks 1-4 simultaneously (no dependencies)
 - Run git status, git diff --cached, git log in parallel (no dependencies)
 Maximize parallel execution for speed and efficiency.
 </use_parallel_tool_calls>
@@ -31,7 +31,7 @@ Maximize parallel execution for speed and efficiency.
 ## Phase 1: Parallel Commit Analysis
 
 <parallel_execution>
-Execute Tasks 1-5 simultaneously using parallel tool calls. These tasks have no
+Execute Tasks 1-4 simultaneously using parallel tool calls. These tasks have no
 dependencies between them and can run concurrently for efficiency.
 </parallel_execution>
 
@@ -92,32 +92,7 @@ Create a subagent to assess the impact of changes:
 - `test_coverage: string` - Assessment of test coverage (good/partial/missing)
 </output_format>
 
-### Task 3: Session Context Generation
-
-<context>
-Session context provides valuable metadata about the development process,
-useful for future reference and team communication.
-</context>
-
-<instructions>
-Create a subagent to generate comprehensive session summary:
-- Include brief recap of key actions and decisions
-- Document efficiency insights and process improvements
-- Record total conversation turns and any interesting observations
-</instructions>
-
-<tools>
-- Access to conversation context (no external tools needed)
-</tools>
-
-<output_format>
-- `key_actions: string[]` - Main actions taken during session
-- `decisions: string[]` - Key decisions made
-- `insights: string[]` - Efficiency insights or improvements
-- `conversation_turns: number` - Total turns in conversation
-</output_format>
-
-### Task 4: Commit Message Optimization
+### Task 3: Commit Message Optimization
 
 <context>
 Well-crafted commit messages following conventions enable automated changelog
@@ -153,7 +128,7 @@ Create a subagent to optimize the commit message:
 - `related_issues: string[]` - Related issue/PR numbers
 </output_format>
 
-### Task 5: Atomic Commit Validation
+### Task 4: Atomic Commit Validation
 
 <context>
 Atomic commits (single logical unit of change) enable precise git bisect debugging,
@@ -190,7 +165,7 @@ Create a subagent to validate atomic commit principles:
 <decision_flow>
 As the main agent, review all subagent findings and make decisions:
 
-1. **Check Atomic validation result from Task 5**:
+1. **Check Atomic validation result from Task 4**:
    - If `is_atomic: false`:
      - Present split recommendations to user
      - Ask user: "Do you want to split this into multiple commits?"
@@ -236,14 +211,9 @@ After analysis, proceed directly to staging and committing unless:
 
 1. Stage relevant changes using `git add`
 
-2. **Ask user about Session Summary**:
-   - Ask: "Do you want to include Session Summary in the commit message?"
-   - Options: "Yes, include" / "No, standard format only"
-
-3. Create commit with message format:
+2. Create commit with message format:
 
 <commit_format>
-**Standard format (without Session Summary):**
 ```
 type(scope): description
 
@@ -253,28 +223,10 @@ WHY: [Motivation and context for this change]
 
 [Fixes #xxx | Closes #xxx] (if applicable)
 [BREAKING CHANGE: description] (if applicable)
-```
-
-**With Session Summary (if user chose "Yes"):**
-```
-type(scope): description
-
-WHY: [Motivation and context for this change]
-
-[Detailed explanation if needed]
-
-[Fixes #xxx | Closes #xxx] (if applicable)
-[BREAKING CHANGE: description] (if applicable)
-
----
-Session Summary:
-- [Key actions and decisions from Task 3]
-- [Efficiency insights and improvements]
-- [Conversation turns: N]
 ```
 </commit_format>
 
-4. Verify commit succeeded with `git status`
+3. Verify commit succeeded with `git status`
 
 ## Success Criteria
 
