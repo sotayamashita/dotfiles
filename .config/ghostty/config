@@ -37,12 +37,34 @@ window-padding-x = 4
 # See: https://ghostty.org/docs/config/reference#window-padding-y
 window-padding-y = 4
 
+# Center text when window size doesn't align with cell grid.
+# See: https://ghostty.org/docs/config/reference#window-padding-balance
+window-padding-balance = true
+
+# Background opacity for translucent terminal effect.
+# Valid: 0.0 (transparent) to 1.0 (opaque)
+# See: https://ghostty.org/docs/config/reference#background-opacity
+background-opacity = 0.85
+
+# Background blur radius for frosted glass effect (macOS).
+# Higher values create stronger blur but may impact performance on older GPUs.
+# See: https://ghostty.org/docs/config/reference#background-blur-radius
+background-blur-radius = 16
+
 # =============================================================================
 # Font
 # =============================================================================
 # Font size in points. Non-integer values supported.
 # See: https://ghostty.org/docs/config/reference#font-size
 font-size = 16
+
+# Thicken font rendering for better clarity on high-DPI/retina displays.
+# See: https://ghostty.org/docs/config/reference#font-thicken
+font-thicken = true
+
+# Add subtle breathing room between lines for improved readability.
+# See: https://ghostty.org/docs/config/reference#adjust-cell-height
+adjust-cell-height = 1
 
 # OpenType font features. Use "-feature" to disable, "+feature" or "feature" to enable.
 # Common: -calt (disable programming ligatures), -liga, -dlig
@@ -51,12 +73,85 @@ font-feature = "-calt"
 font-feature = "-dlig"
 
 # =============================================================================
+# Cursor
+# =============================================================================
+# Cursor shape. Requires shell-integration-features = no-cursor to take effect.
+# Valid: block, bar, underline
+# See: https://ghostty.org/docs/config/reference#cursor-style
+cursor-style = block
+
+# Disable cursor blinking for reduced distraction.
+# See: https://ghostty.org/docs/config/reference#cursor-style-blink
+cursor-style-blink = false
+
+# Reduce cursor brightness for less eye strain.
+# Valid: 0.0 (transparent) to 1.0 (opaque)
+# See: https://ghostty.org/docs/config/reference#cursor-opacity
+cursor-opacity = 0.7
+
+# =============================================================================
 # macOS Specific
 # =============================================================================
+# Hide titlebar to maximize screen real estate.
+# Valid: native, transparent, tabs, hidden
+# See: https://ghostty.org/docs/config/reference#macos-titlebar-style
+macos-titlebar-style = transparent
+
 # Control the proxy icon visibility in macOS titlebar.
 # Valid: visible, hidden
 # See: https://ghostty.org/docs/config/reference#macos-titlebar-proxy-icon
 macos-titlebar-proxy-icon = hidden
+
+# =============================================================================
+# Security
+# =============================================================================
+# Prompt before allowing programs to read clipboard.
+# Valid: allow, deny, ask
+# See: https://ghostty.org/docs/config/reference#clipboard-read
+clipboard-read = ask
+
+# Warn when pasting potentially dangerous content (e.g., text with newlines
+# that could execute commands unexpectedly).
+# See: https://ghostty.org/docs/config/reference#clipboard-paste-protection
+clipboard-paste-protection = true
+
+# Automatically copy text to clipboard when selected.
+# See: https://ghostty.org/docs/config/reference#copy-on-select
+copy-on-select = true
+
+# =============================================================================
+# Performance
+# =============================================================================
+# Number of lines to keep in scrollback buffer. Larger values allow scrolling
+# through more history but use more memory (~100 bytes per line).
+# Default: 10000. Set to 0 for unlimited (not recommended).
+# See: https://ghostty.org/docs/config/reference#scrollback-limit
+scrollback-limit = 100000
+
+# =============================================================================
+# UX Improvements
+# =============================================================================
+# Hide mouse cursor while typing to reduce visual clutter.
+# See: https://ghostty.org/docs/config/reference#mouse-hide-while-typing
+mouse-hide-while-typing = true
+
+# Multiply scroll speed for faster navigation through output.
+# See: https://ghostty.org/docs/config/reference#mouse-scroll-multiplier
+mouse-scroll-multiplier = 2
+
+# Hide the resize overlay that shows window dimensions.
+# Valid: always, never, after-first
+# See: https://ghostty.org/docs/config/reference#resize-overlay
+resize-overlay = never
+
+# New splits/tabs inherit the current working directory.
+# See: https://ghostty.org/docs/config/reference#window-inherit-working-directory
+window-inherit-working-directory = true
+
+# Dim unfocused split panes for better focus distinction.
+# Valid: 0.0 (invisible) to 1.0 (fully visible)
+# See: https://ghostty.org/docs/config/reference#unfocused-split-opacity
+unfocused-split-opacity = 0.85
 
 # =============================================================================
 # Keybindings
