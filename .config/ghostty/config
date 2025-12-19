@@ -1,0 +1,21 @@
+shell-integration = fish
+shell-integration-features = no-cursor
+
+theme = "Xcode Dark hc"
+window-padding-x = 4
+window-padding-y = 4
+
+font-size = 16
+font-feature = "-calt"
+font-feature = "-dlig"
+
+# Hide icon from title bar
+macos-titlebar-proxy-icon = hidden
+
+# Shift+Enter key binding
+keybind = shift+enter=text:\x1b\r
+
+quick-terminal-position = "top"
+quick-terminal-screen = "main"
+quick-terminal-animation-duration = 0.3
+keybind = "global:cmd+shift+t=toggle_quick_terminal"

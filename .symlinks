@@ -19,6 +19,9 @@
 # Fish shell
 .config/fish/*.fish
 
+# Ghosty
+.config/ghostty/config
+
 # Starship prompt
 .config/starship.toml
 
