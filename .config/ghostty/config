@@ -1,21 +1,93 @@
+# Ghostty Terminal Configuration
+# See: https://ghostty.org/docs/config/reference
+
+# =============================================================================
+# Shell Integration
+# =============================================================================
+# Automatic shell integration for enhanced terminal features like working
+# directory reporting, prompt marking, and window title management.
+# See: https://ghostty.org/docs/config/reference#shell-integration
 shell-integration = fish
+
+# Enable/disable specific shell integration features (comma-separated).
+# Available: cursor, sudo, title, ssh-env, ssh-terminfo (prefix with "no-" to disable)
+# See: https://ghostty.org/docs/config/reference#shell-integration-features
 shell-integration-features = no-cursor
 
+# =============================================================================
+# Theme
+# =============================================================================
+# Apply built-in or custom theme. Supports light/dark mode switching with
+# syntax: "light:ThemeName,dark:ThemeName"
+# List available themes: ghostty +list-themes
+# See: https://ghostty.org/docs/config/reference#theme
+# See: https://ghostty.org/docs/features/theme
 theme = "Xcode Dark hc"
+
+# =============================================================================
+# Window
+# =============================================================================
+# Horizontal padding (points) between terminal cells and window borders.
+# Accepts single value or "left,right" for asymmetric padding.
+# See: https://ghostty.org/docs/config/reference#window-padding-x
 window-padding-x = 4
+
+# Vertical padding (points) between terminal cells and window borders.
+# Accepts single value or "top,bottom" for asymmetric padding.
+# See: https://ghostty.org/docs/config/reference#window-padding-y
 window-padding-y = 4
 
+# =============================================================================
+# Font
+# =============================================================================
+# Font size in points. Non-integer values supported.
+# See: https://ghostty.org/docs/config/reference#font-size
 font-size = 16
+
+# OpenType font features. Use "-feature" to disable, "+feature" or "feature" to enable.
+# Common: -calt (disable programming ligatures), -liga, -dlig
+# See: https://ghostty.org/docs/config/reference#font-feature
 font-feature = "-calt"
 font-feature = "-dlig"
 
-# Hide icon from title bar
+# =============================================================================
+# macOS Specific
+# =============================================================================
+# Control the proxy icon visibility in macOS titlebar.
+# Valid: visible, hidden
+# See: https://ghostty.org/docs/config/reference#macos-titlebar-proxy-icon
 macos-titlebar-proxy-icon = hidden
 
-# Shift+Enter key binding
+# =============================================================================
+# Keybindings
+# =============================================================================
+# Custom keyboard shortcuts. Format: trigger=action
+# Supports modifiers: ctrl, alt, shift, super (cmd on macOS)
+# Special prefixes: global:, all:, unconsumed:, performable:
+# See: https://ghostty.org/docs/config/keybind
+# See: https://ghostty.org/docs/config/keybind/reference
+
+# Send escape + carriage return for Shift+Enter
 keybind = shift+enter=text:\x1b\r
 
+# =============================================================================
+# Quick Terminal (macOS)
+# =============================================================================
+# Drop-down terminal that can be toggled with a global hotkey.
+# See: https://ghostty.org/docs/config/reference#quick-terminal-position
+
+# Position on screen.
+# Valid: top, bottom, left, right, center
 quick-terminal-position = "top"
+
+# Which screen to display on.
+# Valid: main, mouse, macos-menu-bar
+# See: https://ghostty.org/docs/config/reference#quick-terminal-screen
 quick-terminal-screen = "main"
+
+# Animation duration in seconds. Set to 0 to disable.
+# See: https://ghostty.org/docs/config/reference#quick-terminal-animation-duration
 quick-terminal-animation-duration = 0.3
+
+# Global keybind to toggle quick terminal
 keybind = "global:cmd+shift+t=toggle_quick_terminal"
