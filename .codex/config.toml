@@ -5,7 +5,7 @@
 # -------------------------
 # Model (string)
 # -------------------------
-model = "gpt-5.1-codex-max"
+model = "gpt-5.2-codex"
 
 # -------------------------
 # Reasoning effort (string)
