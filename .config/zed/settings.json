@@ -1,0 +1,183 @@
+{
+  // ===========================================================================
+  // Privacy
+  // ===========================================================================
+  // Disable telemetry to prevent sending usage and diagnostic data to Zed.
+  // See: https://zed.dev/docs/configuring-zed#telemetry
+  "telemetry": {
+    "metrics": false,
+    "diagnostics": false,
+  },
+
+  // ===========================================================================
+  // General
+  // ===========================================================================
+  // Automatically check for and install Zed updates.
+  // See: https://zed.dev/docs/configuring-zed#auto-update
+  "auto_update": true,
+  // Automatically save files when editor loses focus.
+  // Valid: "off", "on_focus_change", "on_window_change", or delay in ms
+  // See: https://zed.dev/docs/configuring-zed#autosave
+  "autosave": "on_focus_change",
+
+  // ===========================================================================
+  // Theme
+  // ===========================================================================
+  // Apply theme with automatic dark/light mode switching based on system.
+  // List available themes: View > Theme Selector (cmd-k cmd-t)
+  // See: https://zed.dev/docs/configuring-zed#theme
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "One Dark",
+  },
+  // File icon theme for project panel and tabs.
+  // See: https://zed.dev/docs/configuring-zed#icon-theme
+  "icon_theme": "Catppuccin Mocha",
+
+  // ===========================================================================
+  // Font
+  // ===========================================================================
+  // Font size for UI elements (menus, panels, etc.).
+  // See: https://zed.dev/docs/configuring-zed#ui-font-size
+  "ui_font_size": 14,
+  // Font size for editor buffer text.
+  // See: https://zed.dev/docs/configuring-zed#buffer-font-size
+  "buffer_font_size": 14,
+  // Line height for better readability. "comfortable" uses golden ratio (1.618).
+  // Valid: "standard", "comfortable", or custom float value
+  // See: https://zed.dev/docs/configuring-zed#buffer-line-height
+  "buffer_line_height": "comfortable",
+  // Fallback fonts for characters not in primary font (e.g., Japanese text).
+  // See: https://zed.dev/docs/configuring-zed#buffer-font-fallbacks
+  "buffer_font_fallbacks": ["Noto Sans JP", "Hiragino Sans"],
+
+  // ===========================================================================
+  // Tabs
+  // ===========================================================================
+  // Tab bar display settings.
+  // See: https://zed.dev/docs/configuring-zed#tab-bar
+  "tab_bar": {
+    "show": true,
+    // Hide back/forward navigation buttons for cleaner UI.
+    "show_nav_history_buttons": false,
+  },
+  // Individual tab appearance and behavior.
+  // See: https://zed.dev/docs/configuring-zed#tabs
+  "tabs": {
+    // Display file type icons in tabs.
+    "file_icons": true,
+    // Show git status indicator on tabs for easy diff identification.
+    "git_status": true,
+    // Mark tabs containing errors. Valid: "off", "errors", "all"
+    "show_diagnostics": "errors",
+  },
+  // Preview tabs open files temporarily until explicitly kept.
+  // Single-click = preview (italic title), double-click = keep.
+  // See: https://zed.dev/docs/configuring-zed#preview-tabs
+  "preview_tabs": {
+    "enabled": true,
+    "enable_preview_from_file_finder": true,
+    "enable_preview_from_project_panel": true,
+  },
+
+  // ===========================================================================
+  // Display
+  // ===========================================================================
+  // Scrollbar visibility and indicators.
+  // See: https://zed.dev/docs/configuring-zed#scrollbar
+  "scrollbar": {
+    // Valid: "auto", "system", "always", "never"
+    "show": "auto",
+    // Show git diff markers in scrollbar.
+    "git_diff": true,
+    // Show search result positions in scrollbar.
+    "search_results": true,
+    // Show diagnostic positions. Valid: "all", "off", "error", "warning", "info"
+    "diagnostics": "all",
+  },
+  // Visual guides for code indentation levels.
+  // See: https://zed.dev/docs/configuring-zed#indent-guides
+  "indent_guides": {
+    "enabled": true,
+    // Color varies by nesting depth. Valid: "disabled", "fixed", "indent_aware"
+    "coloring": "indent_aware",
+  },
+  // Show relative line numbers (useful for Vim motions).
+  // See: https://zed.dev/docs/configuring-zed#relative-line-numbers
+  "relative_line_numbers": false,
+  // Highlight the current line. Valid: "none", "gutter", "line", "all"
+  // See: https://zed.dev/docs/configuring-zed#current-line-highlight
+  "current_line_highlight": "all",
+  // Show vertical lines at specified column positions.
+  // See: https://zed.dev/docs/configuring-zed#wrap-guides
+  "show_wrap_guides": true,
+  "wrap_guides": [80, 120],
+
+  // ===========================================================================
+  // Inlay Hints
+  // ===========================================================================
+  // Display inline type annotations and parameter names.
+  // See: https://zed.dev/docs/configuring-zed#inlay-hints
+  "inlay_hints": {
+    "enabled": true,
+  },
+
+  // ===========================================================================
+  // Completions
+  // ===========================================================================
+  // Show completion menu automatically while typing.
+  // See: https://zed.dev/docs/configuring-zed#show-completions-on-input
+  "show_completions_on_input": true,
+  // Display documentation alongside completion suggestions.
+  // See: https://zed.dev/docs/configuring-zed#show-completion-documentation
+  "show_completion_documentation": true,
+
+  // ===========================================================================
+  // File Scan Exclusions
+  // ===========================================================================
+  // Directories and files to exclude from file search and project indexing.
+  // Note: This overrides defaults, so include all patterns you want excluded.
+  // See: https://zed.dev/docs/configuring-zed#file-scan-exclusions
+  "file_scan_exclusions": [
+    // Version control
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/CVS",
+    // OS generated
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    // Dependencies
+    "**/node_modules",
+    "**/vendor",
+    "**/venv",
+    "**/.venv",
+    // Build outputs
+    "**/dist",
+    "**/build",
+    "**/out",
+    "**/target",
+    // Cache and temp
+    "**/.turbo",
+    "**/.next",
+    "**/.nuxt",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/coverage",
+    // IDE
+    "**/.vscode",
+    "**/.idea",
+  ],
+
+  // ===========================================================================
+  // File Types
+  // ===========================================================================
+  // Associate file patterns with language modes.
+  // See: https://zed.dev/docs/configuring-zed#file-types
+  "file_types": {
+    "Dockerfile": ["Dockerfile", "Dockerfile.*"],
+    "JSONC": ["*.code-snippets", "tsconfig*.json", ".prettierrc", ".eslintrc"],
+    "Shell Script": [".envrc"],
+  },
+}

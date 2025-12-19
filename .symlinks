@@ -9,6 +9,9 @@
 # - !pattern excludes files matched by previous patterns
 # =============================================================================
 
+# Zed
+.config/zed/settings.json
+
 # Claude Code
 .claude/**
 !.claude/README.md
