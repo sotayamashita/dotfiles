@@ -18,3 +18,7 @@ model_reasoning_effort = "medium"
 # -------------------------
 [features]
 web_search_request = true
+
+[mcp_servers.deepwiki]
+command = "mise"
+args = ["x", "--", "npx", "mcp-remote", "https://mcp.deepwiki.com/sse"]
