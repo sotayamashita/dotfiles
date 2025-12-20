@@ -30,12 +30,12 @@ theme = "Xcode Dark hc"
 # Horizontal padding (points) between terminal cells and window borders.
 # Accepts single value or "left,right" for asymmetric padding.
 # See: https://ghostty.org/docs/config/reference#window-padding-x
-window-padding-x = 4
+window-padding-x = 10
 
 # Vertical padding (points) between terminal cells and window borders.
 # Accepts single value or "top,bottom" for asymmetric padding.
 # See: https://ghostty.org/docs/config/reference#window-padding-y
-window-padding-y = 4
+window-padding-y = 10
 
 # Center text when window size doesn't align with cell grid.
 # See: https://ghostty.org/docs/config/reference#window-padding-balance
@@ -44,7 +44,7 @@ window-padding-balance = true
 # Background opacity for translucent terminal effect.
 # Valid: 0.0 (transparent) to 1.0 (opaque)
 # See: https://ghostty.org/docs/config/reference#background-opacity
-background-opacity = 0.85
+background-opacity = 1.0
 
 # Background blur radius for frosted glass effect (macOS).
 # Higher values create stronger blur but may impact performance on older GPUs.
@@ -54,6 +54,10 @@ background-blur-radius = 16
 # =============================================================================
 # Font
 # =============================================================================
+# Primary font family for terminal text rendering.
+# See: https://ghostty.org/docs/config/reference#font-family
+font-family = "Iosevka Nerd Font"
+
 # Font size in points. Non-integer values supported.
 # See: https://ghostty.org/docs/config/reference#font-size
 font-size = 16
@@ -95,7 +99,7 @@ cursor-opacity = 0.7
 # Hide titlebar to maximize screen real estate.
 # Valid: native, transparent, tabs, hidden
 # See: https://ghostty.org/docs/config/reference#macos-titlebar-style
-macos-titlebar-style = transparent
+macos-titlebar-style = tabs
 
 # Control the proxy icon visibility in macOS titlebar.
 # Valid: visible, hidden
@@ -164,6 +168,9 @@ unfocused-split-opacity = 0.85
 
 # Send escape + carriage return for Shift+Enter
 keybind = shift+enter=text:\x1b\r
+
+# Reload configuration without restarting
+keybind = super+r=reload_config
 
 # =============================================================================
 # Quick Terminal (macOS)
