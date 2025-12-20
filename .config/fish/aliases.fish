@@ -26,6 +26,18 @@ function has_command
     type -q $argv[1]
 end
 
+# Find
+# https://github.com/sharkdp/fd
+if has_command fd
+    alias find="fd"
+end
+
+# Sed
+# https://github.com/chmln/sd
+if has_command sd
+    alias sed="sd"
+end
+
 # File and directory operations
 # https://github.com/eza-community/eza
 if has_command eza
