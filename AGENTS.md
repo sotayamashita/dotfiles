@@ -3,11 +3,11 @@
 ## Project Structure & Module Organization
 - Root contains dotfiles and config assets (for example `.gitconfig`, `.Brewfile`, `.config/`, `.claude/`, `.codex/`).
 - `scripts/` holds automation:
-  - `scripts/symlink.sh` manages symlinks from the repo into `$HOME` using `.symlinks` patterns.
+  - `scripts/symlink.py` manages symlinks from the repo into `$HOME` using `.symlinks` patterns.
 
 ## Build, Test, and Development Commands
-- `bash scripts/symlink.sh --dry-run` — preview symlinks without changes.
-- `bash scripts/symlink.sh` — create symlinks defined in `.symlinks`.
+- `./scripts/symlink.py --dry-run` — preview symlinks without changes.
+- `./scripts/symlink.py` — create symlinks defined in `.symlinks`.
 
 ## Coding Style & Naming Conventions
 - Bash scripts use `#!/usr/bin/env bash` and `set -euo pipefail`.
@@ -18,7 +18,7 @@
 
 ## Testing Guidelines
 - No automated test suite is defined.
-- Validate changes by running `scripts/symlink.sh --dry-run` and spot-checking created links in `$HOME`.
+- Validate changes by running `./scripts/symlink.py --dry-run` and spot-checking created links in `$HOME`.
 - For installers, run the specific script and confirm the tool/version installs cleanly.
 
 ## Commit & Pull Request Guidelines
