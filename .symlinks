@@ -20,7 +20,7 @@
 .codex/config.toml
 
 # Fish shell
-.config/fish/*.fish
+.config/fish/**/*.fish
 
 # Ghosty
 .config/ghostty/config
