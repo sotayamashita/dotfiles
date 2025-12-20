@@ -51,6 +51,11 @@ fish_add_path $BREW_PREFIX/opt/openssl@3/bin
 # https://www.rust-lang.org/
 # -> Use mise instead of rustup for Rust version management
 
+# Flutter SDK
+# https://docs.flutter.dev/install/manual
+# -> Use mise instead of flutter version management
+# -> e.g. `mise list-all flutter` and then `mise use flutter@3.38.2-stable`
+
 # Mise
 # https://code.claude.com/docs/en/setup
 set -gx MISE_QUIET 1
