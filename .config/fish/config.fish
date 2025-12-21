@@ -47,7 +47,7 @@ fish_add_path $BREW_PREFIX/opt/openssl@3/bin
 # https://github.com/rbenv/rbenv
 # -> Use mise instead of pyenv for Python version management
 
-# Rust 
+# Rust
 # https://www.rust-lang.org/
 # -> Use mise instead of rustup for Rust version management
 
@@ -63,10 +63,13 @@ if test -f $HOME/.local/bin/mise
     $HOME/.local/bin/mise activate fish | source
 end
 
-# ngrok
-# https://ngrok.com/
-if command -v ngrok &>/dev/null
-    eval (ngrok completion)
+# Android SDK
+# https://developer.android.com/studio
+set -gx ANDROID_HOME $HOME/Library/Android/sdk
+if test -d $ANDROID_HOME
+    fish_add_path $ANDROID_HOME/emulator
+    fish_add_path $ANDROID_HOME/platform-tools
+    fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
 end
 
 # Google Cloud SDK
