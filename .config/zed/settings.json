@@ -40,17 +40,17 @@
   // ===========================================================================
   // Font size for UI elements (menus, panels, etc.).
   // See: https://zed.dev/docs/configuring-zed#ui-font-size
-  "ui_font_size": 14,
+  "ui_font_size": 16,
   // Font size for editor buffer text.
   // See: https://zed.dev/docs/configuring-zed#buffer-font-size
-  "buffer_font_size": 14,
+  "buffer_font_size": 16,
   // Line height for better readability. "comfortable" uses golden ratio (1.618).
   // Valid: "standard", "comfortable", or custom float value
   // See: https://zed.dev/docs/configuring-zed#buffer-line-height
   "buffer_line_height": "comfortable",
   // Fallback fonts for characters not in primary font (e.g., Japanese text).
   // See: https://zed.dev/docs/configuring-zed#buffer-font-fallbacks
-  "buffer_font_fallbacks": ["Noto Sans JP", "Hiragino Sans"],
+  "buffer_font_fallbacks": ["Iosevka Nerd Font", "Hiragino Sans"],
 
   // ===========================================================================
   // Tabs
@@ -105,7 +105,7 @@
   },
   // Show relative line numbers (useful for Vim motions).
   // See: https://zed.dev/docs/configuring-zed#relative-line-numbers
-  "relative_line_numbers": false,
+  "relative_line_numbers": "disabled",
   // Highlight the current line. Valid: "none", "gutter", "line", "all"
   // See: https://zed.dev/docs/configuring-zed#current-line-highlight
   "current_line_highlight": "all",
