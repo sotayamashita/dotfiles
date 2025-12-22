@@ -28,8 +28,8 @@
   // See: https://zed.dev/docs/configuring-zed#theme
   "theme": {
     "mode": "system",
-    "light": "One Light",
-    "dark": "One Dark",
+    "light": "Flexoki Light",
+    "dark": "Flexoki Dark",
   },
   // File icon theme for project panel and tabs.
   // See: https://zed.dev/docs/configuring-zed#icon-theme

@@ -22,7 +22,7 @@ shell-integration-features = no-cursor
 # List available themes: ghostty +list-themes
 # See: https://ghostty.org/docs/config/reference#theme
 # See: https://ghostty.org/docs/features/theme
-theme = "Xcode Dark hc"
+theme = "Flexoki Dark"
 
 # =============================================================================
 # Window
