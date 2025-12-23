@@ -80,9 +80,9 @@ end
 
 # fnox
 # https://fnox.jdx.dev/guide/shell-integration.html#enable-shell-integration
-if command -v fnox &>/dev/null
-    fnox activate fish | source
-end
+# if command -v fnox &>/dev/null
+#     fnox activate fish | source
+# end
 
 # ------------------------------
 # Shell Prompt
