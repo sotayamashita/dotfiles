@@ -1,5 +1,5 @@
 ---
-description: Screen Clippings to decide if worth reading
+description: Get overview of Clippings to decide if worth reading
 argument-hint: <clipping filename>
 allowed-tools: Task(*), Read(*), Glob(*), Bash(rg:*)
 ---
