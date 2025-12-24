@@ -48,6 +48,11 @@ cask "font-iosevka"
 
 
 # ------------------------------
+# Development Tools
+# ------------------------------
+brew "thefuck"
+
+# ------------------------------
 # Replacement for X
 # ------------------------------
 # Replacement for `cat`
