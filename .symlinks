@@ -18,6 +18,7 @@
 
 # OpenAI Codex
 .codex/config.toml
+.codex/prompts/*.md
 
 # Fish shell
 .config/fish/**/*.fish
