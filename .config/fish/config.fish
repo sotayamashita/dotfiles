@@ -63,6 +63,14 @@ if test -f $HOME/.local/bin/mise
     $HOME/.local/bin/mise activate fish | source
 end
 
+# Java
+function java
+    if type -q mise; and mise where java &>/dev/null
+        set -gx JAVA_HOME (mise where java)
+        command java $argv
+    end
+end
+
 # Android SDK
 # https://developer.android.com/studio
 set -gx ANDROID_HOME $HOME/Library/Android/sdk
