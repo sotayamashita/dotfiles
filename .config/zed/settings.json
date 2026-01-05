@@ -153,11 +153,6 @@
     "**/vendor",
     "**/venv",
     "**/.venv",
-    // Build outputs
-    "**/dist",
-    "**/build",
-    "**/out",
-    "**/target",
     // Cache and temp
     "**/.turbo",
     "**/.next",
