@@ -26,3 +26,7 @@ web_search_request = true
 [mcp_servers.deepwiki]
 command = "mise"
 args = ["x", "--", "npx", "mcp-remote", "https://mcp.deepwiki.com/sse"]
+
+[mcp_servers.playwright]
+command = "mise"
+args = ["x", "--", "npx", "@playwright/mcp@latest"]
