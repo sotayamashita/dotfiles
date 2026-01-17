@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "0.1.0",
+  "name": "X Post",
+  "behavior": "create",
+  "noteNameFormat": "{{title|safe_name}}",
+  "path": "Clippings",
+  "noteContentFormat": "{{#if image}}![]({{image}}){{/if}}\n\nPosted by **{{author}}** ({{handle}}) at {{published}}\n\n{{selectorHtml:[data-testid=\"twitterArticleRichTextView\"]|first|markdown|default:selectorHtml:[data-testid=\"tweetText\"]|first|markdown}}",
+  "properties": [
+    {
+      "name": "title",
+      "value": "{{selector:[data-testid=\"twitter-article-title\"]|first|default:meta:og:title|default:title}}",
+      "type": "text"
+    },
+    {
+      "name": "author",
+      "value": "{{selector:[data-testid=\"User-Name\"] > div:first-child|first|default:\"Unknown\"}}",
+      "type": "text"
+    },
+    {
+      "name": "handle",
+      "value": "{{url|replace:\"https://x.com/\":\"@\"|replace:\"https://twitter.com/\":\"@\"|replace:/\\/status\\/.*/:\"\"}}",
+      "type": "text"
+    },
+    {
+      "name": "source",
+      "value": "{{url}}",
+      "type": "text"
+    },
+    {
+      "name": "published",
+      "value": "{{selector:article time|attr:datetime|first}}",
+      "type": "datetime"
+    },
+    {
+      "name": "created",
+      "value": "{{time}}",
+      "type": "datetime"
+    },
+    {
+      "name": "image",
+      "value": "{{meta:og:image}}",
+      "type": "text"
+    },
+    {
+      "name": "enjoyment",
+      "value": "",
+      "type": "number"
+    },
+    {
+      "name": "importance",
+      "value": "",
+      "type": "number"
+    },
+    {
+      "name": "tags",
+      "value": "clippings, status/inbox",
+      "type": "multitext"
+    }
+  ],
+  "triggers": ["https://x.com", "https://twitter.com"]
+}
