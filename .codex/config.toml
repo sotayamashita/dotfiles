@@ -30,3 +30,7 @@ args = ["x", "--", "npx", "mcp-remote", "https://mcp.deepwiki.com/sse"]
 [mcp_servers.playwright]
 command = "mise"
 args = ["x", "--", "npx", "@playwright/mcp@latest"]
+
+[mcp_servers.context7]
+command = "mise"
+args = ["x", "--", "npx", "@upstash/context7-mcp"]
