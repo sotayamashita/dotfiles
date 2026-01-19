@@ -80,10 +80,23 @@ Resolve the file path:
   - Prompt: "Extract the full article content preserving structure"
 </tools>
 
+<footnote_patterns>
+Web Clipper が生成する非標準形式と Obsidian 変換ルール:
+
+| 検出パターン | 変換後 |
+|-------------|--------|
+| `[N](/path#anchor)` | `[^N]` (参照) |
+| `<sup>N</sup>` | `[^N]` (参照) |
+| `[N]` (リンクなし) | `[^N]` (参照) |
+| `[N] Definition text` (末尾) | `[^N]: Definition text` |
+
+N = 数字または識別子
+</footnote_patterns>
+
 ## Phase 3: Compare and Identify Issues
 
 <parallel_execution>
-Execute Tasks 1-2 simultaneously using parallel tool calls.
+Execute Tasks 1-3 simultaneously using parallel tool calls.
 </parallel_execution>
 
 ### Task 1: Structure Analysis
@@ -111,6 +124,19 @@ Create a subagent to analyze content:
 - `link_issues: { line: number, current: string, suggested: string }[]`
 </output_format>
 
+### Task 3: Footnote Analysis
+Create a subagent to analyze footnote formats:
+- Detect non-Obsidian footnote patterns (see <footnote_patterns>)
+- Map to Obsidian-compatible format
+- Verify reference-definition consistency
+
+<output_format>
+- `footnote_ref_issues: { line: number, current: string, obsidian: string }[]`
+- `footnote_def_issues: { line: number, current: string, obsidian: string }[]`
+- `orphan_refs: string[]` (references without definitions)
+- `orphan_defs: string[]` (definitions without references)
+</output_format>
+
 ## Phase 4: Present Fixes to User
 
 <decision_flow>
@@ -128,11 +154,17 @@ Create a subagent to analyze content:
    - Missing sections: A issues
    - Extra content: B issues
    - Links: C issues
+
+   ### Footnote Issues (F total)
+   - Reference format: X issues
+   - Definition format: Y issues
+   - Orphan references: Z issues
    ```
 
 3. Use AskUserQuestion to confirm:
    - "Apply structure fixes?" (Yes/No/Select specific)
    - "Apply content fixes?" (Yes/No/Select specific)
+   - "Apply footnote fixes?" (Yes/No/Select specific)
 </decision_flow>
 
 ## Phase 5: Apply Fixes
@@ -144,7 +176,11 @@ For each approved fix category:
 3. Apply content fixes (add missing, remove extra)
 4. Fix links if approved
    - Convert to wikilinks if Obsidian skill available and appropriate
-5. Use Edit tool for each modification
+5. Apply footnote fixes if approved
+   - Convert inline references to `[^N]` format
+   - Convert definitions to `[^N]: text` format
+   - Report orphan refs/defs for manual review
+6. Use Edit tool for each modification
 </instructions>
 
 <completion_report>
@@ -158,6 +194,7 @@ For each approved fix category:
 - Missing sections: A added
 - Extra content: B removed
 - Links: C fixed
+- Footnotes: F fixed (R orphan refs, D orphan defs reported)
 
 File: [path]
 ```
@@ -171,6 +208,7 @@ File: [path]
 - [ ] Original article fetched (or user chose alternative)
 - [ ] Structure issues identified
 - [ ] Content issues identified
+- [ ] Footnote issues identified
 - [ ] Issues presented to user
 - [ ] User approval obtained via AskUserQuestion
 - [ ] Approved fixes applied via Edit tool
