@@ -24,18 +24,17 @@ Always fetch the original article via WebFetch before comparing content.
 
 <skill_integration>
 When applying fixes that involve Obsidian-specific syntax (wikilinks, callouts,
-embeds, properties, etc.), check for available Obsidian skills:
+embeds, properties, etc.):
 
-1. Use Glob to check if skills exist: `.claude/skills/*/SKILL.md`
-2. If Obsidian-related skills found:
-   - Invoke the relevant skill via Skill tool for syntax guidance
-   - Follow skill instructions for proper Obsidian formatting
-3. If no skills available:
+1. Invoke the obsidian-markdown skill via Skill tool:
+   - Use `Skill` tool with skill name `obsidian:obsidian-markdown`
+   - This leverages Claude Code's built-in skill discovery mechanism
+2. If skill invocation fails (skill not installed):
    - Proceed with standard markdown fixes
    - Use CommonMark + GFM conventions
 
-This ensures correct Obsidian Flavored Markdown when skills are installed,
-while maintaining functionality without them.
+Note: Claude Code automatically discovers installed plugin skills regardless
+of their installation path (marketplace, manual, etc.).
 </skill_integration>
 
 <argument_handling>

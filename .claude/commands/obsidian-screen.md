@@ -23,18 +23,17 @@ Always use the Read tool to examine the actual file before making claims.
 </investigate_before_answering>
 
 <skill_integration>
-When presenting results with Obsidian-specific syntax (wikilinks, etc.),
-check for available Obsidian skills:
+When presenting results with Obsidian-specific syntax (wikilinks, etc.):
 
-1. Use Glob to check if skills exist: `.claude/skills/*/SKILL.md`
-2. If Obsidian-related skills found:
-   - Invoke the relevant skill via Skill tool for syntax guidance
-   - Use proper wikilink format for related notes
-3. If no skills available:
+1. Invoke the obsidian-markdown skill via Skill tool:
+   - Use `Skill` tool with skill name `obsidian:obsidian-markdown`
+   - This leverages Claude Code's built-in skill discovery mechanism
+2. If skill invocation fails (skill not installed):
    - Proceed with standard markdown format
    - Use CommonMark conventions for links
 
-This ensures correct Obsidian Flavored Markdown when skills are installed.
+Note: Claude Code automatically discovers installed plugin skills regardless
+of their installation path (marketplace, manual, etc.).
 </skill_integration>
 
 <argument_handling>
