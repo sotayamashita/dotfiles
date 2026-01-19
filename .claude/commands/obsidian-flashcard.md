@@ -1,7 +1,7 @@
 ---
-description: Generate English flashcards from Literature Note
+description: Generate English flashcards from Literature Note on Obsidian
 argument-hint: <literature note path>
-allowed-tools: Read(*), WebFetch(*), Write(*), Bash(*), Edit(*), AskUserQuestion(*)
+allowed-tools: Read(*), WebFetch(*), Write(*), Bash(*), Edit(*), AskUserQuestion(*), Skill(*)
 ---
 
 <purpose>
@@ -16,6 +16,21 @@ using example sentences from the original article.
 3. **Self-Contained Sentences** - Each sentence must be understandable without context
 4. **Spaced Repetition Format** - Follow Obsidian Spaced Repetition plugin format
 </principles>
+
+<skill_integration>
+When creating flashcard output with Obsidian-specific syntax (wikilinks in
+source field, etc.), check for available Obsidian skills:
+
+1. Use Glob to check if skills exist: `.claude/skills/*/SKILL.md`
+2. If Obsidian-related skills found:
+   - Invoke the relevant skill via Skill tool for syntax guidance
+   - Ensure proper wikilink format in source frontmatter
+3. If no skills available:
+   - Proceed with standard wikilink format `[[Note Name]]`
+   - Use CommonMark conventions
+
+This ensures correct Obsidian Flavored Markdown when skills are installed.
+</skill_integration>
 
 <argument_handling>
 The user provides: $ARGUMENTS
@@ -301,6 +316,7 @@ Output: `Flashcards/Deep Learning Paper - Flashcards.md`
 - [ ] All cards formatted correctly
 - [ ] Flashcards directory created (if needed)
 - [ ] Output file written successfully
+- [ ] Obsidian skills checked for wikilink formatting (optional)
 - [ ] File path reported to user
 </success_criteria>
 

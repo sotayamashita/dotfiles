@@ -1,7 +1,7 @@
 ---
 description: Get overview of Clippings to decide if worth reading
 argument-hint: <clipping filename>
-allowed-tools: Task(*), Read(*), Glob(*), Bash(rg:*)
+allowed-tools: Task(*), Read(*), Glob(*), Bash(rg:*), Skill(*)
 ---
 
 <purpose>
@@ -21,6 +21,21 @@ NOT to judge whether it's worth reading. That decision belongs to the user.
 Never speculate about the article's content without reading it first.
 Always use the Read tool to examine the actual file before making claims.
 </investigate_before_answering>
+
+<skill_integration>
+When presenting results with Obsidian-specific syntax (wikilinks, etc.),
+check for available Obsidian skills:
+
+1. Use Glob to check if skills exist: `.claude/skills/*/SKILL.md`
+2. If Obsidian-related skills found:
+   - Invoke the relevant skill via Skill tool for syntax guidance
+   - Use proper wikilink format for related notes
+3. If no skills available:
+   - Proceed with standard markdown format
+   - Use CommonMark conventions for links
+
+This ensures correct Obsidian Flavored Markdown when skills are installed.
+</skill_integration>
 
 <argument_handling>
 The user provides: $ARGUMENTS
@@ -166,5 +181,6 @@ The user will choose: Read / Skip / Later
 - [ ] Related notes searched (using subagent)
 - [ ] Results presented in structured format
 - [ ] NO recommendation or judgment made by AI
+- [ ] Obsidian skills checked for wikilink formatting (optional)
 - [ ] User decision awaited
 </success_criteria>
