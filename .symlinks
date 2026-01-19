@@ -40,6 +40,8 @@
 .gitconfig.*
 .gitignore.global
 .gitattributes.global
+# Ignore it since it is only for this repository
+!.gitignore.local
 
 # Homebrew
 .Brewfile
