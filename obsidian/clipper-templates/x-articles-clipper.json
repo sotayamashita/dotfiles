@@ -4,7 +4,7 @@
   "behavior": "create",
   "noteNameFormat": "{{title|safe_name}}",
   "path": "Clippings",
-  "noteContentFormat": "{{#if image}}![]({{image}}){{/if}}\n\nPosted by **{{author}}** ({{handle}}) at {{published}}\n\n{{selectorHtml:[data-testid=\"twitterArticleRichTextView\"]|first|markdown|default:selectorHtml:[data-testid=\"tweetText\"]|first|markdown}}",
+  "noteContentFormat": "{{#if image}}![]({{image}}){{/if}}\n\nPosted by **{{author}}** ({{handle}}) at {{published}}\n\n{{selectorHtml:[data-testid=\"twitterArticleRichTextView\"]|first|interpreter:\"Convert this HTML to markdown. Preserve paragraph breaks (add blank lines between paragraphs), headings (use ## for h2), lists (use - or 1.), and blockquotes (use >). Keep all text content.\"|default:selectorHtml:[data-testid=\"tweetText\"]|first|markdown}}",
   "properties": [
     {
       "name": "title",
