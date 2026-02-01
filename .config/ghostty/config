@@ -130,7 +130,7 @@ copy-on-select = true
 # through more history but use more memory (~100 bytes per line).
 # Default: 10000. Set to 0 for unlimited (not recommended).
 # See: https://ghostty.org/docs/config/reference#scrollback-limit
-scrollback-limit = 100000
+scrollback-limit = 10000
 
 # =============================================================================
 # UX Improvements
