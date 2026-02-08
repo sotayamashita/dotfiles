@@ -26,6 +26,9 @@
 # Ghosty
 .config/ghostty/config
 
+# Yazi
+.config/yazi/yazi.toml
+
 # Starship prompt
 .config/starship.toml
 
