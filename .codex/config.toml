@@ -11,6 +11,9 @@
 # cached returns pre-indexed results; live fetches the most recent data.
 # If you use --yolo or another full access sandbox setting, web search defaults to live.
 web_search = "cached"
+personality = "pragmatic"
+model = "gpt-5.2"
+model_reasoning_effort = "medium"
 
 
 ################################################################################
