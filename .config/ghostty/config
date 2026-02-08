@@ -172,6 +172,26 @@ keybind = shift+enter=text:\x1b\r
 # Reload configuration without restarting
 keybind = super+r=reload_config
 
+# Split creation (VSCode-style)
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+
+# Split navigation (ctrl+shift + vim hjkl)
+keybind = ctrl+shift+h=goto_split:left
+keybind = ctrl+shift+l=goto_split:right
+keybind = ctrl+shift+j=goto_split:down
+keybind = ctrl+shift+k=goto_split:up
+
+# Split resize (cmd+ctrl + arrow keys)
+keybind = cmd+ctrl+arrow_left=resize_split:left,40
+keybind = cmd+ctrl+arrow_right=resize_split:right,40
+keybind = cmd+ctrl+arrow_up=resize_split:up,40
+keybind = cmd+ctrl+arrow_down=resize_split:down,40
+
+# Split utilities
+keybind = cmd+shift+equal=equalize_splits
+keybind = cmd+shift+enter=toggle_split_zoom
+
 # =============================================================================
 # Quick Terminal (macOS)
 # =============================================================================
