@@ -4,6 +4,9 @@
 - Root contains dotfiles and config assets (for example `.gitconfig`, `.Brewfile`, `.config/`, `.claude/`, `.codex/`).
 - `scripts/` holds automation:
   - `scripts/symlink.py` manages symlinks from the repo into `$HOME` using `.symlinks` patterns.
+- `.agents/skills/` contains locally developed Agent Skills (e.g., `ux-writing`).
+  - Install via: `npx skills add https://github.com/sotayamashita/dotfiles/tree/main/.agents/skills/<skill-name>`
+  - Global skills are managed in [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills), not via `scripts/symlink.py`.
 
 ## Build, Test, and Development Commands
 - `./scripts/symlink.py --dry-run` — preview symlinks without changes.
