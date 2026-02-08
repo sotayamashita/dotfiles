@@ -1,0 +1,27 @@
+function tcode --description "Show steps to create three-pane Ghostty layout"
+    set -l target_dir $argv[1]
+    if test -z "$target_dir"
+        set target_dir "path/to/your/awesome-project"
+    end
+
+    echo "Ghostty three-pane layout setup"
+    echo "================================"
+    echo "Target: $target_dir"
+    echo ""
+    echo "1. Cmd+D            → Split right (Claude Code pane)"
+    echo "2. Ctrl+Shift+H     → Move to left pane"
+    echo "3. Run: cd $target_dir && yazi"
+    echo "4. Cmd+Shift+D      → Split down (keifu pane)"
+    echo "5. Run: cd $target_dir && keifu"
+    echo "6. Ctrl+Shift+L     → Move to right pane"
+    echo "7. Run: cd $target_dir && claude"
+    echo "8. Resize: Ctrl+Shift+H → Cmd+Ctrl+Left (repeat)"
+    echo ""
+    echo "Layout:"
+    echo "  +--------+------------------+"
+    echo "  |  yazi  |                  |"
+    echo "  |        |   Claude Code    |"
+    echo "  +--------+                  |"
+    echo "  | keifu  |                  |"
+    echo "  +--------+------------------+"
+end
