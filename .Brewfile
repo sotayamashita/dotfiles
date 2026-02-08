@@ -1,38 +1,29 @@
 # ------------------------------
-# Shell
+# Taps
+# ------------------------------
+tap "trasta298/tap"
+
+
+# ------------------------------
+# Shell & Prompt
 # ------------------------------
 brew "zsh"
 brew "bash"
 brew "fish"
 brew "starship"
+brew "zoxide"                   # Smarter cd (https://github.com/ajeetdsouza/zoxide)
+brew "thefuck"                  # Auto-correct mistyped commands
 
 
 # ------------------------------
-# Apps
-# ------------------------------
-cask "google-chrome"
-cask "docker"
-cask "zed"
-cask "visual-studio-code"
-cask "raycast"
-cask "divvy"
-cask "spotify"
-cask "slack"
-cask "cleanshot"
-cask "obsidian"
-cask "1password"
-brew "borders"
-
-
-# ------------------------------
-# Coding Agent
+# AI Coding Agents
 # ------------------------------
 brew "codex"
 brew "claude-code"
 
 
 # ------------------------------
-# Git/GitHub
+# Version Control
 # ------------------------------
 brew "git"
 brew "gh"
@@ -41,64 +32,59 @@ brew "diff-so-fancy"
 
 
 # ------------------------------
+# Modern CLI Tools
+# ------------------------------
+# Each replaces or improves a classic Unix command.
+brew "bat"                      # cat    (https://github.com/sharkdp/bat)
+brew "ripgrep"                  # grep   (https://github.com/BurntSushi/ripgrep)
+brew "fd"                       # find   (https://github.com/sharkdp/fd)
+brew "fzf"                      # fuzzy  (https://github.com/junegunn/fzf)
+brew "ast-grep"                 # AST    (https://github.com/ast-grep/ast-grep)
+brew "exa"                      # ls     (https://github.com/ogham/exa)
+brew "sd"                       # sed    (https://github.com/chmln/sd)
+brew "procs"                    # ps     (https://github.com/dalance/procs)
+brew "diskus"                   # du     (https://github.com/sharkdp/diskus)
+brew "bottom"                   # htop   (https://github.com/ClementTsang/bottom)
+brew "tealdeer"                 # tldr   (https://github.com/tealdeer-rs/tealdeer)
+brew "prettyping"               # ping   (https://github.com/denilsonsa/prettyping)
+
+
+# ------------------------------
+# File Management & Media
+# ------------------------------
+brew "yazi"                     # Terminal file manager
+brew "jq"                       # JSON processor
+brew "sevenzip"                 # Archive tool
+brew "ffmpeg"                   # Video/audio processing
+brew "imagemagick"              # Image processing
+brew "poppler"                  # PDF rendering
+brew "resvg"                    # SVG rendering
+brew "trasta298/tap/keifu"      # Directory tree visualizer
+
+
+# ------------------------------
+# macOS Desktop Apps
+# ------------------------------
+# Window management & system
+brew "borders"
+cask "raycast"
+cask "divvy"
+cask "cleanshot"
+cask "1password"
+# Development
+cask "docker"
+cask "zed"
+cask "visual-studio-code"
+# Communication & media
+cask "google-chrome"
+cask "slack"
+cask "obsidian"
+cask "spotify"
+
+
+# ------------------------------
 # Fonts
 # ------------------------------
 cask "font-fira-code-nerd-font"
 cask "font-iosevka"
-
-
-# ------------------------------
-# Development Tools
-# ------------------------------
-brew "thefuck"
-
-# ------------------------------
-# Replacement for X
-# ------------------------------
-# Replacement for `cat`
-# https://github.com/sharkdp/bat
-brew "bat"
-
-# Replacement for `grep`
-# https://github.com/BurntSushi/ripgrep
-brew "ripgrep"
-
-# Replacement for fuzzy finder
-# https://github.com/junegunn/fzf
-brew "fzf"
-
-# Replacement for AST-aware grep
-# https://github.com/ast-grep/ast-grep
-brew "ast-grep"
-
-# Replacement for `ls`
-# https://github.com/ogham/exa
-brew "exa"
-
-# Replacement for `find`
-# https://github.com/sharkdp/fd
-brew "fd"
-
-# Replacement for `sed`
-# https://github.com/chmln/sd
-brew "sd"
-
-# Replacement for `ps`
-# https://github.com/dalance/procs
-brew "procs"
-
-# Replacement for `du -sh`
-# https://github.com/sharkdp/diskus
-brew "diskus"
-
-# Replacement for `htop`
-# https://github.com/ClementTsang/bottom
-brew "bottom"
-
-# Replacement for `tldr`
-# https://github.com/tealdeer-rs/tealdeer
-brew "tealdeer"
-
-# Replacement for `ping`
-# https://github.com/denilsonsa/prettyping
-brew "prettyping"
+cask "font-symbols-only-nerd-font"
