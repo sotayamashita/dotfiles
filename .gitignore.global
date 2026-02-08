@@ -27,3 +27,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Claude Code: machine-specific settings that should not be shared with the team
+# https://docs.anthropic.com/en/docs/claude-code/settings#settings-scope
+.claude/settings.local.json
