@@ -9,7 +9,8 @@ if [ "$USAGE" != "null" ]; then
     # Calculate current context from current_usage fields
     CURRENT_TOKENS=$(echo "$USAGE" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens')
     PERCENT_USED=$((CURRENT_TOKENS * 100 / CONTEXT_SIZE))
-    echo "[$MODEL] Context: ${PERCENT_USED}%"
+    PERCENT_REMAINING=$((100 - PERCENT_USED))
+    echo "[$MODEL] Context: ${PERCENT_REMAINING}%"
 else
-    echo "[$MODEL] Context: 0%"
+    echo "[$MODEL] Context: 100%"
 fi
