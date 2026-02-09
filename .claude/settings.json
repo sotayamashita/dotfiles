@@ -5,6 +5,11 @@
     "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_TELEMETRY": "1"
   },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0
+  },
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
