@@ -2,15 +2,14 @@
 input=$(cat)
 
 MODEL=$(echo "$input" | jq -r '.model.display_name')
-CONTEXT_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size')
-USAGE=$(echo "$input" | jq '.context_window.current_usage')
+PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
 
-if [ "$USAGE" != "null" ]; then
-    # Calculate current context from current_usage fields
-    CURRENT_TOKENS=$(echo "$USAGE" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens')
-    PERCENT_USED=$((CURRENT_TOKENS * 100 / CONTEXT_SIZE))
-    PERCENT_REMAINING=$((100 - PERCENT_USED))
-    echo "[$MODEL] Context: ${PERCENT_REMAINING}%"
-else
-    echo "[$MODEL] Context: 100%"
-fi
+# Build progress bar
+BAR_WIDTH=10
+FILLED=$((PCT * BAR_WIDTH / 100))
+EMPTY=$((BAR_WIDTH - FILLED))
+BAR=""
+[ "$FILLED" -gt 0 ] && BAR=$(printf "%${FILLED}s" | tr ' ' '▓')
+[ "$EMPTY" -gt 0 ] && BAR="${BAR}$(printf "%${EMPTY}s" | tr ' ' '░')"
+
+echo "[$MODEL] $BAR Used $PCT%"
