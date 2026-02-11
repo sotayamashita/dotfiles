@@ -47,6 +47,7 @@ brew "diskus"                   # du     (https://github.com/sharkdp/diskus)
 brew "bottom"                   # htop   (https://github.com/ClementTsang/bottom)
 brew "tealdeer"                 # tldr   (https://github.com/tealdeer-rs/tealdeer)
 brew "prettyping"               # ping   (https://github.com/denilsonsa/prettyping)
+brew "xan"                      # CSV    (https://github.com/medialab/xan)
 
 
 # ------------------------------
