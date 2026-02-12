@@ -13,8 +13,6 @@
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
-      "Bash(git:*)",
-      "Bash(gh:*)",
       "Bash(rg:*)",
       "Bash(ast-grep:*)",
       "Bash(ls:*)",
@@ -27,9 +25,25 @@
       "Read(./.env.*)",
       "Read(./secrets/**)",
       "Read(./config/credentials.json)",
+      "Read(./**/*credential*)",
+      "Read(./**/*secret*)",
+      "Read(~/.kube/**)",
+      "Read(~/.docker/config.json)",
+      "Read(~/.netrc)",
+      "Read(~/.npmrc)",
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
-      "Read(~/.gnupg/**)"
+      "Read(~/.config/gcloud/**)",
+      "Read(~/.gnupg/**)",
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(> /dev/*)",
+      "Bash(dd *)",
+      "Bash(mkfs *)"
     ]
   },
   "enabledPlugins": {
