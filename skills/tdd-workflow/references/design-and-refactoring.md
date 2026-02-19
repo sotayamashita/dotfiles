@@ -22,14 +22,14 @@ TDD separates design into two activities:
 From "A Philosophy of Software Design": prefer small interfaces with deep implementation.
 
 ```
-Deep module (GOOD):           Shallow module (AVOID):
-┌──────────────┐              ┌────────────────────────────┐
+Deep module (GOOD):             Shallow module (AVOID):
+┌────────────────┐              ┌────────────────────────────┐
 │ Small Interface│              │     Large Interface        │
-├──────────────┤              ├────────────────────────────┤
-│              │              │ Thin Implementation        │
-│  Deep Impl   │              └────────────────────────────┘
-│              │
-└──────────────┘
+├────────────────┤              ├────────────────────────────┤
+│                │              │ Thin Implementation        │
+│  Deep Impl     │              └────────────────────────────┘
+│                │
+└────────────────┘
 ```
 
 When designing, ask:
