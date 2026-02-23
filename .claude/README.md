@@ -1,6 +1,31 @@
+## Directory Structure
+
+```
+.claude/
+├── CLAUDE.md              # Project-level instructions (coding principles, security, workflow)
+├── README.md              # This file
+├── settings.json          # Shared settings (permissions, hooks, plugins, statusline)
+├── settings.local.json    # Machine-local settings (not shared across environments)
+├── statusline.sh          # Status line script (model, directory, context usage)
+├── commands/              # Slash commands
+│   ├── brainstorm.md
+│   ├── commit.md
+│   ├── debug.md
+│   ├── fix.md
+│   ├── obsidian-clipper-refine.md
+│   ├── obsidian-flashcard.md
+│   └── obsidian-screen.md
+└── docs/                  # Language and technology guidelines
+    ├── prisma.md
+    ├── python.md
+    └── typescript.md
+```
+
 ## Slash Commands
 
 ### Available Commands
+
+#### Development
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
@@ -8,6 +33,14 @@
 | `/commit` | Commit with parallel subagent analysis and best practices | `[scope]` |
 | `/debug` | Debug and identify root cause with hypothesis tracking | `<bug description>` |
 | `/fix` | Test-driven fix implementation with RGRC cycle | `<fix description>` |
+
+#### Obsidian
+
+| Command | Description | Arguments |
+|---------|-------------|-----------|
+| `/obsidian-clipper-refine` | Clean and fix Web Clipper markdown using original article | `<clipping filename>` |
+| `/obsidian-flashcard` | Generate English flashcards from Literature Note | `<literature note path>` |
+| `/obsidian-screen` | Get overview of Clippings to decide if worth reading | `<clipping filename>` |
 
 ### Naming Conventions
 - Name files by action (WHAT), not methodology (HOW)
@@ -44,6 +77,53 @@ flowchart LR
     fix -->|Merge Prep| commit
 ```
 
+```mermaid
+flowchart LR
+    subgraph Screening
+        screen["/obsidian-screen<br/>Worth Reading?"]
+    end
+
+    subgraph Refinement
+        refine["/obsidian-clipper-refine<br/>Fix Clipping Markdown"]
+    end
+
+    subgraph Study
+        flashcard["/obsidian-flashcard<br/>Generate Flashcards"]
+    end
+
+    screen -->|Read| refine
+    refine -->|Literature Note| flashcard
+```
+
+## Docs
+
+Language and technology-specific guidelines in `docs/`. These files are loaded as context when working with the corresponding stack.
+
+| File | Covers |
+|------|--------|
+| `prisma.md` | Schema design, client usage, migrations, performance |
+| `python.md` | Package management (`uv` only), essential commands |
+| `typescript.md` | Package management (`pnpm` only), type safety, naming conventions |
+
+## Configuration
+
+### settings.json (shared)
+
+Committed to the repo. Includes:
+- **permissions** - Allowed and denied tool patterns (e.g., deny `rm -rf`, `sudo`, reading secrets)
+- **hooks** - Notification and Stop hooks (plays system sound on completion)
+- **plugins** - TypeScript LSP, Rust Analyzer LSP
+- **statusline** - Runs `statusline.sh` to show model name, directory, and context usage
+- **env** - Disables telemetry and bug reporting, enables experimental agent teams
+
+### settings.local.json (machine-local)
+
+Not shared. Contains machine-specific permission overrides (e.g., WebFetch domain allowlists, local tool permissions).
+
+### statusline.sh
+
+Displays `[Model] dirname ▓▓▓░░░░░░░ Used XX%` in the Claude Code status bar.
+
 ## References
 
 Essential resources for Claude Code development and best practices:
@@ -54,6 +134,8 @@ Essential resources for Claude Code development and best practices:
 
 ### Community Resources
 - [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) - Curated collection of commands, files, and workflows
+- [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) - Comprehensive guide covering setup, CLAUDE.md, MCP, and workflows
+- [Claude Code Best Practice](https://github.com/shanraisshan/claude-code-best-practice/tree/main) - Best practices for Claude Code configuration and usage
 - [Claude Code Hooks Mastery](https://github.com/disler/claude-code-hooks-mastery) - Complete guide to Claude Code hooks implementation
 - [Context Engineering Introduction](https://github.com/coleam00/context-engineering-intro) - Fundamentals of AI coding assistant context management
 - [How to Master Claude MD Files in Claude Code](https://empathyfirstmedia.com/claude-md-file-claude-code/) - Comprehensive guide for CLAUDE.md structure
