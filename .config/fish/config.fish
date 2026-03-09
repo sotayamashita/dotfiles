@@ -93,6 +93,13 @@ end
 # end
 
 # ------------------------------
+# Applications
+# ------------------------------
+# Obsidian
+# https://obsidian.md/
+fish_add_path /Applications/Obsidian.app/Contents/MacOS
+
+# ------------------------------
 # Shell Prompt
 # ------------------------------
 # Starship
