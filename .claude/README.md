@@ -154,3 +154,4 @@ Special thanks to the following contributors whose work forms the foundation of 
 
 - **[harperreed](https://github.com/harperreed/dotfiles)** - Base architecture for `.claude/commands/brainstorm` and configuration patterns
 - **[FirasLatrech's Cursor Debugging & Planning Guidelines](https://gist.github.com/FirasLatrech/415d243f1ea48f63dfc691c8ceedefc4)** - Debugging and planning framework for `.claude/commands/debug` and `.claude/commands/fix`
+- **[kamranahmedse/claude-statusline](https://github.com/kamranahmedse/claude-statusline)** - Statusline script for Claude Code, basis for `statusline/` modules (MIT License)

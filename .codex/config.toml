@@ -1,57 +1,26 @@
-# =========================
-# Codex CLI config.toml
-# =========================
-
-################################################################################
-# Web Search
-################################################################################
-
-# Web search mode: disabled | cached | live. Default: "cached"
-# cached serves results from a web search cache (an OpenAI-maintained index).
-# cached returns pre-indexed results; live fetches the most recent data.
-# If you use --yolo or another full access sandbox setting, web search defaults to live.
-web_search = "cached"
-personality = "pragmatic"
-model = "gpt-5.2"
+model = "gpt-5.4"
 model_reasoning_effort = "medium"
-
-
-################################################################################
-# UI, Metrics, Feedback and Misc
-################################################################################
-
-[tui]
-# Enables welcome/status/spinner animations. Default: true
-animations = true
-
-# Show onboarding tooltips in the welcome screen. Default: true
-show_tooltips = false
+personality = "pragmatic"
+web_search = "cached"
 
 [analytics]
-# Control anonymous usage/health metrics collection (no PII). Default: true
 enabled = false
 
 [feedback]
-# Control whether users can submit feedback from `/feedback`. Default: true
 enabled = false
 
-
-################################################################################
-# Define MCP servers under this table. Leave empty to disable.
-################################################################################
 [mcp_servers.deepwiki]
-command = "mise"
-args = ["x", "--", "npx", "mcp-remote", "https://mcp.deepwiki.com/sse"]
-
-[mcp_servers.playwright]
-command = "mise"
-args = ["x", "--", "npx", "@playwright/mcp@latest"]
+url = "https://mcp.deepwiki.com/mcp"
 
 [mcp_servers.context7]
+args = [
+    "x",
+    "--",
+    "npx",
+    "@upstash/context7-mcp",
+]
 command = "mise"
-args = ["x", "--", "npx", "@upstash/context7-mcp"]
 
-
-################################################################################
-# Projects (trust levels)
-################################################################################
+[tui]
+animations = true
+show_tooltips = false
