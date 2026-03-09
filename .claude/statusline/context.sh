@@ -49,7 +49,7 @@ build_line1() {
   pct_color=$(color_for_pct "$(( 100 - pct_left ))")
   [[ -z "${cwd}" || "${cwd}" == "null" ]] && cwd=$(pwd)
   local dir_name
-  dir_name=$(basename "${cwd}")
+  dir_name=$(fish_style_pwd "${cwd}")
 
   local git_info git_branch git_dirty
   git_info=$(get_git_info "${cwd}")

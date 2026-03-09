@@ -14,6 +14,54 @@ readonly RESET='\033[0m'
 
 readonly SEP=" ${DIM}│${RESET} "
 
+# ── Path display ────────────────────────────────────────
+readonly FISH_PWD_DIR_LENGTH=1  # chars to keep per intermediate dir
+
+# Shortens a path in fish style.
+# Intermediate directories are truncated to FISH_PWD_DIR_LENGTH chars.
+# The last component is always shown in full.
+# Arguments:
+#   $1 - absolute path (e.g. "/Users/sota/Projects/dotfiles")
+# Outputs:
+#   Shortened path to stdout (e.g. "~/P/dotfiles")
+fish_style_pwd() {
+  local full_path="$1"
+  [[ -z "${full_path}" ]] && return
+
+  # Replace $HOME with ~
+  if [[ "${full_path}" == "${HOME}"* ]]; then
+    full_path="~${full_path#"${HOME}"}"
+  fi
+
+  # Split into array by /
+  local -a parts
+  IFS="/" read -ra parts <<< "${full_path}"
+
+  local count=${#parts[@]}
+
+  # 0 or 1 component: return as-is
+  if (( count <= 1 )); then
+    echo "${full_path}"
+    return
+  fi
+
+  # Shorten all but the last component
+  local result=""
+  local i
+  for (( i = 0; i < count - 1; i++ )); do
+    local seg="${parts[${i}]}"
+    if [[ "${seg}" == "~" ]]; then
+      result+="~"
+    elif [[ -n "${seg}" ]]; then
+      result+="${seg:0:${FISH_PWD_DIR_LENGTH}}"
+    fi
+    result+="/"
+  done
+  result+="${parts[$(( count - 1 ))]}"
+
+  echo "${result}"
+}
+
 # ── Date formats ────────────────────────────────────────
 readonly DATE_FMT_TIME="%H:%M"              # e.g. "15:00"
 readonly DATE_FMT_DATETIME="%B %-d, %H:%M"  # e.g. "March 13, 12:00"
