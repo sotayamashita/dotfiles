@@ -6,11 +6,14 @@ get_git_info() {
     local branch=""
     local dirty=""
 
-    if git -C "$cwd" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-        branch=$(git -C "$cwd" symbolic-ref --short HEAD 2>/dev/null)
-        if [ -n "$(git -C "$cwd" status --porcelain 2>/dev/null)" ]; then
-            dirty="*"
-        fi
+    local status_output
+    status_output=$(git -C "$cwd" status --porcelain -b 2>/dev/null) || { echo ""; return; }
+
+    # First line: ## branch...tracking
+    branch=$(echo "$status_output" | head -1 | sed 's/^## //; s/\.\.\..*//; s/No commits yet on //')
+    # Any lines after the header indicate dirty state
+    if echo "$status_output" | grep -qv '^##'; then
+        dirty="*"
     fi
 
     echo "$branch $dirty"

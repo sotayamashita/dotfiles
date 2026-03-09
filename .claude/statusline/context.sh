@@ -5,23 +5,23 @@
 build_line1() {
     local input="$1"
 
-    # Extract JSON data
-    local model_name
-    model_name=$(echo "$input" | jq -r '.model.display_name // "Claude"')
+    # Extract all JSON fields in a single jq call
+    local jq_out
+    jq_out=$(echo "$input" | jq -r '[
+        (.model.display_name // "Claude"),
+        (.context_window.context_window_size // 200000 | tostring),
+        (.context_window.current_usage.input_tokens // 0 | tostring),
+        (.context_window.current_usage.cache_creation_input_tokens // 0 | tostring),
+        (.context_window.current_usage.cache_read_input_tokens // 0 | tostring),
+        (.cwd // ""),
+        (.session.start_time // "")
+    ] | join("\t")')
 
-    local size
-    size=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
+    local model_name size input_tokens cache_create cache_read cwd session_start
+    IFS=$'\t' read -r model_name size input_tokens cache_create cache_read cwd session_start <<< "$jq_out"
+
     [ "$size" -eq 0 ] 2>/dev/null && size=200000
-
-    local input_tokens cache_create cache_read current
-    input_tokens=$(echo "$input" | jq -r '.context_window.current_usage.input_tokens // 0')
-    cache_create=$(echo "$input" | jq -r '.context_window.current_usage.cache_creation_input_tokens // 0')
-    cache_read=$(echo "$input" | jq -r '.context_window.current_usage.cache_read_input_tokens // 0')
-    current=$(( input_tokens + cache_create + cache_read ))
-
-    local used_tokens total_tokens pct_used
-    used_tokens=$(format_tokens $current)
-    total_tokens=$(format_tokens $size)
+    local current=$(( input_tokens + cache_create + cache_read ))
 
     local pct_left
     if [ "$size" -gt 0 ]; then
@@ -32,7 +32,8 @@ build_line1() {
 
     # Thinking mode
     local thinking_on=false
-    local settings_path="$HOME/.claude/settings.json"
+    local settings_path
+    settings_path="$(dirname "${BASH_SOURCE[0]}")/../settings.json"
     if [ -f "$settings_path" ]; then
         local thinking_val
         thinking_val=$(jq -r '.alwaysThinkingEnabled // false' "$settings_path" 2>/dev/null)
@@ -42,8 +43,6 @@ build_line1() {
     # Directory and git info
     local pct_color
     pct_color=$(color_for_pct "$(( 100 - pct_left ))")
-    local cwd
-    cwd=$(echo "$input" | jq -r '.cwd // ""')
     [ -z "$cwd" ] || [ "$cwd" = "null" ] && cwd=$(pwd)
     local dirname
     dirname=$(basename "$cwd")
@@ -55,8 +54,6 @@ build_line1() {
 
     # Session duration
     local session_duration=""
-    local session_start
-    session_start=$(echo "$input" | jq -r '.session.start_time // empty')
     if [ -n "$session_start" ] && [ "$session_start" != "null" ]; then
         local start_epoch
         start_epoch=$(iso_to_epoch "$session_start")

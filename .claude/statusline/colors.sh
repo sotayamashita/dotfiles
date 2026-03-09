@@ -15,6 +15,11 @@ reset='\033[0m'
 
 sep=" ${dim}│${reset} "
 
+# ── Date formats ────────────────────────────────────────
+DATE_FMT_TIME="%H:%M"           # e.g. "15:00"
+DATE_FMT_DATETIME="%B %-d, %H:%M" # e.g. "March 13, 12:00"
+DATE_FMT_DATE="%B %-d"            # e.g. "April 1"
+
 # ── Helpers ─────────────────────────────────────────────
 format_tokens() {
     local num=$1
@@ -94,16 +99,16 @@ format_reset_time() {
 
     case "$style" in
         time)
-            date -j -r "$epoch" +"%l:%M%p" 2>/dev/null | sed 's/^ //; s/\.//g' | tr '[:upper:]' '[:lower:]' || \
-            date -d "@$epoch" +"%l:%M%P" 2>/dev/null | sed 's/^ //; s/\.//g'
+            LC_ALL=C date -j -r "$epoch" +"$DATE_FMT_TIME" 2>/dev/null || \
+            LC_ALL=C date -d "@$epoch" +"$DATE_FMT_TIME" 2>/dev/null
             ;;
         datetime)
-            date -j -r "$epoch" +"%b %-d, %l:%M%p" 2>/dev/null | sed 's/  / /g; s/^ //; s/\.//g' | tr '[:upper:]' '[:lower:]' || \
-            date -d "@$epoch" +"%b %-d, %l:%M%P" 2>/dev/null | sed 's/  / /g; s/^ //; s/\.//g'
+            LC_ALL=C date -j -r "$epoch" +"$DATE_FMT_DATETIME" 2>/dev/null || \
+            LC_ALL=C date -d "@$epoch" +"$DATE_FMT_DATETIME" 2>/dev/null
             ;;
         *)
-            date -j -r "$epoch" +"%b %-d" 2>/dev/null | tr '[:upper:]' '[:lower:]' || \
-            date -d "@$epoch" +"%b %-d" 2>/dev/null
+            LC_ALL=C date -j -r "$epoch" +"$DATE_FMT_DATE" 2>/dev/null || \
+            LC_ALL=C date -d "@$epoch" +"$DATE_FMT_DATE" 2>/dev/null
             ;;
     esac
 }
