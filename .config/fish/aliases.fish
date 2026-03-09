@@ -66,6 +66,12 @@ if has_command procs
     alias ps="procs"
 end
 
+# Safe delete
+# https://github.com/sindresorhus/trash-cli
+if has_command trash
+    alias rm="trash"
+end
+
 # Network utilities
 # https://github.com/denilsonsa/prettyping
 if has_command prettyping

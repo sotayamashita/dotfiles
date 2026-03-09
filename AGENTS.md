@@ -1,34 +1,28 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-- Root contains dotfiles and config assets (for example `.gitconfig`, `.Brewfile`, `.config/`, `.claude/`, `.codex/`).
-- `scripts/` holds automation:
-  - `scripts/symlink.py` manages symlinks from the repo into `$HOME` using `.symlinks` patterns.
-- `skills/` contains locally developed Agent Skills (e.g., `ux-writing`).
-  - Install via: `npx skills add https://github.com/sotayamashita/dotfiles/tree/main/skills/<skill-name>`
-  - Global skills are managed in [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills), not via `scripts/symlink.py`.
-
-## Build, Test, and Development Commands
-- `./scripts/symlink.py --dry-run` — preview symlinks without changes.
-- `./scripts/symlink.py` — create symlinks defined in `.symlinks`.
-
-## Coding Style & Naming Conventions
-- Bash scripts use `#!/usr/bin/env bash` and `set -euo pipefail`.
-- Bash scripts follows the Google Bash Style Guide for formatting, naming, and function structure.
-- Prefer descriptive filenames by purpose (e.g., `symlink.sh`, `brew.sh`).
-- Keep configs close to their tool names under `.config/`.
-- No formatter is enforced; keep edits minimal and consistent with existing style.
-
-## Testing Guidelines
-- No automated test suite is defined.
-- Validate changes by running `./scripts/symlink.py --dry-run` and spot-checking created links in `$HOME`.
+## Commands
+- Run `./scripts/symlink.py --dry-run` to preview symlinks without changes.
+- Run `./scripts/symlink.py` to create symlinks defined in .symlinks.
+- Validate changes by spot-checking created links in $HOME.
 - For installers, run the specific script and confirm the tool/version installs cleanly.
 
-## Commit & Pull Request Guidelines
-- Commit messages follow Conventional Commits with scopes, e.g., `feat(fish): add gh CLI completion script` and `docs(codex): add section header for MCP servers config`.
-- Keep commits small, focused, and scoped to one tool or area.
-- PRs should include a short summary, the commands run (if any), and screenshots only when UI changes exist (rare in this repo).
+## Project Structure
+- Root contains dotfiles and config assets (.gitconfig, .Brewfile, .config/, .claude/, .codex/).
+- scripts/ holds automation: symlink.py manages symlinks from repo into $HOME via .symlinks.
+- .claude/ is symlinked to ~/.claude/ (global Claude Code config, commands, rules, statusline).
+- skills/ contains locally developed Agent Skills.
 
-## Security & Configuration Tips
-- Avoid committing secrets or machine-specific values. Keep personal data in files like `.gitconfig.user` and validate changes before sharing.
-- Review `.symlinks` carefully; it controls what is linked into `$HOME`.
+## Coding Conventions
+- Start Bash scripts with `#!/usr/bin/env bash` and `set -euo pipefail`.
+- Follow the Google Shell Style Guide for Bash.
+- Keep tool configs close to their tool names under .config/.
+- Keep edits minimal and consistent with existing style.
+
+## Commits
+- Use Conventional Commits with scopes: `feat(fish): add gh CLI completion script`.
+- Keep commits small, focused, and scoped to one tool or area.
+
+## Boundaries
+- Never modify .symlinks without reviewing what it links into $HOME.
+- Keep machine-specific values in .gitconfig.user, not in tracked files.
+- Never add tool configs directly to $HOME; place them under .config/.

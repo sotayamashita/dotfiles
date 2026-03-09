@@ -22,10 +22,11 @@
 │   ├── obsidian-clipper-refine.md
 │   ├── obsidian-flashcard.md
 │   └── obsidian-screen.md
-└── docs/                  # Language and technology guidelines
-    ├── prisma.md
-    ├── python.md
-    └── typescript.md
+└── rules/                 # Path-scoped rules (loaded only when matching files are edited)
+    ├── github-actions.md  # **/.github/workflows/**, **/.github/actions/**
+    ├── python.md          # **/*.py, **/pyproject.toml
+    ├── rust.md            # **/*.rs, **/Cargo.toml, **/Cargo.lock
+    └── typescript.md      # **/*.ts, **/*.tsx, **/*.mts, **/tsconfig*.json, **/package.json
 ```
 
 ## Slash Commands
@@ -102,15 +103,16 @@ flowchart LR
     refine -->|Literature Note| flashcard
 ```
 
-## Docs
+## Rules
 
-Language and technology-specific guidelines in `docs/`. These files are loaded as context when working with the corresponding stack.
+Path-scoped rules in `rules/`. Each file specifies glob patterns in its frontmatter and is loaded only when matching files are being edited, saving context tokens.
 
-| File | Covers |
-|------|--------|
-| `prisma.md` | Schema design, client usage, migrations, performance |
-| `python.md` | Package management (`uv` only), essential commands |
-| `typescript.md` | Package management (`pnpm` only), type safety, naming conventions |
+| File | Paths | Covers |
+|------|-------|--------|
+| `github-actions.md` | `**/.github/workflows/**`, `**/.github/actions/**` | Action pinning, security, Dependabot |
+| `python.md` | `**/*.py`, `**/pyproject.toml` | `uv` toolchain, linting, testing |
+| `rust.md` | `**/*.rs`, `**/Cargo.toml` | Cargo toolchain, clippy, error handling |
+| `typescript.md` | `**/*.ts`, `**/*.tsx`, etc. | `pnpm` toolchain, type safety, naming |
 
 ## Configuration
 
