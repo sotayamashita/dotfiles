@@ -1,31 +1,37 @@
 #!/bin/bash
 set -f
 
-input=$(cat)
+readonly STATUSLINE_DIR="$(dirname "$0")/statusline"
+source "${STATUSLINE_DIR}/colors.sh"
+source "${STATUSLINE_DIR}/git.sh"
+source "${STATUSLINE_DIR}/oauth.sh"
+source "${STATUSLINE_DIR}/context.sh"
+source "${STATUSLINE_DIR}/usage.sh"
 
-if [ -z "$input" ]; then
+main() {
+  local input
+  input=$(cat)
+
+  if [[ -z "${input}" ]]; then
     printf "Claude"
     exit 0
-fi
+  fi
 
-STATUSLINE_DIR="$(dirname "$0")/statusline"
-source "$STATUSLINE_DIR/colors.sh"
-source "$STATUSLINE_DIR/git.sh"
-source "$STATUSLINE_DIR/oauth.sh"
-source "$STATUSLINE_DIR/context.sh"
-source "$STATUSLINE_DIR/usage.sh"
+  local rate_tmp
+  rate_tmp=$(mktemp)
+  build_rate_lines "${input}" > "${rate_tmp}" &
+  local rate_pid=$!
 
-rate_tmp=$(mktemp)
-build_rate_lines "$input" > "$rate_tmp" &
-rate_pid=$!
+  local line1
+  line1=$(build_line1 "${input}")
 
-line1=$(build_line1 "$input")
+  wait "${rate_pid}"
+  local rate_lines
+  rate_lines=$(cat "${rate_tmp}")
+  rm -f "${rate_tmp}"
 
-wait "$rate_pid"
-rate_lines=$(cat "$rate_tmp")
-rm -f "$rate_tmp"
+  printf "%b" "${line1}"
+  [[ -n "${rate_lines}" ]] && printf "\n\n%b" "${rate_lines}"
+}
 
-printf "%b" "$line1"
-[ -n "$rate_lines" ] && printf "\n\n%b" "$rate_lines"
-
-exit 0
+main "$@"
