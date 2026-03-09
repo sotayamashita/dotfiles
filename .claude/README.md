@@ -5,8 +5,15 @@
 ├── CLAUDE.md              # Project-level instructions (coding principles, security, workflow)
 ├── README.md              # This file
 ├── settings.json          # Shared settings (permissions, hooks, plugins, statusline)
-├── settings.local.json    # Machine-local settings (not shared across environments)
-├── statusline.sh          # Status line script (model, directory, context usage)
+├── statusline.sh          # Status line entry point (sources modules from statusline/)
+├── statusline/            # Modular statusline components
+│   ├── LICENSE
+│   ├── README.md
+│   ├── colors.sh          # Color definitions, fish-style path shortening, progress bar helpers
+│   ├── context.sh         # JSON extraction, session time, and Line 1 assembly
+│   ├── git.sh             # Git branch and dirty state detection
+│   ├── oauth.sh           # OAuth token resolution for API usage fetch
+│   └── usage.sh           # API rate limit display with caching (current/weekly/extra)
 ├── commands/              # Slash commands
 │   ├── brainstorm.md
 │   ├── commit.md
@@ -113,16 +120,27 @@ Committed to the repo. Includes:
 - **permissions** - Allowed and denied tool patterns (e.g., deny `rm -rf`, `sudo`, reading secrets)
 - **hooks** - Notification and Stop hooks (plays system sound on completion)
 - **plugins** - TypeScript LSP, Rust Analyzer LSP
-- **statusline** - Runs `statusline.sh` to show model name, directory, and context usage
+- **statusline** - Runs `statusline.sh` to show model, directory, context, git, and usage info
 - **env** - Disables telemetry and bug reporting, enables experimental agent teams
-
-### settings.local.json (machine-local)
-
-Not shared. Contains machine-specific permission overrides (e.g., WebFetch domain allowlists, local tool permissions).
+- **alwaysThinkingEnabled** - Extended thinking enabled by default
+- **attribution** - Commit and PR attribution settings
+- **cleanupPeriodDays** - Auto-cleanup period for old data (14 days)
 
 ### statusline.sh
 
-Displays `[Model] dirname ▓▓▓░░░░░░░ Used XX%` in the Claude Code status bar.
+Entry point that sources modular components from `statusline/`. Displays a multi-line status bar:
+
+**Line 1:** `Model │ X% left │ ~/P/dir (branch*) │ ⏱ 5m │ ◐ thinking`
+- Model name, context window remaining %, fish-style shortened path, git branch with dirty indicator, session duration, thinking mode status
+
+**Lines 2-4 (rate limits):**
+```
+current ●●●●○○○○○○  40% ⟳ 15:00
+weekly  ●●○○○○○○○○  20% ⟳ March 13, 12:00
+extra   ●○○○○○○○○○ $1.50/$20.00
+```
+- Current (5-hour) and weekly (7-day) API usage with progress bars and reset times
+- Extra usage display when enabled (dollar amounts and monthly limit)
 
 ## References
 
