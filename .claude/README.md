@@ -121,7 +121,7 @@ Path-scoped rules in `rules/`. Each file specifies glob patterns in its frontmat
 Committed to the repo. Includes:
 - **permissions** - Allowed and denied tool patterns (e.g., deny `rm -rf`, `sudo`, reading secrets)
 - **hooks** - Notification and Stop hooks (plays system sound on completion)
-- **plugins** - TypeScript LSP, Rust Analyzer LSP
+- **plugins** - TypeScript LSP, Rust Analyzer LSP, Go LSP
 - **statusline** - Runs `statusline.sh` to show model, directory, context, git, and usage info
 - **env** - Disables telemetry and bug reporting, enables experimental agent teams
 - **alwaysThinkingEnabled** - Extended thinking enabled by default
@@ -130,19 +130,10 @@ Committed to the repo. Includes:
 
 ### statusline.sh
 
-Entry point that sources modular components from `statusline/`. Displays a multi-line status bar:
+Entry point that sources modular components from `statusline/`. Displays a single-line status bar:
 
-**Line 1:** `Model │ X% left │ ~/P/dir (branch*) │ ⏱ 5m │ ◐ thinking`
+`Model │ X% left │ ~/P/dir (branch*) │ ⏱ 5m │ ◐ thinking`
 - Model name, context window remaining %, fish-style shortened path, git branch with dirty indicator, session duration, thinking mode status
-
-**Lines 2-4 (rate limits):**
-```
-current ●●●●○○○○○○  40% ⟳ 15:00
-weekly  ●●○○○○○○○○  20% ⟳ March 13, 12:00
-extra   ●○○○○○○○○○ $1.50/$20.00
-```
-- Current (5-hour) and weekly (7-day) API usage with progress bars and reset times
-- Extra usage display when enabled (dollar amounts and monthly limit)
 
 ## References
 
