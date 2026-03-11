@@ -16,13 +16,6 @@ brew "thefuck"                  # Auto-correct mistyped commands
 
 
 # ------------------------------
-# AI Coding Agents
-# ------------------------------
-brew "codex"
-brew "claude-code"
-
-
-# ------------------------------
 # Version Control
 # ------------------------------
 brew "git"
@@ -64,6 +57,12 @@ brew "poppler"                  # PDF rendering
 brew "resvg"                    # SVG rendering
 brew "trasta298/tap/keifu"      # Directory tree visualizer
 
+# ------------------------------
+# AI Coding Agents
+# ------------------------------
+cask "codex"
+cask "claude-code"
+
 
 # ------------------------------
 # macOS Desktop Apps
@@ -75,7 +74,7 @@ cask "divvy"
 cask "cleanshot"
 cask "1password"
 # Development
-cask "docker"
+cask "docker-desktop"
 cask "zed"
 cask "visual-studio-code"
 # Communication & media
