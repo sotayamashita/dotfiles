@@ -48,7 +48,7 @@
 !.gitignore.local
 
 # Homebrew
-.Brewfile
+Brewfile
 
 # pnpm
 .config/pnpm/rc
