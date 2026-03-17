@@ -5,7 +5,8 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "DISABLE_BUG_COMMAND": "1",
     "DISABLE_ERROR_REPORTING": "1",
-    "DISABLE_TELEMETRY": "1"
+    "DISABLE_TELEMETRY": "1",
+    "CLAUDE_AUTO_COMPACT_THRESHOLD": "70"
   },
   "attribution": {
     "commit": "",
@@ -43,7 +44,9 @@
       "Bash(git reset --hard *)",
       "Bash(> /dev/*)",
       "Bash(dd *)",
-      "Bash(mkfs *)"
+      "Bash(mkfs *)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)"
     ]
   },
   "hooks": {
