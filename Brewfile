@@ -7,6 +7,7 @@ tap "trasta298/tap"
 # ------------------------------
 # Shell & Prompt
 # ------------------------------
+brew "coreutils"                 # GNU core utilities (https://www.gnu.org/software/coreutils/)
 brew "zsh"
 brew "bash"
 brew "fish"
