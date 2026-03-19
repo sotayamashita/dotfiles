@@ -87,8 +87,8 @@ end
 # Claude Code
 # https://docs.anthropic.com/en/docs/claude-code
 if has_command claude
-    function ccd --description "Continue Claude Code (skip permissions)"
-        command claude --dangerously-skip-permissions --continue $argv
+    function ccd --description "Claude Code (skip permissions)"
+        command claude --dangerously-skip-permissions $argv
     end
 end
 
