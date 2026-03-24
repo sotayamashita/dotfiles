@@ -27,9 +27,9 @@
   // List available themes: View > Theme Selector (cmd-k cmd-t)
   // See: https://zed.dev/docs/configuring-zed#theme
   "theme": {
-    "mode": "system",
-    "light": "Flexoki Light",
-    "dark": "Flexoki Dark",
+    "mode": "light",
+    "light": "One Light",
+    "dark": "Gruvbox Dark Hard",
   },
   // File icon theme for project panel and tabs.
   // See: https://zed.dev/docs/configuring-zed#icon-theme
