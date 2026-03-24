@@ -22,7 +22,7 @@ shell-integration-features = no-cursor
 # List available themes: ghostty +list-themes
 # See: https://ghostty.org/docs/config/reference#theme
 # See: https://ghostty.org/docs/features/theme
-theme = "Flexoki Dark"
+theme = Xcode Dark hc
 
 # =============================================================================
 # Window
@@ -153,9 +153,17 @@ resize-overlay = never
 window-inherit-working-directory = true
 
 # Dim unfocused split panes for better focus distinction.
-# Valid: 0.0 (invisible) to 1.0 (fully visible)
+# Valid: 0.15 (nearly transparent) to 1.0 (fully opaque)
 # See: https://ghostty.org/docs/config/reference#unfocused-split-opacity
-unfocused-split-opacity = 0.85
+unfocused-split-opacity = 0.5
+
+# Color overlay for unfocused splits. Defaults to background color.
+# See: https://ghostty.org/docs/config/reference#unfocused-split-fill
+unfocused-split-fill = #000000
+
+# Color of the divider between splits.
+# See: https://ghostty.org/docs/config/reference#split-divider-color
+split-divider-color = #4799ff
 
 # =============================================================================
 # Keybindings
