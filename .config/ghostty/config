@@ -76,6 +76,10 @@ adjust-cell-height = 1
 font-feature = "-calt"
 font-feature = "-dlig"
 
+# Render bold text with brighter colors for improved visibility.
+# See: https://ghostty.org/docs/config/reference#bold-is-bright
+bold-is-bright = true
+
 # =============================================================================
 # Cursor
 # =============================================================================
