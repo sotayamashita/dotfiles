@@ -43,6 +43,7 @@ This file defines user-level defaults for all projects.
 | `zizmor` | - | `zizmor .github/workflows/` |
 | `trash` | rm | `trash file` -- **never use `rm -rf`** |
 | `xan` | grep/awk (CSV) | `xan search "pattern" file.csv` |
+| `rtk` | - | `rtk git status`, `rtk read file.rs` -- LLM token-saving CLI proxy |
 
 Prefer `ast-grep` over ripgrep for code structure searches (function calls, class definitions, imports).
 

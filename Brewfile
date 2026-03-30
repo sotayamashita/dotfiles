@@ -44,6 +44,7 @@ brew "prettyping"               # ping   (https://github.com/denilsonsa/prettypi
 brew "xan"                      # CSV    (https://github.com/medialab/xan)
 brew "actionlint"               # GHA    (https://github.com/rhysd/actionlint)
 brew "zizmor"                   # GHA    (https://github.com/woodruffw/zizmor)
+brew "rtk"                      # LLM proxy (https://github.com/rtk-ai/rtk)
 
 
 # ------------------------------
