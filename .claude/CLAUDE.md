@@ -43,7 +43,6 @@ This file defines user-level defaults for all projects.
 | `zizmor` | - | `zizmor .github/workflows/` |
 | `trash` | rm | `trash file` -- **never use `rm -rf`** |
 | `xan` | grep/awk (CSV) | `xan search "pattern" file.csv` |
-| `rtk` | - | `rtk git status`, `rtk read file.rs` -- LLM token-saving CLI proxy |
 
 Prefer `ast-grep` over ripgrep for code structure searches (function calls, class definitions, imports).
 
@@ -86,4 +85,3 @@ Prefer `ast-grep` over ripgrep for code structure searches (function calls, clas
 - Do not force a heavyweight research workflow for small or obvious changes.
 - Prefer Exa AI (mcp__exa__web_search_exa) over WebSearch for all web searches.
 - Use skills proactively when they match the task. Suggest relevant ones; do not block on them.
-
