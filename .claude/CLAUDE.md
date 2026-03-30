@@ -42,6 +42,7 @@ This file defines user-level defaults for all projects.
 | `actionlint` | - | `actionlint .github/workflows/` |
 | `zizmor` | - | `zizmor .github/workflows/` |
 | `trash` | rm | `trash file` -- **never use `rm -rf`** |
+| `xan` | grep/awk (CSV) | `xan search "pattern" file.csv` |
 
 Prefer `ast-grep` over ripgrep for code structure searches (function calls, class definitions, imports).
 
