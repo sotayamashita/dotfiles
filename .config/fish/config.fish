@@ -88,9 +88,10 @@ end
 
 # fnox
 # https://fnox.jdx.dev/guide/shell-integration.html#enable-shell-integration
-# if command -v fnox &>/dev/null
-#     fnox activate fish | source
-# end
+# activate only defines shell functions (~6ms). Secrets are resolved on cd into dirs with fnox.toml
+if command -v fnox &>/dev/null
+    fnox activate fish | source
+end
 
 # ------------------------------
 # Applications
