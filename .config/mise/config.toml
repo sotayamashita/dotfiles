@@ -1,5 +1,4 @@
 [tools]
-fnox = "latest"
 java = "latest"
 node = "lts"
 pnpm = "latest"
@@ -11,3 +10,4 @@ ni = "latest"
 "npm:trash-cli" = "latest"
 "npm:obsidian-headless" = "latest"
 "npm:defuddle-cli" = "latest"
+"npm:acpx" = "latest"
