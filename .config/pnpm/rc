@@ -1,5 +1,4 @@
 # Supply chain attack mitigation: delay installing newly published packages.
 # 7-day (10080 min) cooldown blocks ~80% of attacks (8/10 in Woodruff's analysis had windows < 7 days).
 # See: https://blog.yossarian.net/2025/11/21/We-should-all-be-using-dependency-cooldowns
-minimumReleaseAge: 10080=true
-manage-package-manager-versions=false
+minimumReleaseAge: 10080
