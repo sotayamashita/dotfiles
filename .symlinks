@@ -51,3 +51,12 @@ Brewfile
 
 # pnpm
 .config/pnpm/rc
+
+# npm
+.npmrc
+
+# uv (Python package installer)
+.config/uv/uv.toml
+
+# Bun
+bunfig.toml
