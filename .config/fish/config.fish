@@ -59,9 +59,6 @@ fish_add_path $BREW_PREFIX/opt/openssl@3/bin
 # Mise
 # https://code.claude.com/docs/en/setup
 set -gx MISE_QUIET 1
-if test -f $HOME/.local/bin/mise
-    $HOME/.local/bin/mise activate fish | source
-end
 
 # Java
 function java
