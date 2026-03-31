@@ -57,8 +57,15 @@ fish_add_path $BREW_PREFIX/opt/openssl@3/bin
 # -> e.g. `mise list-all flutter` and then `mise use flutter@3.38.2-stable`
 
 # Mise
-# https://code.claude.com/docs/en/setup
-set -gx MISE_QUIET 1
+#https://mise.jdx.dev/getting-started.html
+if test -x ~/.local/bin/mise
+    set -gx MISE_QUIET 1
+    if status is-interactive
+        ~/.local/bin/mise activate fish | source
+    else
+        ~/.local/bin/mise activate fish --shims | source
+    end
+end
 
 # Java
 function java
