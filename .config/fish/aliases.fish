@@ -106,6 +106,28 @@ if has_command deno
     end
 end
 
+# Socket Firewall (sfw)
+# Supply chain attack mitigation: intercept package manager network requests
+# and block confirmed malware before download.
+# https://github.com/SocketDev/sfw-free
+if has_command sfw
+    function npm --wraps=npm --description "Run npm through Socket Firewall"
+        command sfw npm $argv
+    end
+    function pnpm --wraps=pnpm --description "Run pnpm through Socket Firewall"
+        command sfw pnpm $argv
+    end
+    function pip --wraps=pip --description "Run pip through Socket Firewall"
+        command sfw pip $argv
+    end
+    function uv --wraps=uv --description "Run uv through Socket Firewall"
+        command sfw uv $argv
+    end
+    function cargo --wraps=cargo --description "Run cargo through Socket Firewall"
+        command sfw cargo $argv
+    end
+end
+
 # PDF to Markdown conversion using docling
 # https://github.com/docling-project/docling
 if has_command mise

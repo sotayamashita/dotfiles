@@ -49,13 +49,13 @@
     ]
   },
   "hooks": {
-    "Notification": [
+    "PreToolUse": [
       {
-        "matcher": "",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff &"
+            "command": "~/.claude/hooks/sfw-gate.sh"
           }
         ]
       }
@@ -69,6 +69,26 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/sotayamashita/.agents/skills/todo-task/capture-telemetry.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/sfw-post-edit.sh"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -79,7 +99,16 @@
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true
+    "gopls-lsp@claude-plugins-official": true,
+    "codex@openai-codex": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
   },
   "alwaysThinkingEnabled": true,
   "autoDreamEnabled": true,
