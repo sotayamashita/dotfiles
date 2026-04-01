@@ -85,3 +85,11 @@ Prefer `ast-grep` over ripgrep for code structure searches (function calls, clas
 - Do not force a heavyweight research workflow for small or obvious changes.
 - Prefer Exa AI (mcp__exa__web_search_exa) over WebSearch for all web searches.
 - Use skills proactively when they match the task. Suggest relevant ones; do not block on them.
+
+## Task management
+
+- Use the `todo-task` skill for all task tracking, knowledge capture, and work planning.
+- When starting work, search existing knowledge first (`todo-app know search`).
+- Capture knowledge at natural breakpoints: error resolutions, design decisions, learnings.
+- Before completing a task, ask about verification method and record findings.
+- When the user mentions tasks, todos, やること, タスク, or 次何やる, invoke the todo-task skill.
