@@ -31,7 +31,7 @@ if echo "${command_str}" | grep -qE '^\s*(npm|pnpm|yarn)\s+(install|i|add|ci)\b'
 fi
 
 if echo "${command_str}" | grep -qE '^\s*pip\s+install\b'; then
-  echo "Blocked: Use 'sfw pip install' for supply chain protection." >&2
+  echo "Blocked: Use 'sfw uv add' instead. pip is not allowed (see .claude/rules/python.md)." >&2
   exit 2
 fi
 
