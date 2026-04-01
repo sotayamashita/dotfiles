@@ -4,6 +4,11 @@
   // ===========================================================================
   // Disable telemetry to prevent sending usage and diagnostic data to Zed.
   // See: https://zed.dev/docs/configuring-zed#telemetry
+  "terminal": {
+    "font_family": "Geist Mono"
+  },
+  "ui_font_family": "iA Writer Quattro V",
+  "buffer_font_family": "FiraCode Nerd Font Mono",
   "telemetry": {
     "metrics": false,
     "diagnostics": false,
@@ -28,12 +33,16 @@
   // See: https://zed.dev/docs/configuring-zed#theme
   "theme": {
     "mode": "light",
-    "light": "One Light",
+    "light": "Flexoki Light",
     "dark": "Gruvbox Dark Hard",
   },
   // File icon theme for project panel and tabs.
   // See: https://zed.dev/docs/configuring-zed#icon-theme
-  "icon_theme": "Catppuccin Mocha",
+  "icon_theme": {
+    "mode": "light",
+    "light": "Catppuccin Mocha",
+    "dark": "Catppuccin Mocha"
+  },
 
   // ===========================================================================
   // Font
