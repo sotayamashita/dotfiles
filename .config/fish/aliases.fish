@@ -92,6 +92,20 @@ if has_command claude
     end
 end
 
+# Deno
+# Supply chain attack mitigation: 7-day cooldown on newly published packages.
+# See: https://blog.yossarian.net/2025/11/21/We-should-all-be-using-dependency-cooldowns
+if has_command deno
+    function deno --wraps=deno --description "Deno with minimum-dependency-age"
+        switch $argv[1]
+            case install update outdated
+                command deno $argv[1] --minimum-dependency-age=P7D $argv[2..]
+            case '*'
+                command deno $argv
+        end
+    end
+end
+
 # PDF to Markdown conversion using docling
 # https://github.com/docling-project/docling
 if has_command mise
