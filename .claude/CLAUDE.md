@@ -83,7 +83,6 @@ Prefer `ast-grep` over ripgrep for code structure searches (function calls, clas
 - If Context7 is unavailable or insufficient, use official documentation and say so.
 - Use repository-wide analysis tools such as DeepWiki only when cross-file or repository-scale patterns matter.
 - Do not force a heavyweight research workflow for small or obvious changes.
-- Prefer Exa AI (mcp__exa__web_search_exa) over WebSearch for all web searches.
 - Use skills proactively when they match the task. Suggest relevant ones; do not block on them.
 
 ## Task management
