@@ -88,7 +88,9 @@ end
 # https://docs.anthropic.com/en/docs/claude-code
 if has_command claude
     function ccd --description "Claude Code (skip permissions)"
-        command claude --dangerously-skip-permissions $argv
+        # Reduce flickering in terminal output
+        # See: https://x.com/bcherny/status/2039421575422980329
+        command env CLAUDE_CODE_NO_FLICKER=1 claude --dangerously-skip-permissions $argv
     end
 end
 
