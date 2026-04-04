@@ -2,11 +2,14 @@
 name: tdd-workflow
 description: >-
   Test-driven development with Kent Beck's canonical 5-step workflow: Test List,
-  Write Test, Make Pass, Refactor, Repeat. Strict vertical-slice cycles with
-  automatic project detection. Use when the user asks to "write tests first",
-  "use TDD", "red-green-refactor", "test-driven development", "build a feature
-  with TDD", "fix a bug with TDD", wants test-first development for any
-  language or framework, or mentions "tracer bullet" or "vertical slice".
+  Write Test, Make Pass, Refactor, Repeat. Use when the user asks to build, fix,
+  or refactor code test-first. Trigger keywords: "TDD", "テスト駆動開発",
+  "テストファースト", "red-green-refactor", "tracer bullet", "vertical slice".
+  Also trigger when the query contains "TDD で", "まずテストを書いて", or
+  "テストを書いてから" combined with implementation work. Covers all languages
+  and frameworks (pytest, Jest, Vitest, cargo test, go test, etc.). Use for:
+  adding tests before refactoring legacy code, reproducing bugs with a failing
+  test first, or building new features test-first.
 ---
 
 # Test-Driven Development
@@ -45,20 +48,33 @@ Run `scripts/detect_test_env.sh` from the project root. If the script is unavail
 
 Adapt all subsequent commands to the detected framework. Never assume `npm test`.
 
+If the project's test entrypoint is missing or broken (e.g., `package.json` has
+`echo "Error: no test specified"`), update it to invoke the detected framework
+before writing any tests.
+
 ## Step 1: Confirm User Intent
 
 **Strict TDD** (default for new features/bug fixes):
 - Write failing test first, then implement
 
 **Legacy mode** (existing code without tests):
-- See `references/legacy-mode.md`
+- First write **characterization tests** that assert the current (possibly buggy) behavior
+- These tests document what the code does NOW, not what it should do
+- Only after characterization tests are GREEN, write failing tests for desired behavior
+- Then fix the code so both characterization tests (no regressions) and new tests pass
+- See `references/legacy-mode.md` for the full workflow including seam identification
 
 **Not applicable** — skip TDD for:
 - Configuration files, auto-generated code, declarative CSS, throwaway prototypes
+- **Decision gate:** If TDD is not applicable, state why in one sentence and proceed
+  without creating test artifacts. This explicit justification is important — blindly
+  applying TDD to declarative changes produces verification theater.
 
-## Step 2: Test List (Dynamic)
+## Step 2: Test List (Dynamic, Persisted)
 
 Create a list of behaviors this change needs to support. This is behavioral analysis.
+**Save this list to a file** (e.g., `test-list.md` in the project or working directory)
+so it serves as a durable artifact of the planning step.
 
 ```
 GOOD (behaviors):              BAD (implementation steps):
@@ -73,7 +89,8 @@ Rules:
 2. Each entry describes ONE observable behavior
 3. Order from simplest/most central to complex/edge-case
 4. Share with user, then start coding — do NOT wait for exhaustive approval
-5. **This list is ALIVE** — add, remove, reorder items as you learn from each cycle
+5. **This list is ALIVE** — add, remove, reorder items as you learn from each cycle.
+   Update the file after each cycle (mark completed items, add discovered cases).
 6. See `references/test-case-derivation.md` for systematic discovery techniques
 
 ## Step 3: TDD Cycles
@@ -97,6 +114,9 @@ Write a test for the chosen behavior. As you write, you are designing the interf
 
 Use Arrange-Act-Assert. Your assertion must express a CONCRETE expected value.
 **Never compute the expected value with the same logic you plan to implement.**
+When testing exceptions, assert both the exception type AND a meaningful message/pattern
+where the framework supports it (e.g., `pytest.raises(ValueError, match="...")`,
+`expect(...).toThrow(/pattern/)`).
 
 See `references/test-quality.md` for good/bad test patterns.
 
@@ -173,6 +193,9 @@ Three strategies (choose based on confidence):
 
 No speculative features (YAGNI). No refactoring yet.
 
+**Log the strategy used** (Fake It / Triangulation / Obvious Implementation) for each
+cycle — this makes the design rationale reviewable later.
+
 ### REFACTOR (Only When Green)
 
 All tests pass. Now improve the code:
@@ -201,11 +224,37 @@ See `references/mocking-guidelines.md`.
 [ ] Test describes behavior, not implementation
 [ ] Test uses public interface only
 [ ] Assertion executed and failed with WRONG VALUE (not import/type error)
+[ ] RED test output saved (run command output showing assertion failure)
 [ ] Wrote minimal code to make test pass (Fake It / Triangulation / Obvious)
+[ ] Implementation strategy logged (which of the three, and why)
 [ ] ALL tests pass (including pre-existing)
+[ ] GREEN test output saved (run command output showing all pass)
 [ ] No speculative features added
+[ ] Test list file updated (mark completed, add discovered items)
 [ ] Reported result AFTER GREEN, not after RED
 ```
+
+## Evidence Artifacts
+
+TDD is a process discipline — the final code alone cannot prove the process was followed.
+Persist these artifacts so the work is reviewable:
+
+1. **Test list file** (`test-list.md`) — created in Step 2, updated each cycle
+2. **Per-cycle log** — for **every** cycle (do not summarize or skip any), record:
+   - Which test list item is being implemented
+   - The RED output (test command + assertion failure message)
+   - The GREEN output (test command + all-pass confirmation)
+   - Which implementation strategy was used and why
+3. **Final test run** — complete output of all tests passing
+4. **Step 0 fixes** — if you repaired the test entrypoint (e.g., updated `package.json`
+   test script), record the before/after command so the fix is reviewable
+
+**Where to save:** Write these to the project's working directory alongside the code.
+If a preferred output location is specified, copy there as well.
+
+**Fallback:** If file writing is restricted, include the evidence inline in your
+response to the user — the key information (RED assertion errors, GREEN confirmations,
+strategy choices) must be communicated regardless of infrastructure constraints.
 
 ## Completion Checklist
 
