@@ -31,3 +31,19 @@ Temporary Items
 # Claude Code: machine-specific settings that should not be shared with the team
 # https://docs.anthropic.com/en/docs/claude-code/settings#settings-scope
 .claude/settings.local.json
+
+# Claude Code skill-creator evaluation artifacts
+# skill-creator (https://github.com/anthropics/skills/tree/main/skills/skill-creator)
+# runs A/B evals (with_skill vs without_skill) and writes results into
+# *-workspace/ directories. These are machine-local throwaway outputs
+# that should not be committed.
+.agents/skills/*/evals/
+.agents/skills/*-workspace/
+.claude/skills/*/evals/
+.claude/skills/*-workspace/
+**/feedback.json
+**/benchmark.json
+**/benchmark.md
+**/grading.json
+**/timing.json
+**/__pycache__/
