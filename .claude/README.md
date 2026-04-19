@@ -150,6 +150,7 @@ Essential resources for Claude Code development and best practices:
 - [Claude Code Hooks Mastery](https://github.com/disler/claude-code-hooks-mastery) - Complete guide to Claude Code hooks implementation
 - [Context Engineering Introduction](https://github.com/coleam00/context-engineering-intro) - Fundamentals of AI coding assistant context management
 - [How to Master Claude MD Files in Claude Code](https://empathyfirstmedia.com/claude-md-file-claude-code/) - Comprehensive guide for CLAUDE.md structure
+- [Agent Config](https://github.com/brianlovin/agent-config) - Brian Lovin's agent configuration reference
 
 ### Tools & Templates
 - [Claude Code Templates](https://github.com/davila7/claude-code-templates) - CLI tool for rapid project setup and monitoring

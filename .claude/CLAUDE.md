@@ -21,6 +21,7 @@ This file defines user-level defaults for all projects.
 - Give your own synthesis instead of paraphrasing sources mechanically.
 - When citing sources, use real citations with clear source identification and URLs. If you cannot verify a source, say that clearly and do not invent one.
 - When experts disagree, summarize the disagreement, explain the practical implications, and ask for direction when needed.
+- When asking the user a question, ask only one question at a time. Prefer AskUserQuestion over inline text questions.
 
 ## Philosophy
 
