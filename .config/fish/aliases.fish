@@ -95,7 +95,8 @@ if has_command claude
 end
 
 # Deno
-# Supply chain attack mitigation: 7-day cooldown on newly published packages.
+# Supply chain attack mitigation: delay installing newly published packages.
+# 7-day cooldown blocks ~80% of attacks (8/10 in Woodruff's analysis had windows < 7 days).
 # See: https://blog.yossarian.net/2025/11/21/We-should-all-be-using-dependency-cooldowns
 if has_command deno
     function deno --wraps=deno --description "Deno with minimum-dependency-age"
@@ -123,7 +124,15 @@ if has_command sfw
         command sfw pip $argv
     end
     function uv --wraps=uv --description "Run uv through Socket Firewall"
-        command sfw uv $argv
+        # Supply chain attack mitigation: delay installing newly published packages.
+        # 7-day cooldown blocks ~80% of attacks (8/10 in Woodruff's analysis had windows < 7 days).
+        # See: https://blog.yossarian.net/2025/11/21/We-should-all-be-using-dependency-cooldowns
+        switch $argv[1]
+            case add sync
+                command sfw uv $argv[1] --exclude-newer "7 days" $argv[2..]
+            case '*'
+                command sfw uv $argv
+        end
     end
     function cargo --wraps=cargo --description "Run cargo through Socket Firewall"
         command sfw cargo $argv
