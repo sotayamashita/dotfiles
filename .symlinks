@@ -12,12 +12,16 @@
 # Zed
 .config/zed/settings.json
 
+# Coding Agent
+.agents/AGENTS.md
+
 # Claude Code
 .claude/**
 !.claude/README.md
 
 # OpenAI Codex
 .codex/config.toml
+.codex/AGENTS.md
 .codex/prompts/*.md
 
 # Fish shell
