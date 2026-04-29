@@ -14,6 +14,7 @@
 
 # Coding Agent
 .agents/AGENTS.md
+!.agents/AGENTS.project.example.md
 
 # Claude Code
 .claude/**
@@ -21,8 +22,12 @@
 
 # OpenAI Codex
 .codex/config.toml
+.codex/hooks.json
+.codex/hooks/*.sh
+.codex/rules/*.rules
 .codex/AGENTS.md
 .codex/prompts/*.md
+!.codex/config.example.toml
 
 # Fish shell
 .config/fish/**/*.fish

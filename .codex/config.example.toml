@@ -1,0 +1,25 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+# Stable personal defaults for ~/.codex/config.toml.
+# The following local state is intentionally omitted:
+# - [marketplaces.*]
+# - [notice]
+# - [projects.*]
+# Reference: https://developers.openai.com/codex/config-reference
+
+model = "gpt-5.5"
+model_reasoning_effort = "medium" # minimal | low | medium | high | xhigh
+personality = "pragmatic"         # none | friendly | pragmatic
+web_search = "cached"             # disabled | cached | live
+approval_policy = "on-request"    # ask only when Codex needs permission
+sandbox_mode = "workspace-write"  # read/write workspace; ask for outside access
+
+[tui]
+animations = false                # reduce terminal motion
+show_tooltips = false             # hide onboarding hints in the TUI
+
+[analytics]
+enabled = false                   # do not send product analytics
+
+[feedback]
+enabled = false                   # disable /feedback submission

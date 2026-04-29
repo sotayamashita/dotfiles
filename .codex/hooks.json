@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.codex/hooks/sfw-gate.sh",
+            "statusMessage": "Checking Bash command"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.codex/hooks/sfw-post-edit.sh",
+            "statusMessage": "Checking dependency manifest edits"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/sotayamashita/.agents/skills/todo-task/capture-telemetry.sh",
+            "statusMessage": "Capturing command telemetry"
+          }
+        ]
+      }
+    ]
+  }
+}

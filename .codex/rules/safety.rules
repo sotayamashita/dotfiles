@@ -1,0 +1,107 @@
+# Block high-risk commands outside the sandbox.
+#
+# Codex rules match command argument prefixes. Keep tests close to each rule so
+# mistakes are caught when Codex loads the file or when `codex execpolicy check`
+# is run manually.
+
+prefix_rule(
+    pattern = ["rm", ["-rf", "-fr", "-r"]],
+    decision = "forbidden",
+    justification = "Use `trash` or a targeted reversible operation instead of recursive removal.",
+    match = [
+        "rm -rf tmp",
+        "rm -fr tmp",
+        "rm -r tmp",
+    ],
+    not_match = [
+        "trash tmp",
+        "rm file.txt",
+    ],
+)
+
+prefix_rule(
+    pattern = ["sudo"],
+    decision = "forbidden",
+    justification = "Do not run privileged commands from Codex.",
+    match = [
+        "sudo make install",
+    ],
+    not_match = [
+        "make install",
+    ],
+)
+
+prefix_rule(
+    pattern = ["chmod", "777"],
+    decision = "forbidden",
+    justification = "Do not make files world-writable.",
+    match = [
+        "chmod 777 script.sh",
+    ],
+    not_match = [
+        "chmod 755 script.sh",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "forbidden",
+    justification = "This can destroy user work. Ask the user for an explicit destructive reset request.",
+    match = [
+        "git reset --hard",
+        "git reset --hard HEAD~1",
+    ],
+    not_match = [
+        "git reset --soft HEAD~1",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "push", ["--force", "--force-with-lease"]],
+    decision = "forbidden",
+    justification = "Force-push requires an explicit user request.",
+    match = [
+        "git push --force",
+        "git push --force-with-lease",
+    ],
+    not_match = [
+        "git push",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "push", "origin", ["--force", "--force-with-lease"]],
+    decision = "forbidden",
+    justification = "Force-push requires an explicit user request.",
+    match = [
+        "git push origin --force",
+        "git push origin --force-with-lease",
+    ],
+    not_match = [
+        "git push origin main",
+    ],
+)
+
+prefix_rule(
+    pattern = ["dd"],
+    decision = "forbidden",
+    justification = "`dd` can overwrite disks or files; ask the user for an explicit request.",
+    match = [
+        "dd if=/dev/zero of=disk.img",
+    ],
+    not_match = [
+        "diskutil list",
+    ],
+)
+
+prefix_rule(
+    pattern = ["mkfs"],
+    decision = "forbidden",
+    justification = "Filesystem formatting is destructive and must not be run by Codex.",
+    match = [
+        "mkfs /dev/disk2",
+    ],
+    not_match = [
+        "mount",
+    ],
+)

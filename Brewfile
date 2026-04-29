@@ -42,6 +42,8 @@ brew "bottom"                   # htop   (https://github.com/ClementTsang/bottom
 brew "tealdeer"                 # tldr   (https://github.com/tealdeer-rs/tealdeer)
 brew "prettyping"               # ping   (https://github.com/denilsonsa/prettyping)
 brew "xan"                      # CSV    (https://github.com/medialab/xan)
+brew "shellcheck"               # Shell  (https://github.com/koalaman/shellcheck)
+brew "shfmt"                    # Shell  (https://github.com/mvdan/sh)
 brew "actionlint"               # GHA    (https://github.com/rhysd/actionlint)
 brew "zizmor"                   # GHA    (https://github.com/woodruffw/zizmor)
 
@@ -51,6 +53,7 @@ brew "zizmor"                   # GHA    (https://github.com/woodruffw/zizmor)
 # ------------------------------
 brew "yazi"                     # Terminal file manager
 brew "jq"                       # JSON processor
+brew "yq"                       # YAML processor
 brew "sevenzip"                 # Archive tool
 brew "ffmpeg"                   # Video/audio processing
 brew "imagemagick"              # Image processing
