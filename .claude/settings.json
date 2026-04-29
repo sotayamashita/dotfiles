@@ -59,32 +59,22 @@
         ]
       }
     ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff &"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/sotayamashita/.agents/skills/todo-task/capture-telemetry.sh"
-          }
-        ]
-      },
       {
         "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
             "command": "~/.claude/hooks/sfw-post-edit.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/sotayamashita/.agents/skills/todo-task/capture-telemetry.sh"
           }
         ]
       }
@@ -110,7 +100,5 @@
       }
     }
   },
-  "alwaysThinkingEnabled": true,
-  "autoDreamEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "alwaysThinkingEnabled": true
 }
