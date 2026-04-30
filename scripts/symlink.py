@@ -47,7 +47,7 @@ def expand_pattern(base_dir: Path, pattern: str) -> list[Path]:
     """
     matches = []
     for path in base_dir.glob(pattern):
-        if path.is_file():
+        if path.is_file() or (path.is_symlink() and path.is_dir()):
             matches.append(path.relative_to(base_dir))
     return matches
 

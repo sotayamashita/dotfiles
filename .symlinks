@@ -13,7 +13,7 @@
 .config/zed/settings.json
 
 # Coding Agent
-.agents/AGENTS.md
+.agents/**
 !.agents/AGENTS.project.example.md
 
 # Claude Code
@@ -27,6 +27,7 @@
 .codex/rules/*.rules
 .codex/AGENTS.md
 .codex/prompts/*.md
+.codex/skills/**
 !.codex/config.example.toml
 
 # Fish shell
