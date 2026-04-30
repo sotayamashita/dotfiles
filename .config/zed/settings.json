@@ -4,6 +4,18 @@
   // ===========================================================================
   // Disable telemetry to prevent sending usage and diagnostic data to Zed.
   // See: https://zed.dev/docs/configuring-zed#telemetry
+  "agent_servers": {
+    "codex-acp": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    },
+    "your_agent": {
+      "type": "custom",
+      "command": "path_to_executable"
+    }
+  },
   "terminal": {
     "font_family": "Geist Mono"
   },
