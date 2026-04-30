@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Prevent per-command overrides such as `git -c commit.gpgsign=false commit`.
+if [ "$(git config --bool commit.gpgsign)" != "true" ]; then
+  echo "commit.gpgsign is not true. Refusing unsigned commit." >&2
+  echo "Remove per-command overrides such as: git -c commit.gpgsign=false commit" >&2
+  exit 1
+fi

@@ -115,3 +115,11 @@
 	clean = jupyter nbconvert --to notebook --ClearOutputPreprocessor.enabled=True --stdout %f
 	smudge = cat
 	required = true
+
+[hook "require-gpgsign-true"]
+    event = pre-commit
+    command = ~/.git-hooks/require-gpgsign-true
+
+[hook "block-conflict-markers"]
+    event = pre-commit
+    command = ~/.git-hooks/block-conflict-markers

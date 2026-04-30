@@ -52,6 +52,7 @@
 .gitconfig.*
 .gitignore.global
 .gitattributes.global
+.git-hooks/*
 # Ignore it since it is only for this repository
 !.gitignore.local
 
