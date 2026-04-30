@@ -13,12 +13,15 @@
 .config/zed/settings.json
 
 # Coding Agent
-.agents/**
+.agents/AGENTS.md
+dir:.agents/skills/*
 !.agents/AGENTS.project.example.md
 
 # Claude Code
 .claude/**
 !.claude/README.md
+!.claude/skills/**
+dir:.claude/skills/*
 
 # OpenAI Codex
 .codex/config.toml
@@ -27,7 +30,7 @@
 .codex/rules/*.rules
 .codex/AGENTS.md
 .codex/prompts/*.md
-.codex/skills/**
+dir:.codex/skills/*
 !.codex/config.example.toml
 
 # Fish shell
@@ -51,6 +54,7 @@
 # Git configuration
 .gitconfig
 .gitconfig.*
+!.gitconfig.user
 .gitignore.global
 .gitattributes.global
 .git-hooks/*
