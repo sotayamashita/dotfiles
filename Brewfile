@@ -72,7 +72,6 @@ cask "claude-code"
 # macOS Desktop Apps
 # ------------------------------
 # Window management & system
-brew "borders"
 cask "raycast"
 cask "divvy"
 cask "cleanshot"
