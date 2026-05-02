@@ -4,6 +4,23 @@
   // ===========================================================================
   // Disable telemetry to prevent sending usage and diagnostic data to Zed.
   // See: https://zed.dev/docs/configuring-zed#telemetry
+  "project_panel": {
+    "dock": "right"
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "collaboration_panel": {
+    "dock": "right"
+  },
+  "agent": {
+    "dock": "left",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "git_panel": {
+    "dock": "right"
+  },
   "agent_servers": {
     "codex-acp": {
       "type": "registry"
@@ -44,14 +61,14 @@
   // List available themes: View > Theme Selector (cmd-k cmd-t)
   // See: https://zed.dev/docs/configuring-zed#theme
   "theme": {
-    "mode": "light",
+    "mode": "system",
     "light": "Flexoki Light",
-    "dark": "Gruvbox Dark Hard",
+    "dark": "Flexoki Dark",
   },
   // File icon theme for project panel and tabs.
   // See: https://zed.dev/docs/configuring-zed#icon-theme
   "icon_theme": {
-    "mode": "light",
+    "mode": "system",
     "light": "Catppuccin Mocha",
     "dark": "Catppuccin Mocha"
   },
