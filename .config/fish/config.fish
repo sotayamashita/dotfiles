@@ -50,6 +50,10 @@ fish_add_path $BREW_PREFIX/opt/openssl@3/bin
 # Rust
 # https://www.rust-lang.org/
 # -> Use mise instead of rustup for Rust version management
+# Rust / Cargo-installed binaries
+if test -d $HOME/.cargo/bin
+    fish_add_path $HOME/.cargo/bin
+end
 
 # Flutter SDK
 # https://docs.flutter.dev/install/manual

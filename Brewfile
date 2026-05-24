@@ -1,3 +1,5 @@
+# brew bundle
+
 # ------------------------------
 # Taps
 # ------------------------------
@@ -61,11 +63,13 @@ brew "poppler"                  # PDF rendering
 brew "resvg"                    # SVG rendering
 brew "trasta298/tap/keifu"      # Directory tree visualizer
 
+
 # ------------------------------
 # AI Coding Agents
 # ------------------------------
 cask "codex"
 cask "claude-code"
+brew "pi-coding-agent"
 
 
 # ------------------------------

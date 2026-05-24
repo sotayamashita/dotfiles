@@ -22,16 +22,6 @@
             "statusMessage": "Checking dependency manifest edits"
           }
         ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/sotayamashita/.agents/skills/todo-task/capture-telemetry.sh",
-            "statusMessage": "Capturing command telemetry"
-          }
-        ]
       }
     ]
   }

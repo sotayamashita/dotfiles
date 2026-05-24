@@ -1,15 +1,16 @@
 [tools]
-java = "latest"
-node = "lts"
-pnpm = "latest"
+# Programming Languages
+java   = "latest"
+node   = "lts"
+pnpm   = "latest"
 python = "3.13"
-ruby = "latest"
-rust = "latest"
-ni = "latest"
+ruby   = "latest"
+rust   = "latest"
+
+# Ruby Gems
 "gem:cocoapods" = "latest"
-"npm:trash-cli" = "latest"
-"npm:obsidian-headless" = "latest"
+
+# NPM Global Packages
+"npm:trash-cli"    = "latest"
 "npm:defuddle-cli" = "latest"
-"npm:acpx" = "latest"
-"npm:sfw" = "latest"
-"pipx:it2" = "latest"
+"npm:sfw"          = "latest"
