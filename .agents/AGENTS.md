@@ -87,8 +87,3 @@ User-level defaults for coding agents. This file is intentionally minimal and ve
 - Use official documentation when live or high-stakes accuracy matters.
 - Do not force heavyweight research for small or obvious changes.
 - Use skills proactively when they clearly match the task.
-
-## Task Tracking
-
-- Use the `todo-task` skill for explicit task tracking, todos, durable knowledge capture, or when the user asks about tasks, やること, タスク, or 次何やる.
-- Capture durable knowledge only at natural breakpoints such as repeated error resolutions, design decisions, or reusable workflow lessons.
