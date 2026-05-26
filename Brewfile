@@ -70,6 +70,7 @@ brew "trasta298/tap/keifu"      # Directory tree visualizer
 cask "codex"
 cask "claude-code"
 brew "pi-coding-agent"
+brew "agent-browser"
 
 
 # ------------------------------
