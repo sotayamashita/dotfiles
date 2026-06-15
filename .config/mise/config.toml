@@ -4,7 +4,6 @@ java   = "latest"
 node   = "lts"
 pnpm   = "latest"
 python = "3.13"
-ruby   = "latest"
 rust   = "latest"
 
 # Ruby Gems
