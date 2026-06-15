@@ -31,6 +31,7 @@ Temporary Items
 # Claude Code: machine-specific settings that should not be shared with the team
 # https://docs.anthropic.com/en/docs/claude-code/settings#settings-scope
 .claude/settings.local.json
+.claude/worktrees/
 
 # Claude Code skill-creator evaluation artifacts
 # skill-creator (https://github.com/anthropics/skills/tree/main/skills/skill-creator)
