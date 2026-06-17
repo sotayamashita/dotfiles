@@ -1,6 +1,6 @@
 # statusline
 
-Modular statusline script for Claude Code. Displays model name, context usage, git branch, session duration, thinking mode, and API rate limits.
+Modular statusline script for Claude Code. Displays model name, context usage, git branch, session duration, thinking mode, and API rate limits, with the session ID on a second line.
 
 ## File Structure
 
@@ -9,7 +9,7 @@ Modular statusline script for Claude Code. Displays model name, context usage, g
 | `colors.sh` | ANSI color definitions and helper functions |
 | `git.sh` | Git branch and dirty state detection |
 | `oauth.sh` | OAuth token resolution |
-| `context.sh` | JSON extraction, session time, and Line 1 assembly |
+| `context.sh` | JSON extraction, session time, and status line assembly (main line + session ID line) |
 | `usage.sh` | API usage fetch, caching, and rate limit display |
 
 ## License
