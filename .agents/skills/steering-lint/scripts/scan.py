@@ -18,8 +18,18 @@ import sys
 from pathlib import Path
 
 MEMORY_NAMES = ("CLAUDE.md", "AGENTS.md", "GEMINI.md")
-PRUNE = {".git", "node_modules", ".venv", "venv", "dist", "build", ".next",
-         "target", ".cache", "__pycache__"}
+PRUNE = {
+    ".git",
+    "node_modules",
+    ".venv",
+    "venv",
+    "dist",
+    "build",
+    ".next",
+    "target",
+    ".cache",
+    "__pycache__",
+}
 
 
 def line_count(path: Path) -> int:
@@ -67,8 +77,9 @@ def scan_root(root: Path) -> list[dict]:
             rel = str(path.relative_to(root))
         except ValueError:
             rel = str(path)
-        surfaces.append({"kind": kind, "rel": rel, "path": real,
-                         "lines": line_count(path), **extra})
+        surfaces.append(
+            {"kind": kind, "rel": rel, "path": real, "lines": line_count(path), **extra}
+        )
 
     # Memory files (root + nested), pruning heavy directories.
     for dirpath, dirnames, filenames in os.walk(root):
