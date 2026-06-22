@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import sys
 from dataclasses import dataclass
 from enum import Enum
@@ -67,21 +68,53 @@ def parse_rule(line: str) -> SymlinkRule | None:
     if not line or line.startswith("#"):
         return None
 
-    include = not line.startswith("!")
-    if not include:
+    include = True
+    if line.startswith("!"):
+        include = False
         line = line[1:]
 
     kind = LinkKind.FILE
     if line.startswith("dir:"):
         kind = LinkKind.DIRECTORY
         line = line.removeprefix("dir:")
+        # Tolerate "dir:!pattern" in addition to the usual "!dir:pattern".
+        if line.startswith("!"):
+            include = False
+            line = line[1:]
 
     return SymlinkRule(pattern=line, kind=kind, include=include)
 
 
+def _normalize_recursive(pattern: str) -> str:
+    """
+    Normalize a trailing ``**`` to ``**/*`` for consistent file matching.
+
+    pathlib only matches files with a bare trailing ``**`` on Python 3.13+;
+    rewriting to ``**/*`` makes recursive patterns behave the same on 3.12.
+    """
+    if pattern == "**" or pattern.endswith("/**"):
+        return f"{pattern}/*"
+    return pattern
+
+
+def _glob(base_dir: Path, pattern: str) -> list[Path]:
+    """Return absolute paths under base_dir matching pattern (normalized)."""
+    return list(base_dir.glob(_normalize_recursive(pattern)))
+
+
+def matching_paths(base_dir: Path, pattern: str) -> list[Path]:
+    """
+    Return every path under base_dir matching pattern, relative to base_dir.
+
+    Unlike expand_pattern this does not filter by kind; exclude rules apply
+    regardless of whether the match is a file or a directory.
+    """
+    return [path.relative_to(base_dir) for path in _glob(base_dir, pattern)]
+
+
 def expand_pattern(base_dir: Path, pattern: str, kind: LinkKind) -> list[Path]:
     """
-    Expand a glob pattern to matching paths.
+    Expand a glob pattern to matching paths of the requested kind.
 
     Args:
         base_dir: Directory to search in.
@@ -91,13 +124,10 @@ def expand_pattern(base_dir: Path, pattern: str, kind: LinkKind) -> list[Path]:
     Returns:
         List of matching paths (relative to base_dir).
     """
-    matches = []
-    for path in base_dir.glob(pattern):
-        if kind == LinkKind.FILE and path.is_file():
-            matches.append(path.relative_to(base_dir))
-        elif kind == LinkKind.DIRECTORY and path.is_dir():
-            matches.append(path.relative_to(base_dir))
-    return matches
+    is_kind = Path.is_file if kind == LinkKind.FILE else Path.is_dir
+    return [
+        path.relative_to(base_dir) for path in _glob(base_dir, pattern) if is_kind(path)
+    ]
 
 
 def get_link_plans(
@@ -120,18 +150,24 @@ def get_link_plans(
     """
     included: set[tuple[Path, LinkKind]] = set()
 
-    with config_file.open() as f:
+    with config_file.open(encoding="utf-8") as f:
         for line in f:
             rule = parse_rule(line)
             if rule is None:
                 continue
 
-            for match in expand_pattern(base_dir, rule.pattern, rule.kind):
-                key = (match, rule.kind)
-                if rule.include:
-                    included.add(key)
-                else:
-                    included.discard(key)
+            if rule.include:
+                matches = expand_pattern(base_dir, rule.pattern, rule.kind)
+                if not matches:
+                    warn(f"Pattern matched nothing: {rule.pattern}")
+                for match in matches:
+                    included.add((match, rule.kind))
+            else:
+                # Excludes apply regardless of kind, so a plain "!path" can
+                # cancel a "dir:path" include without repeating the prefix.
+                for match in matching_paths(base_dir, rule.pattern):
+                    for kind in LinkKind:
+                        included.discard((match, kind))
 
     plans = [
         LinkPlan(
@@ -141,7 +177,34 @@ def get_link_plans(
         )
         for relative_path, kind in included
     ]
+    plans = _drop_plans_under_dir_links(plans)
     return sorted(plans, key=lambda plan: str(plan.target))
+
+
+def _drop_plans_under_dir_links(plans: list[LinkPlan]) -> list[LinkPlan]:
+    """
+    Drop plans whose target lives inside a directory that is itself linked.
+
+    A directory symlink already brings its whole subtree into $HOME, so a
+    nested plan is redundant and—because it would be applied through the
+    freshly created parent symlink—would write back into the source tree and
+    destroy the repository's own files.
+    """
+    dir_targets = {plan.target for plan in plans if plan.kind == LinkKind.DIRECTORY}
+    if not dir_targets:
+        return plans
+
+    kept = []
+    for plan in plans:
+        covering = next(
+            (parent for parent in plan.target.parents if parent in dir_targets),
+            None,
+        )
+        if covering is not None:
+            warn(f"Skipping {plan.target}: covered by directory link {covering}")
+            continue
+        kept.append(plan)
+    return kept
 
 
 def link_points_to(target: Path, source: Path) -> bool:
@@ -165,12 +228,29 @@ def describe_plan(plan: LinkPlan) -> str:
 
 
 def is_unsafe_real_path(target: Path) -> bool:
-    """Return True when target is a non-symlink path that already exists."""
-    return (target.exists() or target.is_symlink()) and not target.is_symlink()
+    """Return True when target is a real (non-symlink) path that exists."""
+    return target.exists() and not target.is_symlink()
 
 
-def validate_link_plans(plans: list[LinkPlan], replace_real_paths: bool) -> None:
-    """Validate plans before applying any filesystem changes."""
+def refuse_real_path_message(target: Path) -> str:
+    """Message shown when a real path would be replaced without consent."""
+    return (
+        f"Refusing to replace real path: {target}\n"
+        "        Move it manually or re-run with --replace-real-paths."
+    )
+
+
+def validate_link_plans(
+    plans: list[LinkPlan],
+    replace_real_paths: bool,
+    dry_run: bool = False,
+) -> None:
+    """Validate plans before applying any filesystem changes.
+
+    Duplicate-target collisions are always fatal. The real-path refusal is
+    skipped in dry-run so the preview can still report what would happen
+    (create_symlink warns per plan instead).
+    """
     seen_targets: dict[Path, LinkPlan] = {}
     errors = []
 
@@ -183,11 +263,8 @@ def validate_link_plans(plans: list[LinkPlan], replace_real_paths: bool) -> None
             )
         seen_targets[plan.target] = plan
 
-        if is_unsafe_real_path(plan.target) and not replace_real_paths:
-            errors.append(
-                f"Refusing to replace real path: {plan.target}\n"
-                "        Move it manually or re-run with --replace-real-paths."
-            )
+        if not dry_run and is_unsafe_real_path(plan.target) and not replace_real_paths:
+            errors.append(refuse_real_path_message(plan.target))
 
     if errors:
         err("\n".join(errors))
@@ -196,11 +273,9 @@ def validate_link_plans(plans: list[LinkPlan], replace_real_paths: bool) -> None
 def remove_existing_path(path: Path) -> None:
     """Remove an existing path that will be replaced by a symlink."""
     if path.is_dir() and not path.is_symlink():
-        import shutil
-
         shutil.rmtree(path)
     else:
-        path.unlink()
+        path.unlink(missing_ok=True)
 
 
 def create_symlink(
@@ -220,52 +295,38 @@ def create_symlink(
         log(f"Already linked: {describe_plan(plan)}")
         return
 
-    target_exists = target.exists() or target.is_symlink()
-    unsafe_real_path = is_unsafe_real_path(target)
+    is_symlink = target.is_symlink()
+    target_exists = is_symlink or target.exists()
+    unsafe_real_path = target_exists and not is_symlink
 
-    if dry_run:
-        if unsafe_real_path and not replace_real_paths:
+    # Enforce the safety guard here, at the layer that mutates, so the
+    # destructive removal below can never run on a real path without consent
+    # even if validation was skipped or the path became unsafe mid-run.
+    if unsafe_real_path and not replace_real_paths:
+        if dry_run:
             warn(
                 f"[DRY-RUN] Would refuse to replace real path: "
                 f"{target} ({plan.kind.value})"
             )
-            return
+        else:
+            warn(refuse_real_path_message(target))
+        return
+
+    if dry_run:
         if target_exists:
             log(f"[DRY-RUN] Would replace: {target}")
         log(f"[DRY-RUN] Would create {describe_plan(plan)}")
         return
 
-    target.parent.mkdir(parents=True, exist_ok=True)
-
-    if target_exists:
-        remove_existing_path(target)
-
-    os.symlink(source, target)
+    try:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target_exists:
+            remove_existing_path(target)
+        os.symlink(source, target)
+    except OSError as exc:
+        warn(f"Failed to link {target}: {exc}")
+        return
     log(f"Created {describe_plan(plan)}")
-
-
-def get_matching_files(config_file: Path, base_dir: Path) -> list[Path]:
-    """
-    Get file matches from config.
-
-    Kept for compatibility with callers that only need file paths.
-    """
-    files: set[Path] = set()
-
-    with config_file.open() as f:
-        for line in f:
-            rule = parse_rule(line)
-            if rule is None or rule.kind != LinkKind.FILE:
-                continue
-
-            if rule.include:
-                for match in expand_pattern(base_dir, rule.pattern, rule.kind):
-                    files.add(match)
-            else:
-                for match in expand_pattern(base_dir, rule.pattern, rule.kind):
-                    files.discard(match)
-
-    return sorted(files)
 
 
 def parse_args() -> argparse.Namespace:
@@ -307,8 +368,7 @@ def main() -> None:
 
     log(f"Found {len(plans)} links to symlink")
 
-    if not args.dry_run:
-        validate_link_plans(plans, args.replace_real_paths)
+    validate_link_plans(plans, args.replace_real_paths, dry_run=args.dry_run)
 
     for plan in plans:
         create_symlink(plan, args.dry_run, args.replace_real_paths)

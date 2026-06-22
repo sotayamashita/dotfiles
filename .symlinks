@@ -29,7 +29,6 @@ dir:.claude/skills/*
 .codex/hooks/*.sh
 .codex/rules/*.rules
 .codex/AGENTS.md
-.codex/prompts/*.md
 dir:.codex/skills/*
 !.codex/config.example.toml
 
