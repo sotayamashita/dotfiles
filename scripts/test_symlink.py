@@ -45,6 +45,22 @@ class SymlinkTest(TestCase):
             )
             self.assertEqual(plans[0].kind, LinkKind.FILE)
 
+    def test_recursive_pattern_links_nested_files(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp) / "repo"
+            target = Path(tmp) / "home"
+            write(base / ".claude/CLAUDE.md")
+            write(base / ".claude/rules/python.md")
+            config = base / ".symlinks"
+            write(config, ".claude/**\n")
+
+            plans = get_link_plans(config, base, target)
+
+            self.assertEqual(
+                sorted(plan.target.relative_to(target) for plan in plans),
+                [Path(".claude/CLAUDE.md"), Path(".claude/rules/python.md")],
+            )
+
     def test_dir_pattern_links_directories_themselves(self) -> None:
         with TemporaryDirectory() as tmp:
             base = Path(tmp) / "repo"
@@ -111,6 +127,54 @@ class SymlinkTest(TestCase):
                 [Path(".agents/skills/commit"), Path(".config/tool/config.toml")],
             )
 
+    def test_plain_exclude_cancels_dir_include(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp) / "repo"
+            target = Path(tmp) / "home"
+            write(base / ".agents/skills/commit/SKILL.md")
+            write(base / ".agents/skills/local/SKILL.md")
+            config = base / ".symlinks"
+            # A plain "!path" (no dir: prefix) must cancel a dir: include.
+            write(config, "dir:.agents/skills/*\n!.agents/skills/local\n")
+
+            plans = get_link_plans(config, base, target)
+
+            self.assertEqual(
+                [plan.target.relative_to(target) for plan in plans],
+                [Path(".agents/skills/commit")],
+            )
+
+    def test_nested_file_under_dir_link_is_dropped(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp) / "repo"
+            target = Path(tmp) / "home"
+            write(base / ".config/foo/inner.txt", "REAL")
+            config = base / ".symlinks"
+            write(config, "dir:.config/foo\n.config/foo/*\n")
+
+            plans = quiet_call(get_link_plans, config, base, target)
+
+            # Only the directory link survives; the redundant—and destructive—
+            # nested file plan is dropped before any filesystem change.
+            self.assertEqual(
+                [(plan.kind, plan.target.relative_to(target)) for plan in plans],
+                [(LinkKind.DIRECTORY, Path(".config/foo"))],
+            )
+
+    def test_create_refuses_real_path_without_flag(self) -> None:
+        with TemporaryDirectory() as tmp:
+            source = Path(tmp) / "repo/config.toml"
+            target = Path(tmp) / "home/config.toml"
+            write(source, "new")
+            write(target, "old")
+            plan = LinkPlan(source=source, target=target, kind=LinkKind.FILE)
+
+            # create_symlink must self-guard even without a prior validate call.
+            quiet_call(create_symlink, plan, dry_run=False, replace_real_paths=False)
+
+            self.assertFalse(target.is_symlink())
+            self.assertEqual(target.read_text(), "old")
+
     def test_existing_correct_symlink_is_skipped(self) -> None:
         with TemporaryDirectory() as tmp:
             source = Path(tmp) / "repo/config.toml"
@@ -120,8 +184,12 @@ class SymlinkTest(TestCase):
             target.symlink_to(source)
             plan = LinkPlan(source=source, target=target, kind=LinkKind.FILE)
 
-            quiet_call(create_symlink, plan, dry_run=False, replace_real_paths=False)
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                create_symlink(plan, dry_run=False, replace_real_paths=False)
 
+            # Verify the skip path actually ran, not a remove-and-recreate.
+            self.assertIn("Already linked", out.getvalue())
             self.assertTrue(target.is_symlink())
             self.assertEqual(target.readlink(), source)
 
