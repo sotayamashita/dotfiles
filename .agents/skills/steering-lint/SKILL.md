@@ -37,6 +37,15 @@ exact reason a mechanism is the right home, or to settle a borderline case
 
 ## Steps
 
+Copy this checklist into your reply and tick each item as you go:
+
+```
+steering-lint progress:
+- [ ] Scope decided and scanner run; inventory in hand
+- [ ] Every surface in the inventory classified (finding attached, or marked clean)
+- [ ] Report emitted from the template; no file edited
+```
+
 ### 1. Scope
 
 Decide what to lint. Default to the current project's config surfaces. Add the
@@ -59,8 +68,14 @@ whether `paths:` frontmatter is present.
 
 Read every surface in the inventory and apply **all** the rules below. A surface
 is finished only once you have attached at least one finding to it or confirmed
-it is clean; skipping one means a real misplacement ships unflagged. Record each
-finding as:
+it is clean; skipping one means a real misplacement ships unflagged.
+
+Expand the inventory into a per-surface checklist — one line per surface from
+the scanner output — and tick a line only after you have attached a finding or
+marked it clean. The surface count is unknown until the scan runs, so build this
+list from the actual inventory rather than guessing up front.
+
+Record each finding as:
 
 - **location** — `file:lines`
 - **instruction** — the offending text, quoted briefly
