@@ -42,8 +42,8 @@ Copy this checklist into your reply and tick each item as you go:
 ```
 steering-lint progress:
 - [ ] Scope decided and scanner run; inventory in hand
-- [ ] Every surface in the inventory classified (finding attached, or marked clean)
-- [ ] Report emitted from the template; no file edited
+- [ ] Every surface classified: clean, finding, or cleared (with a note saying why)
+- [ ] Findings JSON assembled and rendered via render_report.py; no config file edited
 ```
 
 ### 1. Scope
@@ -66,31 +66,53 @@ whether `paths:` frontmatter is present.
 
 ### 2. Classify
 
-Read every surface in the inventory and apply **all** the rules below. A surface
-is finished only once you have attached at least one finding to it or confirmed
-it is clean; skipping one means a real misplacement ships unflagged.
+Read every surface in the inventory and apply **all** the rules below. Give each
+surface exactly one **status**:
 
-Expand the inventory into a per-surface checklist — one line per surface from
-the scanner output — and tick a line only after you have attached a finding or
-marked it clean. The surface count is unknown until the scan runs, so build this
-list from the actual inventory rather than guessing up front.
+- **clean** — in the right home; nothing to say.
+- **finding** — misplaced; attach the finding fields below.
+- **cleared** — a borderline the rules *could* flag, but on inspection it is correctly
+  placed. Record a one-line **note** saying why (e.g. a `paths:`-less file that is a
+  Codex execpolicy, not a narrow rule). Cleared is *in place* — not a softer finding.
 
-Record each finding as:
+Expand the inventory into a per-surface checklist — one line per surface from the
+scanner output — and tick a line only after you have given it a status. The surface
+count is unknown until the scan runs, so build this list from the actual inventory
+rather than guessing up front. Skipping one means a real misplacement ships unflagged.
 
-- **location** — `file:lines`
+Record each **finding** as (these are the fields the report contract expects):
+
+- **rule** — the id from the list below (severity is fixed by the rule; you do not assign one)
+- **title** — a short label
+- **location** — `file:lines` of the offending text
 - **instruction** — the offending text, quoted briefly
-- **rule** — the id from the list below
-- **why** — the axis that makes it wrong (load timing / compaction / authority / cost)
+- **why** — the axis that makes it wrong (load timing / compaction / authority / cost), one clause
 - **home** — the mechanism it belongs in
 - **fix** — the concrete move, one line
+- **before** / **after** — current text and proposed end-state, plain text (the renderer draws the diagram)
 
-Consult `references/mechanisms.md` for the precise reasoning or any borderline
-call. This step is done when every surface in the inventory is accounted for and
-every finding names a home and a why.
+Consult `references/mechanisms.md` for the precise reasoning or any borderline call.
+This step is done when every surface has a status and every finding names a home and a why.
 
 ### 3. Report
 
-Emit the report with the template below, then stop. Do not modify any file.
+Assemble the findings into the JSON contract and render it — do not hand-write the
+report. The contract and a worked example live at the top of
+[`scripts/render_report.py`](scripts/render_report.py); the visual rules it enforces
+live in [`references/report-design.md`](references/report-design.md). The JSON carries
+only your judgment leaves (per-surface `status`/`note` and per-finding facts); it has
+**no** count, percent, or severity field — the script derives every aggregate, so the
+report's numbers cannot contradict each other.
+
+Run it (use this skill's own path for `<skill-dir>`):
+
+```bash
+python3 "<skill-dir>/scripts/render_report.py" findings.json
+```
+
+It writes a self-contained HTML report to the OS temp dir and prints the path. Open
+that, report it to the user, then stop. Do not modify any audited file. If Python is
+unavailable, fall back to the Markdown template below.
 
 ## Rules
 
@@ -145,8 +167,9 @@ axis that makes it wrong, and the home it belongs in.
 - **Home**: a **subagent** for isolated side tasks; a **skill** for inline, steerable procedures.
 - **Fix**: convert between the two as the isolation need dictates.
 
-## Report template
+## Report template (Markdown fallback)
 
+Used only when `render_report.py` cannot run; otherwise prefer the rendered HTML.
 Use this structure exactly:
 
 ```markdown
