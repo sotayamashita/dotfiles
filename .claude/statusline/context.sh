@@ -18,11 +18,14 @@ build_line1() {
     (.context_window.current_usage.cache_creation_input_tokens // 0 | tostring),
     (.context_window.current_usage.cache_read_input_tokens // 0 | tostring),
     (.cwd // ""),
-    (.session.start_time // "")
-  ] | join("\t")')
+    (.session.start_time // ""),
+    (.session_id // "")
+  ] | join("\u001f")')
 
-  local model_name size input_tokens cache_create cache_read cwd session_start
-  IFS=$'\t' read -r model_name size input_tokens cache_create cache_read cwd session_start <<< "${jq_out}"
+  # Use a non-whitespace separator (US, \037): tab is an IFS whitespace char,
+  # so consecutive tabs collapse and shift fields when one value is empty.
+  local model_name size input_tokens cache_create cache_read cwd session_start session_id
+  IFS=$'\037' read -r model_name size input_tokens cache_create cache_read cwd session_start session_id <<< "${jq_out}"
 
   (( size == 0 )) && size=200000
   local current=$(( input_tokens + cache_create + cache_read ))
@@ -95,5 +98,12 @@ build_line1() {
     line1+="${DIM}◑ thinking${RESET}"
   fi
 
-  printf "%b" "${line1}"
+  # Session ID on a second line, left-aligned under the model.
+  # Claude Code renders each newline as a separate statusline row.
+  local line2=""
+  if [[ -n "${session_id}" && "${session_id}" != "null" ]]; then
+    line2="\n${DIM}${session_id}${RESET}"
+  fi
+
+  printf "%b" "${line1}${line2}"
 }
