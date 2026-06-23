@@ -1,12 +1,17 @@
+# shellcheck shell=bash
 # OAuth token resolution for Claude Code API
 
+#######################################
 # Extracts the OAuth access token from a JSON blob.
+# Globals:
+#   None
 # Arguments:
 #   $1 - JSON string containing claudeAiOauth credentials
 # Outputs:
-#   Access token to stdout if found
+#   Writes the access token to STDOUT if found
 # Returns:
 #   0 if token found, 1 otherwise
+#######################################
 _extract_oauth_token() {
   local json="$1"
   [[ -z "${json}" ]] && return 1
@@ -20,10 +25,17 @@ _extract_oauth_token() {
   return 1
 }
 
+#######################################
 # Resolves an OAuth token from available credential sources.
 # Checks in order: env var, macOS Keychain, credentials file, Linux secret-tool.
+# Globals:
+#   CLAUDE_CODE_OAUTH_TOKEN
+#   HOME
+# Arguments:
+#   None
 # Outputs:
-#   OAuth token to stdout (empty string if not found)
+#   Writes the OAuth token to STDOUT (empty string if not found)
+#######################################
 get_oauth_token() {
   if [[ -n "${CLAUDE_CODE_OAUTH_TOKEN}" ]]; then
     echo "${CLAUDE_CODE_OAUTH_TOKEN}"

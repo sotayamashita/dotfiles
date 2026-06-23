@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+# shellcheck disable=SC2034  # palette colors are consumed by sibling modules
 # Color definitions and common helper functions
 
 # ── Colors ──────────────────────────────────────────────
@@ -17,13 +19,18 @@ readonly SEP=" ${DIM}│${RESET} "
 # ── Path display ────────────────────────────────────────
 readonly FISH_PWD_DIR_LENGTH=1 # chars to keep per intermediate dir
 
+#######################################
 # Shortens a path in fish style.
 # Intermediate directories are truncated to FISH_PWD_DIR_LENGTH chars.
 # The last component is always shown in full.
+# Globals:
+#   FISH_PWD_DIR_LENGTH
+#   HOME
 # Arguments:
 #   $1 - absolute path (e.g. "/Users/sota/Projects/dotfiles")
 # Outputs:
-#   Shortened path to stdout (e.g. "~/P/dotfiles")
+#   Writes the shortened path to STDOUT (e.g. "~/P/dotfiles")
+#######################################
 fish_style_pwd() {
   local full_path="$1"
   [[ -z "${full_path}" ]] && return
@@ -69,11 +76,15 @@ readonly DATE_FMT_DATE="%B %-d"            # e.g. "April 1"
 
 # ── Helpers ─────────────────────────────────────────────
 
+#######################################
 # Formats a token count into a human-readable string.
+# Globals:
+#   None
 # Arguments:
 #   $1 - token count (integer)
 # Outputs:
-#   Formatted string to stdout (e.g. "1.2m", "50k", "999")
+#   Writes the formatted string to STDOUT (e.g. "1.2m", "50k", "999")
+#######################################
 format_tokens() {
   local num="$1"
 
@@ -86,31 +97,43 @@ format_tokens() {
   fi
 }
 
+#######################################
 # Returns the ANSI color code for a given percentage.
+# Globals:
+#   GREEN
+#   ORANGE
+#   RED
+#   YELLOW
 # Arguments:
 #   $1 - percentage (integer 0-100)
 # Outputs:
-#   ANSI color escape to stdout
+#   Writes the ANSI color escape to STDOUT
+#######################################
 color_for_pct() {
   local pct="$1"
 
   if ((pct >= 90)); then
-    printf "${RED}"
+    printf '%s' "${RED}"
   elif ((pct >= 70)); then
-    printf "${YELLOW}"
+    printf '%s' "${YELLOW}"
   elif ((pct >= 50)); then
-    printf "${ORANGE}"
+    printf '%s' "${ORANGE}"
   else
-    printf "${GREEN}"
+    printf '%s' "${GREEN}"
   fi
 }
 
+#######################################
 # Builds a progress bar string with filled/empty indicators.
+# Globals:
+#   DIM
+#   RESET
 # Arguments:
 #   $1 - percentage (integer 0-100)
 #   $2 - bar width in characters
 # Outputs:
-#   Colored progress bar string to stdout
+#   Writes the colored progress bar to STDOUT
+#######################################
 build_bar() {
   local pct="$1"
   local width="$2"
@@ -128,17 +151,21 @@ build_bar() {
   for ((i = 0; i < filled; i++)); do filled_str+="●"; done
   for ((i = 0; i < empty; i++)); do empty_str+="○"; done
 
-  printf "${bar_color}${filled_str}${DIM}${empty_str}${RESET}"
+  printf '%s%s%s%s%s' "${bar_color}" "${filled_str}" "${DIM}" "${empty_str}" "${RESET}"
 }
 
+#######################################
 # Converts an ISO 8601 timestamp to a Unix epoch.
 # Tries GNU date first, then falls back to BSD date.
+# Globals:
+#   None
 # Arguments:
 #   $1 - ISO 8601 timestamp string
 # Outputs:
-#   Unix epoch (integer) to stdout
+#   Writes the Unix epoch (integer) to STDOUT
 # Returns:
 #   0 on success, 1 on failure
+#######################################
 iso_to_epoch() {
   local iso_str="$1"
 
@@ -172,12 +199,18 @@ iso_to_epoch() {
   return 1
 }
 
+#######################################
 # Formats an ISO 8601 reset time for display.
+# Globals:
+#   DATE_FMT_DATE
+#   DATE_FMT_DATETIME
+#   DATE_FMT_TIME
 # Arguments:
 #   $1 - ISO 8601 timestamp string
 #   $2 - style: "time", "datetime", or "" (date only)
 # Outputs:
-#   Formatted date string to stdout
+#   Writes the formatted date string to STDOUT
+#######################################
 format_reset_time() {
   local iso_str="$1"
   local style="$2"

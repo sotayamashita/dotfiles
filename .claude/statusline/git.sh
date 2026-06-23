@@ -1,12 +1,17 @@
+# shellcheck shell=bash
 # Git branch and dirty state detection
 
+#######################################
 # Gets the current branch name and dirty state for a directory.
+# Globals:
+#   None
 # Arguments:
 #   $1 - working directory path
 # Outputs:
-#   "<branch> <dirty>" to stdout, where branch is the branch name (or the
-#   short commit SHA when in detached HEAD) and dirty is "*" or empty.
-#   Empty output when the directory is not a git work tree.
+#   Writes "<branch> <dirty>" to STDOUT, where branch is the branch name (or
+#   the short commit SHA when in detached HEAD) and dirty is "*" or empty.
+#   Writes nothing when the directory is not a git work tree.
+#######################################
 get_git_info() {
   local cwd="$1"
   local branch="" dirty=""

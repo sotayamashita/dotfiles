@@ -1,11 +1,18 @@
+# shellcheck shell=bash
 # JSON extraction, session time, and Line 1 assembly
 # Depends on: colors.sh, git.sh
 
+#######################################
 # Builds the first line of the statusline display.
+# Globals:
+#   Color/format constants from colors.sh (BLUE, CYAN, GREEN, RED, YELLOW,
+#     WHITE, MAGENTA, DIM, RESET, SEP)
+#   BASH_SOURCE
 # Arguments:
 #   $1 - JSON input from Claude Code
 # Outputs:
-#   Formatted statusline string to stdout
+#   Writes the formatted statusline string to STDOUT
+#######################################
 build_line1() {
   local input="$1"
 

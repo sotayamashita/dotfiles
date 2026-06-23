@@ -1,7 +1,13 @@
+# shellcheck shell=bash
 # API usage fetch, caching, and rate limit display
 # Depends on: colors.sh, oauth.sh
 
+#######################################
 # Formats a single rate-limit period line.
+# Globals:
+#   DIM
+#   RESET
+#   WHITE
 # Arguments:
 #   $1 - label (e.g. "current", "weekly ")
 #   $2 - utilization percentage
@@ -9,7 +15,8 @@
 #   $4 - reset time style ("time" or "datetime")
 #   $5 - bar width
 # Outputs:
-#   Formatted rate line to stdout
+#   Writes the formatted rate line to STDOUT
+#######################################
 _format_rate_period() {
   local label="$1" pct="$2" reset_iso="$3" reset_style="$4" bar_width="$5"
 
@@ -25,15 +32,20 @@ _format_rate_period() {
   printf "%b" "${WHITE}${label}${RESET} ${bar} ${pct_color}${pct_fmt}%${RESET} ${DIM}⟳${RESET} ${WHITE}${reset_str}${RESET}"
 }
 
+#######################################
 # Builds the rate-limit display lines.
 # Fetches usage data from the API (with caching) and formats it.
+# Globals:
+#   DATE_FMT_DATE
+#   DIM
+#   RESET
+#   WHITE
 # Arguments:
-#   $1 - JSON input from Claude Code (unused, reserved)
+#   $1 - JSON input from Claude Code (reserved; not currently used)
 # Outputs:
-#   Formatted rate-limit lines to stdout
+#   Writes the formatted rate-limit lines to STDOUT
+#######################################
 build_rate_lines() {
-  local input="$1"
-
   # Fetch usage data (cached)
   local cache_file="/tmp/claude/statusline-usage-cache.json"
   local cache_max_age=60

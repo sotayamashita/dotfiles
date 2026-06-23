@@ -4,8 +4,11 @@ set -f # disable globbing; statusline field values may contain glob chars
 
 STATUSLINE_DIR="$(dirname "$0")/statusline"
 readonly STATUSLINE_DIR
+# shellcheck source=statusline/colors.sh
 source "${STATUSLINE_DIR}/colors.sh"
+# shellcheck source=statusline/git.sh
 source "${STATUSLINE_DIR}/git.sh"
+# shellcheck source=statusline/context.sh
 source "${STATUSLINE_DIR}/context.sh"
 
 main() {
