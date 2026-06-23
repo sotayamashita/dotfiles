@@ -4,28 +4,25 @@
 # Arguments:
 #   $1 - working directory path
 # Outputs:
-#   "<branch> <dirty>" to stdout, where dirty is "*" or empty
+#   "<branch> <dirty>" to stdout, where branch is the branch name (or the
+#   short commit SHA when in detached HEAD) and dirty is "*" or empty.
+#   Empty output when the directory is not a git work tree.
 get_git_info() {
-    local cwd="$1"
-    local branch=""
-    local dirty=""
+  local cwd="$1"
+  local branch="" dirty=""
 
-    local status_output
-    status_output=$(git -C "${cwd}" status --porcelain -b 2>/dev/null) ||
-        {
-            echo ""
-            return
-        }
+  # Branch name, or the short commit SHA when in detached HEAD.
+  # Both commands fail (branch stays empty) outside a git work tree.
+  branch=$(git -C "${cwd}" symbolic-ref --quiet --short HEAD 2>/dev/null) ||
+    branch=$(git -C "${cwd}" rev-parse --short HEAD 2>/dev/null) ||
+    branch=""
+  [[ -z "${branch}" ]] && {
+    echo ""
+    return
+  }
 
-    # First line: ## branch...tracking
-    branch=$(echo "${status_output}" |
-        head -1 |
-        sed 's/^## //; s/\.\.\..*//; s/No commits yet on //')
+  # Any staged, unstaged, or untracked change marks the tree dirty.
+  [[ -n "$(git -C "${cwd}" status --porcelain 2>/dev/null)" ]] && dirty="*"
 
-    # Any lines after the header indicate dirty state
-    if echo "${status_output}" | grep -qv '^##'; then
-        dirty="*"
-    fi
-
-    echo "${branch} ${dirty}"
+  echo "${branch} ${dirty}"
 }
