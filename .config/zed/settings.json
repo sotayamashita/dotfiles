@@ -4,6 +4,7 @@
   // ===========================================================================
   // Disable telemetry to prevent sending usage and diagnostic data to Zed.
   // See: https://zed.dev/docs/configuring-zed#telemetry
+  "cli_default_open_behavior": "new_window",
   "project_panel": {
     "dock": "right"
   },
@@ -23,9 +24,21 @@
   },
   "agent_servers": {
     "codex-acp": {
+      "default_config_options": {
+        "mode": "full-access"
+      },
       "type": "registry"
     },
     "claude-acp": {
+      "favorite_config_option_values": {
+        "effort": [
+          "xhigh"
+        ]
+      },
+      "default_config_options": {
+        "mode": "bypassPermissions",
+        "effort": "xhigh"
+      },
       "type": "registry"
     },
     "your_agent": {
@@ -60,11 +73,7 @@
   // Apply theme with automatic dark/light mode switching based on system.
   // List available themes: View > Theme Selector (cmd-k cmd-t)
   // See: https://zed.dev/docs/configuring-zed#theme
-  "theme": {
-    "mode": "system",
-    "light": "Flexoki Light",
-    "dark": "Flexoki Dark",
-  },
+  "theme": "Flexoki Dark",
   // File icon theme for project panel and tabs.
   // See: https://zed.dev/docs/configuring-zed#icon-theme
   "icon_theme": {
