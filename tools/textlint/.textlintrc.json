@@ -13,6 +13,9 @@
         "preferInList": "である",
         "strict": false
       }
+    },
+    "@textlint-ja/preset-ai-writing": {
+      "ai-tech-writing-guideline": false
     }
   }
 }

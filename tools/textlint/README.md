@@ -1,4 +1,4 @@
-# textlint workspace
+# tools/textlint
 
 Repo-local textlint setup used by the `Edit | MultiEdit | Write` PostToolUse
 hook `.claude/hooks/textlint-md.sh`. The hook lints **Japanese** Markdown with
