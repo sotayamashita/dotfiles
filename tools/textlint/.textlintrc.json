@@ -3,20 +3,44 @@
     "comments": true
   },
   "rules": {
-    "prh": {
-      "rulePaths": ["./prh.yml"]
+    "sentence-length": {
+      "max": 60
     },
-    "preset-ja-technical-writing": {
-      "sentence-length": {
-        "max": 60
-      },
-      "no-mix-dearu-desumasu": {
-        "preferInHeader": "",
-        "preferInBody": "である",
-        "preferInList": "である",
-        "strict": false
-      }
+    "max-comma": {
+      "max": 3
     },
+    "max-ten": {
+      "max": 3
+    },
+    "max-kanji-continuous-len": {
+      "max": 6
+    },
+    "no-mix-dearu-desumasu": {
+      "preferInHeader": "",
+      "preferInBody": "である",
+      "preferInList": "である",
+      "strict": false
+    },
+    "ja-no-mixed-period": {
+      "periodMark": "。"
+    },
+    "no-doubled-conjunction": true,
+    "no-doubled-conjunctive-particle-ga": true,
+    "no-double-negative-ja": true,
+    "no-doubled-joshi": {
+      "min_interval": 1
+    },
+    "no-dropping-the-ra": true,
+    "no-nfd": true,
+    "@textlint-rule/no-invalid-control-character": true,
+    "no-zero-width-spaces": true,
+    "no-exclamation-question-mark": true,
+    "no-hankaku-kana": true,
+    "ja-no-weak-phrase": true,
+    "ja-no-successive-word": true,
+    "ja-no-redundant-expression": true,
+    "ja-unnatural-alphabet": true,
+    "@textlint-rule/no-unmatched-pair": true,
     "@textlint-ja/preset-ai-writing": {
       "ai-tech-writing-guideline": false
     }
