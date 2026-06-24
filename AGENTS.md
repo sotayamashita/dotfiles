@@ -9,6 +9,13 @@ live in `.agents/AGENTS.md` and are symlinked into Claude/Codex homes.
 - Keep machine-specific values out of tracked files.
 - Prefer exact commands and deterministic checks over prose-only guidance.
 
+## How These Dotfiles Are Used
+
+- The repo is the source of truth for the user's `$HOME` environment, which only holds symlinks back into it.
+- Tracked files live at repo paths that mirror their `$HOME` destination (e.g. `.gitconfig` -> `~/.gitconfig`, `.config/foo/` -> `~/.config/foo/`).
+- `.symlinks` + `scripts/symlink.py` create those links, so editing a tracked file here changes the live config directly (no copy step).
+- A newly added file stays inactive until it is listed in `.symlinks` and linked.
+
 ## Commands
 
 - Run `./scripts/symlink.py --dry-run` to preview symlinks without changes.
