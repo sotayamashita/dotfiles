@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "devDependencies": {
+    "textlint": "15.7.1",
+    "textlint-rule-preset-ja-technical-writing": "12.0.2",
+    "textlint-rule-prh": "6.1.0"
+  }
+}

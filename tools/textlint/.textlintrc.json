@@ -1,0 +1,18 @@
+{
+  "rules": {
+    "prh": {
+      "rulePaths": ["./prh.yml"]
+    },
+    "preset-ja-technical-writing": {
+      "sentence-length": {
+        "max": 60
+      },
+      "no-mix-dearu-desumasu": {
+        "preferInHeader": "",
+        "preferInBody": "である",
+        "preferInList": "である",
+        "strict": false
+      }
+    }
+  }
+}

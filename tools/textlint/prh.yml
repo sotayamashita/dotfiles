@@ -1,0 +1,20 @@
+version: 1
+
+# prh detects `pattern` and suggests `expected`.
+# This repo's hook only reports (it never runs --fix), so read `expected`
+# as a hint for which direction to rewrite, not a literal replacement.
+# Context-dependent entries can false-positive; comment out any line that
+# does not fit.
+
+rules:
+  # Typographic symbol intrusion -> normalize to ASCII / Japanese punctuation.
+  # Almost always correct: curly quotes, dashes, and ellipsis leaking into
+  # technical Markdown.
+  - expected: '"'
+    pattern: "/[“”]/"
+  - expected: "'"
+    pattern: "/[‘’]/"
+  - expected: "-"
+    pattern: "/[—–]/"
+  - expected: "..."
+    pattern: "…"
