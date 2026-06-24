@@ -49,7 +49,11 @@ while IFS= read -r file_path; do
   [[ -n "${file_path}" ]] || continue
   [[ "${file_path}" == *.md ]] || continue
   [[ -f "${file_path}" ]] || continue
-  markdown_targets+=("${file_path}")
+  if [[ "${file_path}" = /* ]]; then
+    markdown_targets+=("${file_path}")
+  else
+    markdown_targets+=("${PWD}/${file_path}")
+  fi
 done < <(candidate_files | sort -u)
 readonly markdown_targets
 

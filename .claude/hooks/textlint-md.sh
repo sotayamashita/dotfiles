@@ -32,12 +32,16 @@ Edit | MultiEdit | Write) ;;
 esac
 
 file_path="$(echo "${input}" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')"
-readonly file_path
 
 # Only Markdown files that still exist on disk.
 if [[ "${file_path}" != *.md ]] || [[ ! -f "${file_path}" ]]; then
   exit 0
 fi
+
+if [[ "${file_path}" != /* ]]; then
+  file_path="${PWD}/${file_path}"
+fi
+readonly file_path
 
 # Skip Markdown without Japanese characters (hiragana, katakana, kanji).
 if ! rg -q '[\p{Hiragana}\p{Katakana}\p{Han}]' "${file_path}"; then
