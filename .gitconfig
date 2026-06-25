@@ -123,3 +123,15 @@
 [hook "block-conflict-markers"]
     event = pre-commit
     command = ~/.git-hooks/block-conflict-markers
+
+[hook "lint-shell"]
+    event = pre-commit
+    command = ~/.git-hooks/lint-shell
+
+[hook "lint-github-actions"]
+    event = pre-commit
+    command = ~/.git-hooks/lint-github-actions
+
+[hook "secretlint"]
+    event = pre-commit
+    command = ~/.git-hooks/secretlint

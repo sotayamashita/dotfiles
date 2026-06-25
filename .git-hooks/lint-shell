@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Lint staged shell scripts before commit (shellcheck).
+# Deterministic gate covering Claude Code and Codex; mirrors .claude/rules/shell.md.
+# Skips when shellcheck is absent or no shell files are staged.
+# Bypass once with: git commit --no-verify
+
+status=0
+sh_files="$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(sh|bash)$' || true)"
+
+if [ -n "$sh_files" ] && command -v shellcheck >/dev/null 2>&1; then
+  # shellcheck disable=SC2086 # one path per line, no spaces expected
+  shellcheck $sh_files || status=1
+fi
+
+# Optional: enforce 2-space formatting too. Uncomment to enable.
+# if [ -n "$sh_files" ] && command -v shfmt >/dev/null 2>&1; then
+#   # shellcheck disable=SC2086
+#   shfmt -d -i 2 $sh_files || status=1
+# fi
+
+if [ "$status" -ne 0 ]; then
+  echo "Shell lint failed on staged files. Fix the issues above, restage, then commit again." >&2
+  echo "Bypass once with: git commit --no-verify" >&2
+fi
+
+exit "$status"

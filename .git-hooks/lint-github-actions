@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Lint staged GitHub Actions workflows before commit (actionlint).
+# Deterministic gate covering Claude Code and Codex; mirrors .claude/rules/github-actions.md.
+# Skips when actionlint is absent or no workflow files are staged.
+# Bypass once with: git commit --no-verify
+
+status=0
+wf_files="$(git diff --cached --name-only --diff-filter=ACMR | grep -E '(^|/)\.github/workflows/[^/]+\.ya?ml$' || true)"
+
+if [ -n "$wf_files" ] && command -v actionlint >/dev/null 2>&1; then
+  # shellcheck disable=SC2086 # one path per line, no spaces expected
+  actionlint $wf_files || status=1
+fi
+
+# Optional: workflow security scan (zizmor). Uncomment to enable.
+# if [ -n "$wf_files" ] && command -v zizmor >/dev/null 2>&1; then
+#   # shellcheck disable=SC2086
+#   zizmor $wf_files || status=1   # add --offline / --min-severity to taste
+# fi
+
+if [ "$status" -ne 0 ]; then
+  echo "GitHub Actions lint failed on staged files. Fix the issues above, restage, then commit again." >&2
+  echo "Bypass once with: git commit --no-verify" >&2
+fi
+
+exit "$status"
