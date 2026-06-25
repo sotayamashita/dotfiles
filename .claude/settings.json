@@ -110,6 +110,12 @@
         "source": "github",
         "repo": "openai/codex-plugin-cc"
       }
+    },
+    "addy-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "addyosmani/agent-skills"
+      }
     }
   },
   "alwaysThinkingEnabled": true,

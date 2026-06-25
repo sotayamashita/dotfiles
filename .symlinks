@@ -34,7 +34,9 @@ dir:.codex/skills/*
 !.codex/config.example.toml
 
 # Fish shell
-.config/fish/**/*.fish
+.config/fish/*.fish
+.config/fish/completions/*.fish
+.config/fish/functions/*.fish
 
 # Ghosty
 .config/ghostty/config
