@@ -57,6 +57,46 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern = ["git", "checkout", "--"],
+    decision = "forbidden",
+    justification = "`git checkout -- <path>` discards uncommitted changes. Ask the user for an explicit destructive request.",
+    match = [
+        "git checkout -- file.txt",
+        "git checkout -- .",
+    ],
+    not_match = [
+        "git checkout main",
+        "git checkout -b feature",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "restore"],
+    decision = "forbidden",
+    justification = "`git restore <path>` discards uncommitted working-tree changes. Ask the user for an explicit destructive request.",
+    match = [
+        "git restore file.txt",
+        "git restore .",
+    ],
+    not_match = [
+        "git status",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "clean", ["-f", "-fd", "-df", "-fdx", "-xfd", "-ffd"]],
+    decision = "forbidden",
+    justification = "`git clean -f` permanently deletes untracked files. Ask the user for an explicit destructive request.",
+    match = [
+        "git clean -f",
+        "git clean -fd",
+    ],
+    not_match = [
+        "git clean -n",
+    ],
+)
+
+prefix_rule(
     pattern = ["git", "push", ["--force", "--force-with-lease"]],
     decision = "forbidden",
     justification = "Force-push requires an explicit user request.",
