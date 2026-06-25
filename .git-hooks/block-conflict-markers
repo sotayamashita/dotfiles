@@ -2,8 +2,8 @@
 
 # Block unresolved merge/rebase conflict markers in staged text files.
 matches="$(
-  git diff --cached --diff-filter=ACMR --no-ext-diff -U0 -- |
-    awk '
+    git diff --cached --diff-filter=ACMR --no-ext-diff -U0 -- |
+        awk '
       /^\+\+\+ / {
         file = $2
         sub(/^b\//, "", file)
@@ -17,8 +17,8 @@ matches="$(
 )"
 
 if [ -n "$matches" ]; then
-  echo "Conflict markers found in staged changes:" >&2
-  echo "$matches" >&2
-  echo "Resolve the conflict markers, stage the resolved files, then run the commit again." >&2
-  exit 1
+    echo "Conflict markers found in staged changes:" >&2
+    echo "$matches" >&2
+    echo "Resolve the conflict markers, stage the resolved files, then run the commit again." >&2
+    exit 1
 fi
