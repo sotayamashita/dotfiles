@@ -42,7 +42,15 @@
     "ja-unnatural-alphabet": true,
     "@textlint-rule/no-unmatched-pair": true,
     "@textlint-ja/preset-ai-writing": {
-      "ai-tech-writing-guideline": false
+      "ai-tech-writing-guideline": {
+        "severity": "info"
+      },
+      "no-ai-colon-continuation": {
+        "disableCodeBlock": true,
+        "disableList": true,
+        "disableQuote": true,
+        "disableTable": true
+      }
     }
   }
 }
