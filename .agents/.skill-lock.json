@@ -164,6 +164,15 @@
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-06-22T03:37:08.752Z",
       "updatedAt": "2026-06-22T03:37:08.752Z"
+    },
+    "openai-docs": {
+      "source": "openai/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/openai/skills.git",
+      "skillPath": "skills/.curated/openai-docs/SKILL.md",
+      "skillFolderHash": "8d6942d62878ca60e546a1fc66b5e8f461954545",
+      "installedAt": "2026-06-25T04:45:52.178Z",
+      "updatedAt": "2026-06-25T04:45:52.178Z"
     }
   },
   "dismissed": {
