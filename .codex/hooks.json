@@ -22,16 +22,6 @@
             "statusMessage": "Checking dependency manifest edits"
           }
         ]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.codex/hooks/textlint-md.sh",
-            "statusMessage": "Checking Japanese Markdown"
-          }
-        ]
       }
     ]
   }

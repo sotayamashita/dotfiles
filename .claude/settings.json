@@ -67,24 +67,6 @@
             "command": "~/.claude/hooks/sfw-post-edit.sh"
           }
         ]
-      },
-      {
-        "matcher": "Edit|MultiEdit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/textlint-md.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/sotayamashita/.agents/skills/todo-task/capture-telemetry.sh"
-          }
-        ]
       }
     ]
   },
