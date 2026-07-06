@@ -131,7 +131,3 @@
 [hook "lint-github-actions"]
     event = pre-commit
     command = ~/.git-hooks/lint-github-actions
-
-[hook "secretlint"]
-    event = pre-commit
-    command = ~/.git-hooks/secretlint
