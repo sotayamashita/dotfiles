@@ -109,6 +109,12 @@ if has_command deno
     end
 end
 
+function __python_package_manager_error
+    echo "Do not use pip or uv pip install in this environment." >&2
+    echo "Use uv add <package> or uv sync instead." >&2
+    return 1
+end
+
 # Socket Firewall (sfw)
 # Supply chain attack mitigation: intercept package manager network requests
 # and block confirmed malware before download.
@@ -120,16 +126,17 @@ if has_command sfw
     function pnpm --wraps=pnpm --description "Run pnpm through Socket Firewall"
         command sfw pnpm $argv
     end
-    function pip --wraps=pip --description "Run pip through Socket Firewall"
-        command sfw pip $argv
-    end
     function uv --wraps=uv --description "Run uv through Socket Firewall"
-        # Supply chain attack mitigation: delay installing newly published packages.
-        # 7-day cooldown blocks ~80% of attacks (8/10 in Woodruff's analysis had windows < 7 days).
-        # See: https://blog.yossarian.net/2025/11/21/We-should-all-be-using-dependency-cooldowns
         switch $argv[1]
+            case pip
+                __python_package_manager_error
             case add sync
-                command sfw uv $argv[1] --exclude-newer "7 days" $argv[2..]
+                # Calculate the date 7 days ago in a macOS-compatible way.
+                set -l target_date (date -v-7d +%Y-%m-%d)
+
+                # Run with arguments ordered for uv.
+                # $argv[1] (add/sync), --exclude-newer, date, remaining arguments ($argv[2..])
+                command sfw uv $argv[1] --exclude-newer $target_date $argv[2..]
             case '*'
                 command sfw uv $argv
         end
@@ -137,6 +144,21 @@ if has_command sfw
     function cargo --wraps=cargo --description "Run cargo through Socket Firewall"
         command sfw cargo $argv
     end
+end
+
+if not has_command sfw; and has_command uv
+    function uv --wraps=uv --description "Block uv pip install"
+        switch $argv[1]
+            case pip
+                __python_package_manager_error
+            case '*'
+                command uv $argv
+        end
+    end
+end
+
+function pip --wraps=pip --description "Tell agents to use uv instead of pip"
+    __python_package_manager_error
 end
 
 # PDF to Markdown conversion using docling
