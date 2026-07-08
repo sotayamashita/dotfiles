@@ -76,8 +76,8 @@
   // See: https://zed.dev/docs/configuring-zed#theme
   "theme": {
     "mode": "system",
-    "light": "Gruvbox Light Hard",
-    "dark": "Gruvbox Dark Hard"
+    "light": "One Light",
+    "dark": "One Dark"
   },
   // File icon theme for project panel and tabs.
   // See: https://zed.dev/docs/configuring-zed#icon-theme
