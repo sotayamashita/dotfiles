@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>〔文書タイトル〕 — 下読み</title>
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --paper-deep: #efe8d8;
+    --card: #fffcf4;
+    --ink: #211d16;
+    --ink-soft: #6b6250;
+    --line: #d9cfba;
+    --line-strong: #978567;
+    --vermilion: #b23a26;
+    --vermilion-soft: #f3ddd6;
+    --indigo: #31527b;
+    --indigo-soft: #e3e9f2;
+    --green: #3c6b4f;
+    --green-soft: #e2ede5;
+    --text: "Helvetica Neue", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Arial, "Noto Sans JP", Meiryo, sans-serif;
+    --ui: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+    --mono: "SF Mono", "Menlo", "Consolas", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: auto; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--text);
+    line-height: 1.8;
+    font-size: 18px;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.5 0 0 0 0 0.42 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ───────── ヘッダー ───────── */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--paper) 88%, white);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--ui);
+  }
+  .bar {
+    max-width: 1140px; margin: 0 auto;
+    display: flex; align-items: center; gap: 16px;
+    padding: 10px 20px;
+  }
+  .brand { font-size: 12px; letter-spacing: .18em; color: var(--ink-soft); white-space: nowrap; }
+  .brand b { color: var(--vermilion); font-weight: 600; }
+  .ver { font-size: 10px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--ink-soft); letter-spacing: .1em; }
+  .to-map {
+    margin-left: auto;
+    font-family: var(--ui); font-size: 12.5px;
+    border: 1px solid var(--line-strong); background: transparent; color: var(--ink-soft);
+    padding: 6px 16px; border-radius: 999px; cursor: pointer; text-decoration: none;
+    transition: all .25s ease;
+  }
+  .to-map:hover { border-color: var(--vermilion); color: var(--vermilion); }
+  .quiz-count { font-size: 12px; color: var(--ink-soft); white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+  .quiz-dots { display: flex; gap: 4px; }
+  .quiz-dots i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--line-strong); display: block; transition: all .3s; }
+  .quiz-dots i.done { background: var(--vermilion); border-color: var(--vermilion); }
+  #scrollbar { height: 2px; background: var(--vermilion); width: 0%; transition: width .1s linear; }
+
+  /* ───────── 表紙 ───────── */
+  .hero {
+    max-width: 1140px; margin: 0 auto; padding: 72px 24px 10px;
+    display: grid; grid-template-columns: 224px minmax(0,1fr); gap: 48px;
+    position: relative; z-index: 1;
+  }
+  .hero > * { grid-column: 2; max-width: 720px; width: 100%; }
+  .hero .kicker { font-family: var(--ui); font-size: 12px; letter-spacing: .25em; color: var(--vermilion); margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(26px, 4.4vw, 40px); font-weight: 600; line-height: 1.5; letter-spacing: .02em; margin-bottom: 14px; text-wrap: balance; word-break: auto-phrase; }
+  .hero .original { font-family: var(--ui); font-size: 13px; color: var(--ink-soft); font-style: italic; margin-bottom: 26px; }
+  .meta {
+    font-family: var(--ui); font-size: 12.5px; color: var(--ink-soft);
+    display: flex; flex-wrap: wrap; gap: 8px 22px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding: 12px 2px;
+  }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .lede { margin-top: 30px; font-size: 1.15em; line-height: 1.9; max-width: 680px; }
+
+  /* ───────── レイアウト ───────── */
+  main { position: relative; z-index: 1; }
+  .layout {
+    max-width: 1140px; margin: 0 auto;
+    display: grid; grid-template-columns: 224px minmax(0,1fr);
+    gap: 48px; padding: 0 24px 80px;
+  }
+  article { max-width: 720px; }
+
+  /* ───────── 目次 ───────── */
+  nav.mini { position: sticky; top: 76px; align-self: start; font-family: var(--ui); padding-top: 56px; }
+  nav.mini .mini-title,
+  .mobile-toc .mini-title {
+    font-family: var(--ui); font-size: 12px; letter-spacing: .25em;
+    color: var(--ink-soft); margin-bottom: 14px; padding-left: 15px;
+  }
+  nav.mini a,
+  .mobile-toc a {
+    display: block; text-decoration: none; color: var(--ink-soft);
+    font-size: 12px; line-height: 1.5;
+    border-left: 3px solid transparent;
+    padding: 4px 0 4px 12px; margin: 0 0 6px;
+    transition: color .2s ease; position: relative;
+  }
+  nav.mini a .k,
+  .mobile-toc a .k { display: block; font-size: 9.5px; letter-spacing: .18em; color: var(--ink-soft); }
+  nav.mini a.lv1,
+  .mobile-toc a.lv1 { margin-left: 15px; }
+  nav.mini a:hover,
+  .mobile-toc a:hover { color: var(--ink); text-decoration: underline; }
+  nav.mini a.now { border-left-color: var(--vermilion); color: var(--ink); }
+  .mobile-toc { display: none; font-family: var(--ui); margin-top: 34px; max-width: 680px; }
+
+  /* ───────── 章 ───────── */
+  section.chapter { padding-top: 56px; }
+  .ch-num {
+    font-family: var(--ui); font-size: 12px;
+    letter-spacing: .25em; color: var(--vermilion);
+    margin-bottom: 10px;
+  }
+  .ch-num::before { content: "CHAPTER "; }
+  section.chapter h2 { font-size: 1.5em; font-weight: 600; line-height: 1.33; letter-spacing: .03em; margin-bottom: 0.9em; padding-bottom: 12px; border-bottom: 1px solid var(--line); max-width: 680px; text-wrap: balance; word-break: auto-phrase; }
+  section.chapter h3.subhead { font-family: var(--text); font-size: 1.25em; font-weight: 600; line-height: 1.5; color: var(--ink); margin-top: 1.6em; margin-bottom: 0.5em; letter-spacing: .02em; }
+  section.chapter p { margin-bottom: 1.4em; max-width: 680px; }
+  section.chapter em { font-style: normal; background: linear-gradient(transparent 68%, var(--vermilion-soft) 68%); }
+  .acronym { font-family: var(--ui); font-size: .82em; color: var(--ink-soft); }
+  .aside {
+    font-family: var(--ui); font-size: 13.5px; line-height: 1.9;
+    color: var(--ink);
+    border-left: 3px solid var(--indigo); background: var(--indigo-soft);
+    padding: 14px 18px; border-radius: 0 10px 10px 0;
+    margin: 0 0 1.4em;
+    max-width: 680px;
+  }
+  .aside b { color: var(--indigo); }
+
+  /* 用語ポップオーバー */
+  .term { border-bottom: 1.5px dotted var(--indigo); color: var(--indigo); cursor: pointer; position: relative; }
+  .pop {
+    position: absolute; left: 50%; bottom: calc(100% + 10px);
+    transform: translateX(-50%) translateY(4px);
+    width: 264px; z-index: 30;
+    background: var(--ink); color: var(--paper);
+    font-family: var(--ui); font-size: 12.5px; line-height: 1.75;
+    padding: 12px 14px; border-radius: 10px;
+    opacity: 0; pointer-events: none; transition: all .25s ease;
+    box-shadow: 0 10px 30px rgba(33,29,22,.25);
+  }
+  .pop::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--ink); }
+  .pop .en { display: block; font-size: 11px; color: #b7ae9c; font-style: italic; margin-bottom: 2px; }
+  .term.open .pop { opacity: 1; pointer-events: auto; transform: translateX(-50%); }
+
+  /* 数式カード */
+  .formula { background: var(--card); border-radius: 14px; margin: 0 0 1.4em; overflow: hidden; }
+  .formula .fx { font-family: var(--mono); font-size: 15px; text-align: center; padding: 22px 16px 18px; letter-spacing: .04em; }
+  .formula .fx sub { font-size: .7em; }
+  .formula button {
+    width: 100%; border: none; border-top: 1px dashed var(--line-strong);
+    background: transparent; font-family: var(--ui); font-size: 12.5px;
+    color: var(--vermilion); padding: 10px; cursor: pointer; letter-spacing: .1em;
+  }
+  .formula button:hover { background: var(--vermilion-soft); }
+  .formula .yaku { display: none; font-family: var(--ui); font-size: 13.5px; padding: 6px 22px 18px; color: var(--ink); line-height: 1.9; }
+  .formula.open .yaku { display: block; }
+  .formula .yaku li { list-style: none; padding: 4px 0; border-bottom: 1px dotted var(--line); }
+  .formula .yaku li:last-child { border-bottom: none; }
+  .formula .yaku code { font-family: var(--mono); color: var(--vermilion); margin-right: 10px; font-size: 12.5px; }
+
+  /* ───────── 視覚化カード ───────── */
+  .viz { background: var(--card); border-radius: 14px; margin: 0 0 1.4em; padding: 18px 22px 16px; font-family: var(--ui); }
+  .viz .viz-title { font-size: 12px; letter-spacing: .12em; color: var(--ink-soft); margin-bottom: 16px; }
+  .viz .viz-cap { font-size: 11.5px; color: var(--ink); margin-top: 14px; line-height: 1.8; border-left: 3px solid var(--vermilion); padding: 2px 0 2px 12px; }
+
+  /* 01: ふたつのループ */
+  .loops { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .loop { border: 1.5px solid var(--line-strong); border-radius: 10px; padding: 14px 14px 12px; position: relative; }
+  .loop.evolve { border-color: var(--vermilion); }
+  .loop .lp-t { font-size: 12.5px; font-weight: 600; text-align: center; }
+  .loop .lp-s { font-size: 10.5px; color: var(--ink-soft); text-align: center; display: block; margin-bottom: 10px; }
+  .loop .lchip { font-size: 11px; text-align: center; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--paper); padding: 5px 6px; line-height: 1.5; }
+  .loop .lchip.human { border-color: var(--indigo); color: var(--indigo); background: var(--indigo-soft); }
+  .loop .lchip.auto { border-color: var(--vermilion); color: var(--vermilion); background: var(--vermilion-soft); }
+  .loop .dn { text-align: center; font-size: 11px; color: var(--ink-soft); line-height: 1.3; }
+  .loop .back { text-align: center; font-size: 10.5px; color: var(--ink-soft); margin-top: 7px; letter-spacing: .06em; }
+
+  /* 02: 対応図 */
+  .mapping { display: grid; gap: 8px; }
+  .mhead { display: grid; grid-template-columns: 1fr 34px 1fr; gap: 6px; font-size: 10.5px; letter-spacing: .12em; color: var(--ink-soft); text-align: center; }
+  .mrow { display: grid; grid-template-columns: 1fr 34px 1fr; align-items: center; gap: 6px; cursor: default; }
+  .mcell { border: 1px solid var(--line-strong); border-radius: 6px; padding: 8px 10px; font-size: 12px; text-align: center; background: var(--paper); line-height: 1.6; transition: all .2s ease; }
+  .mcell small { display: block; font-size: 10px; color: var(--ink-soft); }
+  .mrow .eq { text-align: center; color: var(--ink-soft); font-size: 14px; }
+  .mrow:hover .mcell { border-color: var(--vermilion); background: var(--vermilion-soft); }
+
+  /* 03: 軌跡の解剖図 */
+  .traj-chain { display: flex; align-items: center; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .estep { border: 1.5px solid var(--line-strong); border-radius: 6px; background: var(--paper); padding: 5px 12px; font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+  .estep.now { border-color: var(--vermilion); background: var(--vermilion-soft); color: var(--vermilion); font-weight: 600; }
+  .traj-chain .ar { color: var(--ink-soft); font-size: 13px; }
+  .anatomy { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+  .slot { border: 1px solid var(--line-strong); border-radius: 6px; background: var(--paper); padding: 8px 4px; text-align: center; }
+  .slot code { font-family: var(--mono); font-size: 12px; color: var(--vermilion); display: block; }
+  .slot span { font-size: 10px; color: var(--ink-soft); line-height: 1.5; display: block; margin-top: 3px; }
+  .slot.late { border-style: dashed; border-color: var(--indigo); }
+  .late-note { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .late-chip {
+    font-size: 10.5px; color: var(--indigo); background: var(--indigo-soft);
+    border: 1px dashed var(--indigo); border-radius: 6px; padding: 4px 10px;
+  }
+
+  /* 05: 介入の階段 */
+  .ladder { display: flex; align-items: flex-end; gap: 8px; padding-top: 6px; }
+  .rung { flex: 1; border: 1.5px solid var(--line-strong); border-bottom-width: 3px; border-radius: 10px 10px 0 0; padding: 8px 6px; text-align: center; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; background: var(--paper); }
+  .rung .rn { font-size: 11.5px; font-weight: 600; line-height: 1.5; }
+  .rung .rc { font-size: 9.5px; color: var(--ink-soft); line-height: 1.5; }
+  .rung.r1 { height: 74px;  border-color: var(--green); background: var(--green-soft); }
+  .rung.r2 { height: 104px; }
+  .rung.r3 { height: 134px; }
+  .rung.r4 { height: 164px; border-color: var(--vermilion); background: var(--vermilion-soft); }
+  .ladder-axis { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--ink-soft); margin-top: 8px; letter-spacing: .06em; }
+
+  /* ───────── 図カード(図を日本語で読む) ───────── */
+  .figure { background: var(--card); border-radius: 14px; margin: 0 0 1.8em; overflow: hidden; }
+  .figure .fig-title { font-family: var(--ui); font-size: 12px; letter-spacing: .12em; color: var(--ink-soft); padding: 14px 20px 0; }
+  .fig { display: grid; grid-template-columns: 1fr 74px 1.15fr 74px 1fr; gap: 10px; align-items: center; padding: 18px 20px 8px; font-family: var(--ui); }
+  .fbox { border: 1.5px solid var(--line-strong); border-radius: 10px; background: var(--paper); padding: 10px; transition: all .3s ease; }
+  .fbox .fb-t { font-size: 12px; font-weight: 600; text-align: center; margin-bottom: 8px; line-height: 1.5; }
+  .fbox .fb-s { font-size: 10px; color: var(--ink-soft); text-align: center; display: block; margin-top: -6px; margin-bottom: 8px; }
+  .chip { font-size: 10.5px; text-align: center; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 6px; background: var(--card); padding: 4px 6px; margin: 4px 0; line-height: 1.5; transition: all .3s ease; }
+  .farrow { font-size: 10px; color: var(--ink-soft); text-align: center; line-height: 1.6; padding: 6px 0; transition: all .3s ease; border-radius: 6px; }
+  .farrow .ar { display: block; font-size: 15px; letter-spacing: -1px; color: var(--ink-soft); transition: all .3s ease; }
+  .fstack { display: grid; gap: 2px; }
+  .fstack .dn { text-align: center; font-size: 11px; color: var(--ink-soft); line-height: 1; }
+  .hl, .hl .chip { border-color: var(--vermilion) !important; background: var(--vermilion-soft) !important; }
+  .hl .fb-t, .hl.farrow, .hl .ar { color: var(--vermilion) !important; }
+  .hl { box-shadow: 0 0 0 3px color-mix(in srgb, var(--vermilion) 18%, transparent); }
+  .fig-cap { font-family: var(--ui); font-size: 11px; color: var(--ink-soft); padding: 8px 20px 14px; }
+  .fig-guide { border-top: 1px dashed var(--line); padding: 14px 20px 18px; font-family: var(--ui); }
+  .fig-guide .fg-label { font-size: 12.5px; color: var(--vermilion); letter-spacing: .1em; margin-bottom: 10px; }
+  .fig-steps { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .fig-steps button {
+    font-family: var(--ui); font-size: 12.5px;
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1.5px solid var(--line-strong); background: transparent; color: var(--ink-soft);
+    cursor: pointer; transition: all .2s ease;
+  }
+  .fig-steps button:hover { border-color: var(--vermilion); color: var(--vermilion); }
+  .fig-steps button.on { background: var(--vermilion); border-color: var(--vermilion); color: var(--paper); }
+  #fig-text { font-size: 13.5px; line-height: 1.9; color: var(--ink); min-height: 3.6em; }
+
+  /* ───────── クイズ ───────── */
+  .quiz {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 24px 26px 20px;
+    margin: 2.2em 0; position: relative;
+    box-shadow: 0 2px 0 var(--paper-deep);
+    font-family: var(--ui);
+  }
+  .quiz::before {
+    content: "問 " attr(data-q);
+    position: absolute; top: -13px; left: 20px;
+    background: var(--vermilion); color: var(--paper);
+    font-size: 12px; letter-spacing: .15em;
+    padding: 3px 14px; border-radius: 999px;
+  }
+  .quiz h3 { font-family: var(--text); font-size: 16.5px; font-weight: 600; margin: 4px 0 16px; line-height: 1.8; }
+  .quiz .opts { display: grid; gap: 8px; }
+  .quiz .opts button {
+    text-align: left; font-family: var(--ui); font-size: 14px; line-height: 1.7;
+    background: transparent; border: 1px solid var(--line-strong); border-radius: 10px;
+    padding: 11px 14px; cursor: pointer; color: var(--ink);
+    transition: all .2s ease;
+  }
+  .quiz .opts button:hover:not(:disabled) { border-color: var(--vermilion); transform: translateX(3px); }
+  .quiz .opts button:disabled { cursor: default; opacity: .55; }
+  .quiz .opts button.correct { opacity: 1; border-color: var(--green); background: var(--green-soft); color: var(--green); font-weight: 600; }
+  .quiz .opts button.wrong { opacity: 1; border-color: var(--vermilion); background: var(--vermilion-soft); color: var(--vermilion); }
+  .quiz .kaisetsu { display: none; margin-top: 16px; font-size: 13.5px; line-height: 1.9; color: var(--ink); border-top: 1px dashed var(--line); padding-top: 14px; }
+  .quiz .kaisetsu b { color: var(--green); font-weight: 600; }
+  .quiz.answered .kaisetsu { display: block; animation: rise .5s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
+
+  /* ───────── 心像図(本文埋め込み) ───────── */
+  .map-hint { font-family: var(--ui); font-size: 12.5px; color: var(--ink-soft); margin-bottom: 26px; letter-spacing: .08em; }
+  .map-stage { position: relative; }
+  #wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  #wires path { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
+  .map-grid { display: grid; gap: 34px; position: relative; }
+  .map-row { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
+  .node {
+    font-family: var(--ui); cursor: pointer;
+    background: var(--card); border: 1.5px solid var(--line-strong); border-radius: 14px;
+    padding: 12px 16px; max-width: 220px; text-align: center;
+    transition: all .25s ease; position: relative; z-index: 2;
+  }
+  .node .tag { font-size: 10px; letter-spacing: .2em; color: var(--ink-soft); display: block; margin-bottom: 3px; }
+  .node .t { font-family: var(--text); font-size: 13.5px; font-weight: 600; line-height: 1.6; }
+  .node:hover { transform: translateY(-3px); border-color: var(--ink-soft); box-shadow: 0 8px 20px rgba(33,29,22,.08); }
+  .node.on { border-color: var(--vermilion); background: var(--vermilion-soft); }
+  .node.root { border-color: var(--ink); background: var(--ink); }
+  .node.root .t { color: var(--paper); font-size: 14.5px; }
+  .node.root .tag { color: #b7ae9c; }
+  #map-detail { margin-top: 30px; background: var(--card); border-radius: 14px; padding: 22px 26px; display: none; font-family: var(--ui); }
+  #map-detail.show { display: block; animation: rise .45s ease; }
+  #map-detail .dk { font-size: 11px; letter-spacing: .25em; color: var(--vermilion); margin-bottom: 8px; }
+  #map-detail h3 { font-family: var(--text); font-size: 18px; margin-bottom: 8px; }
+  #map-detail p { font-size: 13.5px; line-height: 1.95; color: var(--ink); margin-bottom: 12px; }
+  #map-detail a { font-size: 13px; color: var(--vermilion); text-decoration: none; border-bottom: 1px solid var(--vermilion); }
+
+  /* ───────── 用語集 ───────── */
+  .gloss { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: var(--ui); }
+  .gitem { background: var(--card); border-radius: 10px; padding: 12px 14px; }
+  .gitem .gt { font-weight: 600; font-size: 13.5px; }
+  .gitem .ge { font-size: 11px; color: var(--ink-soft); font-style: italic; margin-left: 8px; }
+  .gitem p { font-size: 12.5px; color: var(--ink); line-height: 1.85; margin: 4px 0 0 !important; }
+  @media (max-width: 640px) { .gloss { grid-template-columns: 1fr; } }
+
+  /* ───────── 締めのカード ───────── */
+  .verdict { margin: 3em 0 0; padding: 30px 30px; border: 1.5px solid var(--ink); border-radius: 14px; background: var(--ink); color: var(--paper); font-family: var(--ui); }
+  .verdict .k { font-size: 11px; letter-spacing: .25em; color: var(--vermilion-soft); margin-bottom: 10px; }
+  .verdict h3 { font-family: var(--text); font-size: 20px; margin-bottom: 10px; }
+  .verdict p { font-size: 13.5px; line-height: 1.9; color: #cfc8b8; margin-bottom: 1em !important; }
+  .verdict p:last-child { margin-bottom: 0 !important; }
+  .verdict p b { color: var(--paper); font-weight: 600; }
+  .verdict a { color: var(--paper); text-decoration: underline; text-underline-offset: 3px; }
+
+  footer {
+    font-family: var(--ui); font-size: 11.5px; color: var(--ink-soft);
+    text-align: center; padding: 30px 20px 44px; letter-spacing: .08em;
+    position: relative; z-index: 1;
+  }
+
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; gap: 0; }
+    .hero > * { grid-column: 1; }
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    nav.mini { display: none; }
+    .mobile-toc { display: block; }
+    .bar { padding: 10px 14px; gap: 10px; }
+    .brand span.sub { display: none; }
+    .fig { grid-template-columns: 1fr; }
+    .farrow .ar { transform: rotate(90deg); display: inline-block; }
+    .loops { grid-template-columns: 1fr; }
+    .anatomy { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ── v4: ワークトエグザンプル(worked example) ── */
+  .sim-steps { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .sim-steps button {
+    font-family: var(--ui); font-size: 10.5px; padding: 6px 12px; border-radius: 10px;
+    border: 1.5px solid var(--line-strong); background: transparent; color: var(--ink-soft);
+    cursor: pointer; transition: all .2s; line-height: 1.5; text-align: left;
+  }
+  .sim-steps button b { display: block; font-size: 11.5px; letter-spacing: .04em; }
+  .sim-steps button.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .sim-steps button:hover:not(.on) { border-color: var(--vermilion); color: var(--vermilion); }
+  .sim-card { display: none; }
+  .sim-card.on { display: block; animation: rise .4s ease; }
+  .sim-card .nar { font-family: var(--text); font-size: 14.5px; line-height: 1.85; margin-bottom: 14px; }
+  .data-card {
+    background: #2a2620; color: #e8e0cf; border-radius: 10px; padding: 14px 16px;
+    font-family: var(--mono); font-size: 11px; line-height: 1.85;
+    overflow-x: auto; white-space: pre; margin-bottom: 12px;
+  }
+  .data-card .dk2 { color: #e08870; }
+  .data-card .dc { color: #a89e85; }
+  .data-card .dg { color: #9fc4a4; }
+  .sim-note { font-family: var(--ui); font-size: 12px; color: var(--ink); line-height: 1.9; border-left: 3px solid var(--vermilion); padding: 2px 0 2px 12px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .stat { border-radius: 10px; background: var(--paper); padding: 10px 6px; text-align: center; font-family: var(--ui); }
+  .stat .sv { font-size: 22px; font-weight: 600; color: var(--vermilion); }
+  .stat .sl { font-size: 10px; color: var(--ink-soft); line-height: 1.55; }
+  .bar-wrap { background: var(--paper-deep); border-radius: 6px; height: 15px; overflow: hidden; margin: 5px 0 3px; }
+  .bar-fill { height: 100%; background: var(--vermilion); border-radius: 6px; }
+  .replay-dots { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+  .rdot { width: 17px; height: 17px; border-radius: 50%; }
+  .rdot.ok { background: var(--green-soft); border: 1.5px solid var(--green); }
+  .rdot.ng { background: var(--vermilion-soft); border: 1.5px solid var(--vermilion); }
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: var(--ui); font-size: 11.5px; margin-bottom: 12px; }
+  .ba > div { border-radius: 10px; padding: 10px 12px; background: var(--paper); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand"><b>下読み</b> <span class="sub">｜ 〔文書の短い名前〕</span></div>
+    <a class="to-map" href="#s0">全体の地図へ</a>
+    <!-- #qdots の <i> 数は .quiz ブロック数と一致させる。 -->
+    <div class="quiz-count">
+      <span>理解チェック <b id="qc">0</b>/1</span>
+      <span class="quiz-dots" id="qdots"><i></i></span>
+    </div>
+  </div>
+  <div id="scrollbar"></div>
+</header>
+
+<div class="hero">
+  <!-- 文書ごとに 1 回だけ置く表紙。mobile-toc は JS が nav.mini から複製して埋める。 -->
+  <div class="kicker">〔文書種別〕 ─ 読了目安 〔N〕分</div>
+  <h1>〔文書タイトル〕</h1>
+  <div class="original">〔原典のタイトル・識別子〕</div>
+  <div class="meta">
+    <span><b>著者</b> 〔著者・組織〕</span>
+    <span><b>分野</b> 〔分野・カテゴリ〕</span>
+    <span><b>種別</b> 〔論文・仕様書・技術記事など〕</span>
+  </div>
+  <p class="lede">〔読者の言葉で書き直したリード文〕</p>
+  <nav class="mobile-toc" aria-label="目次">
+    <div class="mini-title">目次</div>
+    <div class="mobile-toc-links"></div>
+  </nav>
+</div>
+
+<div class="layout">
+  <nav class="mini">
+    <div class="mini-title">目次</div>
+    <!-- data-s は対応する section id と一致させる。<span class="k"> は章の役割を短く示す。 -->
+    <a href="#s0" data-s="s0"><span class="k">OVERVIEW</span>全体の地図</a>
+    <a href="#s1" data-s="s1"><span class="k">〔役割〕</span>〔章タイトル〕</a>
+    <div class="rail">
+      <a href="#s1" data-s="s1" class="lv1"><span class="k">〔下位役割〕</span>〔下位章タイトル〕</a>
+    </div>
+  </nav>
+
+  <article>
+
+    <section class="chapter" id="s0">
+      <div class="ch-num">00</div>
+      <h2>まず、全体の地図</h2>
+      <p class="map-hint">〔読み始める前に掴ませたい全体像の説明〕</p>
+      <!-- map-row は階層ごとに繰り返す。node の data-d は MAP と WIRES のキーに一致させる。 -->
+      <div class="map-stage">
+        <svg id="wires"></svg>
+        <div class="map-grid">
+          <div class="map-row">
+            <div class="node root" data-d="root"><span class="tag">〔中心〕</span><span class="t">〔中心ノードの要約〕</span></div>
+          </div>
+          <div class="map-row">
+            <div class="node" data-d="〔子ノードのdata-d〕"><span class="tag">〔子〕</span><span class="t">〔子ノードの要約〕</span></div>
+          </div>
+        </div>
+      </div>
+      <div id="map-detail">
+        <div class="dk" id="md-k"></div>
+        <h3 id="md-t"></h3>
+        <p id="md-p"></p>
+        <a href="#" id="md-a">この節を読みに行く →</a>
+      </div>
+    </section>
+
+    <section class="chapter" id="s1">
+      <div class="ch-num">01</div>
+      <h2>〔章タイトル〕</h2>
+      <p>〔本文の段落。重要語は <span class="term">〔用語〕<span class="pop"><span class="en">〔原語〕</span>〔用語の短い説明〕</span></span> の形で説明を添える。〕</p>
+      <div class="aside"><b>〔注記ラベル〕:</b> 〔読み手が誤解しやすい点、または本文を読む前に置く補助線。〕</div>
+
+      <div class="formula" id="f1">
+        <div class="fx">〔数式・疑似コード・記法〕</div>
+        <div class="yaku">
+          <li><code>〔記号〕</code>〔記号の意味〕</li>
+          <li><code>〔記号〕</code>〔記号の意味〕</li>
+        </div>
+        <button>▽ 数式を日本語で読む</button>
+      </div>
+
+      <!-- quiz options must be similar length. -->
+      <div class="quiz" data-q="1">
+        <h3>〔理解確認の問い〕</h3>
+        <div class="opts">
+          <button>〔選択肢 A〕</button>
+          <button data-correct>〔選択肢 B〕</button>
+          <button>〔選択肢 C〕</button>
+        </div>
+        <div class="kaisetsu"><b>〔正解ラベル〕</b>〔なぜそれが正解か。誤答との違いも短く書く。〕</div>
+      </div>
+
+      <div class="figure">
+        <div class="fig-title">FIGURE ─ 〔図のタイトル〕</div>
+        <div class="fig">
+          <div class="fbox" id="fg-placeholder">
+            <div class="fb-t">〔図中の要素〕</div>
+            <span class="fb-s">〔図中の補足〕</span>
+            <div class="chip">〔最小の図示内容〕</div>
+          </div>
+        </div>
+        <div class="fig-cap">〔図の出典・省略した内容〕</div>
+        <div class="fig-guide">
+          <div class="fg-label">▽ 図を日本語で読む — 押した順に、図の対応する場所が点灯します</div>
+          <div class="fig-steps">
+            <button data-step="0" class="on">1</button>
+          </div>
+          <div id="fig-text"></div>
+        </div>
+      </div>
+
+      <div class="viz">
+        <div class="viz-title">SIM ─ 〔段送りコンポーネントのタイトル〕</div>
+        <div class="sim-steps" id="sim-steps">
+          <button class="on"><b>Step 1</b>〔最初の状態〕</button>
+          <button><b>Step 2</b>〔次の状態〕</button>
+        </div>
+        <div class="sim-card on">
+          <p class="nar">〔Step 1 で読む説明。〕</p>
+          <div class="sim-note">〔Step 1 の要点。〕</div>
+        </div>
+        <div class="sim-card">
+          <p class="nar">〔Step 2 で読む説明。〕</p>
+          <div class="sim-note">〔Step 2 の要点。〕</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter" id="s9">
+      <div class="ch-num">09</div>
+      <h2>用語集</h2>
+      <p class="map-hint">〔本文で触れた用語のまとめ。〕</p>
+      <!-- gitem は用語ごとに繰り返す。 -->
+      <div class="gloss">
+        <div class="gitem"><span class="gt">〔用語〕</span><span class="ge">〔原語〕</span><p>〔用語の説明。〕</p></div>
+        <div class="gitem"><span class="gt">〔用語〕</span><span class="ge">〔原語〕</span><p>〔用語の説明。〕</p></div>
+      </div>
+
+      <div class="verdict">
+        <div class="k">読み終えたら ─ 原典へ進むか</div>
+        <h3>この下読みは、ここで完結です</h3>
+        <p>ここまでで掴めるのは、〔掴めたこと〕。ここから先 — 〔原典でしか確かめられないこと〕 — は原典でしか確かめられません。</p>
+        <p><b>進むなら:</b> 〔原典で最初に読むべき箇所と読み方〕。<a href="〔原典リンク〕">〔原典リンク表示名〕</a></p>
+        <p><b>止めるなら:</b> 〔止めても持ち帰れる問い、判断基準、次の行動。〕</p>
+      </div>
+    </section>
+
+  </article>
+</div>
+
+<footer>下読み ｜ 原典: 〔原典の書誌 + リンク〕 ｜ この教材は LLM による再構成であり、正確さは原典で確認してください</footer>
+
+<script>
+// ── 文書ごとに差し替えるデータ ──
+const FIG_STEPS = [
+  { hl: ['fg-placeholder'],
+    t: '<b>① 〔読む順番〕</b>〔この図でまず見せたいこと。〕' }
+];
+const MAP = {
+  root: { k: '〔中心〕', t: '〔中心ノードの題名〕', p: '〔中心ノードの説明〕', s: '#s1' },
+  '〔子ノードのdata-d〕': { k: '〔子〕', t: '〔子ノードの題名〕', p: '〔子ノードの説明〕', s: '#s1' }
+};
+const WIRES = [['root','〔子ノードのdata-d〕']];
+
+// ── スクロール進捗 ──
+const sb = document.getElementById('scrollbar');
+if (sb) {
+  addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    sb.style.width = (max > 0 ? h.scrollTop / max * 100 : 0) + '%';
+  }, { passive: true });
+}
+
+// ── 章のフェードイン & ミニマップ現在地 ──
+const chapters = document.querySelectorAll('.chapter');
+const miniLinks = document.querySelectorAll('nav.mini a');
+const mobileTocLinks = document.querySelector('.mobile-toc-links');
+if (mobileTocLinks) {
+  miniLinks.forEach(a => {
+    const clone = a.cloneNode(true);
+    clone.classList.remove('now');
+    clone.removeAttribute('data-s');
+    clone.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(clone.getAttribute('href'));
+      if (target) target.scrollIntoView({ block: 'start' });
+    });
+    mobileTocLinks.appendChild(clone);
+  });
+}
+const stickyHeader = document.querySelector('header');
+const setJumpMargin = () => {
+  const h = (stickyHeader ? stickyHeader.offsetHeight : 0) + 8;
+  chapters.forEach(s => s.style.scrollMarginTop = h + 'px');
+};
+setJumpMargin();
+addEventListener('resize', setJumpMargin);
+if (chapters.length && miniLinks.length && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) {
+      miniLinks.forEach(a => a.classList.toggle('now', a.dataset.s === e.target.id));
+    }
+  }), { threshold: 0.12 });
+  chapters.forEach(c => io.observe(c));
+}
+
+// ── クイズ ──
+let solved = 0;
+const qc = document.getElementById('qc');
+const dots = document.querySelectorAll('#qdots i');
+document.querySelectorAll('.quiz').forEach((quiz, qi) => {
+  quiz.querySelectorAll('.opts button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (quiz.classList.contains('answered')) return;
+      quiz.classList.add('answered');
+      quiz.querySelectorAll('.opts button').forEach(b => {
+        b.disabled = true;
+        if (b.hasAttribute('data-correct')) b.classList.add('correct');
+      });
+      if (!btn.hasAttribute('data-correct')) btn.classList.add('wrong');
+      solved++;
+      if (qc) qc.textContent = solved;
+      if (dots[qi]) dots[qi].classList.add('done');
+    });
+  });
+});
+
+// ── 用語ポップオーバー ──
+document.querySelectorAll('.term').forEach(t => {
+  t.addEventListener('click', e => {
+    e.stopPropagation();
+    document.querySelectorAll('.term.open').forEach(x => x !== t && x.classList.remove('open'));
+    t.classList.toggle('open');
+  });
+});
+addEventListener('click', () => document.querySelectorAll('.term.open').forEach(x => x.classList.remove('open')));
+
+// ── 数式の日本語訳 ──
+document.querySelectorAll('.formula button').forEach(b => {
+  b.addEventListener('click', () => {
+    const f = b.closest('.formula');
+    if (!f) return;
+    f.classList.toggle('open');
+    b.textContent = f.classList.contains('open') ? '△ 閉じる' : '▽ 数式を日本語で読む';
+  });
+});
+
+// ── 図を日本語で読む ──
+const figText = document.getElementById('fig-text');
+const stepBtns = document.querySelectorAll('.fig-steps button');
+function showStep(i) {
+  if (!figText || !stepBtns.length || !FIG_STEPS[i]) return;
+  stepBtns.forEach(b => b.classList.toggle('on', +b.dataset.step === i));
+  document.querySelectorAll('.hl').forEach(x => x.classList.remove('hl'));
+  FIG_STEPS[i].hl.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hl');
+  });
+  figText.innerHTML = FIG_STEPS[i].t;
+}
+stepBtns.forEach(b => b.addEventListener('click', () => showStep(+b.dataset.step)));
+if (figText && stepBtns.length) showStep(0);
+
+// ── 心像図(本文埋め込み) ──
+const detail = document.getElementById('map-detail');
+document.querySelectorAll('.node').forEach(n => {
+  n.addEventListener('click', () => {
+    document.querySelectorAll('.node').forEach(x => x.classList.toggle('on', x === n));
+    const d = MAP[n.dataset.d];
+    if (!d || !detail) return;
+    const mdK = document.getElementById('md-k');
+    const mdT = document.getElementById('md-t');
+    const mdP = document.getElementById('md-p');
+    const mdA = document.getElementById('md-a');
+    if (mdK) mdK.textContent = d.k;
+    if (mdT) mdT.textContent = d.t;
+    if (mdP) mdP.textContent = d.p;
+    if (mdA) mdA.onclick = ev => {
+      ev.preventDefault();
+      const target = document.querySelector(d.s);
+      if (target) target.scrollIntoView();
+    };
+    detail.classList.add('show');
+    requestAnimationFrame(drawWires);
+  });
+});
+
+// ── 心像図の結線 ──
+function drawWires() {
+  const svg = document.getElementById('wires');
+  const stage = document.querySelector('.map-stage');
+  if (!svg || !stage) return;
+  const sr = stage.getBoundingClientRect();
+  if (!sr.width) return;
+  svg.setAttribute('viewBox', `0 0 ${sr.width} ${sr.height}`);
+  const pt = id => {
+    const el = document.querySelector(`[data-d="${id}"]`);
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return { x: r.left - sr.left + r.width / 2, top: r.top - sr.top, bot: r.top - sr.top + r.height };
+  };
+  const link = (a, b) => {
+    const p = pt(a), q = pt(b);
+    if (!p || !q) return '';
+    const my = (p.bot + q.top) / 2;
+    return `<path d="M ${p.x} ${p.bot} C ${p.x} ${my}, ${q.x} ${my}, ${q.x} ${q.top}"/>`;
+  };
+  svg.innerHTML = WIRES.map(([a, b]) => link(a, b)).join('');
+}
+addEventListener('load', () => { drawWires(); setTimeout(drawWires, 400); });
+addEventListener('resize', drawWires);
+
+// ── ミニマップ: クリックで該当セクションへ ──
+miniLinks.forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  const target = document.querySelector(a.getAttribute('href'));
+  if (target) target.scrollIntoView({ block: 'start' });
+}));
+
+// ── 段送りコンポーネント ──
+const simBtns = document.querySelectorAll('#sim-steps button');
+const simCards = document.querySelectorAll('.sim-card');
+simBtns.forEach((b, i) => b.addEventListener('click', () => {
+  simBtns.forEach((x, j) => x.classList.toggle('on', j === i));
+  simCards.forEach((c, j) => c.classList.toggle('on', j === i));
+}));
+
+</script>
+</body>
+</html>
