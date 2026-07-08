@@ -1,9 +1,9 @@
 ---
-name: stop-slop-ja
+name: ja-prose-clarity
 description: 日本語の文章を書く・推敲する・レビューするときに使う。ドキュメント、ノート、README、報告文も対象。AI っぽい文(slop)から LLM 特有の重さを取り除き、読み手の認知負荷を下げる。コードだけを書く作業や英語の文章には使わない。
 ---
 
-# Stop Slop JA
+# JA Prose Clarity
 
 日本語の文章から、slop と呼ばれる LLM 特有の重さを取り除く。人間らしく見せる演出はしない。読み手が一度で掴める文にする。
 
