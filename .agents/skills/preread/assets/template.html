@@ -58,15 +58,7 @@
   .brand { font-size: 12px; letter-spacing: .18em; color: var(--ink-soft); white-space: nowrap; }
   .brand b { color: var(--vermilion); font-weight: 600; }
   .ver { font-size: 10px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--ink-soft); letter-spacing: .1em; }
-  .to-map {
-    margin-left: auto;
-    font-family: var(--ui); font-size: 12.5px;
-    border: 1px solid var(--line-strong); background: transparent; color: var(--ink-soft);
-    padding: 6px 16px; border-radius: 999px; cursor: pointer; text-decoration: none;
-    transition: all .25s ease;
-  }
-  .to-map:hover { border-color: var(--vermilion); color: var(--vermilion); }
-  .quiz-count { font-size: 12px; color: var(--ink-soft); white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+  .quiz-count { margin-left: auto; font-size: 12px; color: var(--ink-soft); white-space: nowrap; display: flex; align-items: center; gap: 8px; }
   .quiz-dots { display: flex; gap: 4px; }
   .quiz-dots i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--line-strong); display: block; transition: all .3s; }
   .quiz-dots i.done { background: var(--vermilion); border-color: var(--vermilion); }
@@ -81,14 +73,17 @@
   .hero > * { grid-column: 2; max-width: 720px; width: 100%; }
   .hero .kicker { font-family: var(--ui); font-size: 12px; letter-spacing: .25em; color: var(--vermilion); margin-bottom: 20px; }
   .hero h1 { font-size: clamp(26px, 4.4vw, 40px); font-weight: 600; line-height: 1.5; letter-spacing: .02em; margin-bottom: 14px; text-wrap: balance; word-break: auto-phrase; }
-  .hero .original { font-family: var(--ui); font-size: 13px; color: var(--ink-soft); font-style: italic; margin-bottom: 26px; }
   .meta {
     font-family: var(--ui); font-size: 12.5px; color: var(--ink-soft);
-    display: flex; flex-wrap: wrap; gap: 8px 22px;
+    display: grid; grid-template-columns: 4.5em minmax(0, 1fr);
+    gap: 9px 16px; align-items: baseline;
     border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    padding: 12px 2px;
+    padding: 14px 2px;
   }
   .meta b { color: var(--ink); font-weight: 600; }
+  /* 値は 1 行に収め、あふれたら … で省略する。長い著者名や原題はホバー用に title 属性を添えてよい。 */
+  .meta .mv { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .meta a.mv { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 2px; }
   .lede { margin-top: 30px; font-size: 1.15em; line-height: 1.9; max-width: 680px; }
 
   /* ───────── レイアウト ───────── */
@@ -136,6 +131,12 @@
   section.chapter h3.subhead { font-family: var(--text); font-size: 1.25em; font-weight: 600; line-height: 1.5; color: var(--ink); margin-top: 1.6em; margin-bottom: 0.5em; letter-spacing: .02em; }
   section.chapter p { margin-bottom: 1.4em; max-width: 680px; }
   section.chapter em { font-style: normal; background: linear-gradient(transparent 68%, var(--vermilion-soft) 68%); }
+  /* article 内のリンクは用語(.term)と同じ藍色。実線の下線で用語(点線)と区別する。
+     .verdict a / #map-detail a は各自のスタイルで上書きされる。外部リンクには下の ↗ が付く。 */
+  article a { color: var(--indigo); text-decoration: underline; text-underline-offset: 2px; }
+  article a:hover { text-decoration-thickness: 2px; }
+  /* 新しいタブで開くリンク(target="_blank")には ↗ を添えて視覚化する。 */
+  a[target="_blank"]::after { content: "\2197"; display: inline-block; font-size: .72em; line-height: 1; vertical-align: super; margin-left: 1px; }
   .acronym { font-family: var(--ui); font-size: .82em; color: var(--ink-soft); }
   .aside {
     font-family: var(--ui); font-size: 13.5px; line-height: 1.9;
@@ -266,6 +267,8 @@
   .fig-steps button:hover { border-color: var(--vermilion); color: var(--vermilion); }
   .fig-steps button.on { background: var(--vermilion); border-color: var(--vermilion); color: var(--paper); }
   #fig-text { font-size: 13.5px; line-height: 1.9; color: var(--ink); min-height: 3.6em; }
+  /* ステップのラベル(① …)を独立行にし、説明を次の行へ回す。 */
+  #fig-text b { display: block; margin-bottom: 2px; }
 
   /* ───────── クイズ ───────── */
   .quiz {
@@ -401,7 +404,6 @@
 <header>
   <div class="bar">
     <div class="brand"><b>下読み</b> <span class="sub">｜ 〔文書の短い名前〕</span></div>
-    <a class="to-map" href="#s0">全体の地図へ</a>
     <!-- #qdots の <i> 数は .quiz ブロック数と一致させる。 -->
     <div class="quiz-count">
       <span>理解チェック <b id="qc">0</b>/1</span>
@@ -415,11 +417,11 @@
   <!-- 文書ごとに 1 回だけ置く表紙。mobile-toc は JS が nav.mini から複製して埋める。 -->
   <div class="kicker">〔文書種別〕 ─ 読了目安 〔N〕分</div>
   <h1>〔文書タイトル〕</h1>
-  <div class="original">〔原典のタイトル・識別子〕</div>
+  <!-- 出典メタ。ラベル + 値の 2 列グリッド。値は 1 行で省略される。原典は原文へのリンク。 -->
   <div class="meta">
-    <span><b>著者</b> 〔著者・組織〕</span>
-    <span><b>分野</b> 〔分野・カテゴリ〕</span>
-    <span><b>種別</b> 〔論文・仕様書・技術記事など〕</span>
+    <b>原典</b><a class="mv" href="〔原典リンク〕" target="_blank" rel="noopener noreferrer">〔原典のタイトル・識別子〕</a>
+    <b>著者</b><span class="mv">〔著者・組織〕</span>
+    <b>分野</b><span class="mv">〔分野・カテゴリ〕</span>
   </div>
   <p class="lede">〔読者の言葉で書き直したリード文〕</p>
   <nav class="mobile-toc" aria-label="目次">
@@ -468,7 +470,8 @@
     <section class="chapter" id="s1">
       <div class="ch-num">01</div>
       <h2>〔章タイトル〕</h2>
-      <p>〔本文の段落。重要語は <span class="term">〔用語〕<span class="pop"><span class="en">〔原語〕</span>〔用語の短い説明〕</span></span> の形で説明を添える。〕</p>
+      <!-- 外部リンクは target="_blank" rel="noopener noreferrer" を既定にする(ページ内アンカーには付けない)。 -->
+      <p>〔本文の段落。重要語は <span class="term">〔用語〕<span class="pop"><span class="en">〔原語〕</span>〔用語の短い説明〕</span></span> の形で説明を添える。原文にリンクがあれば <a href="〔リンク先URL〕" target="_blank" rel="noopener noreferrer">〔リンクテキスト〕</a> の形で残す。〕</p>
       <div class="aside"><b>〔注記ラベル〕:</b> 〔読み手が誤解しやすい点、または本文を読む前に置く補助線。〕</div>
 
       <div class="formula" id="f1">
@@ -541,7 +544,7 @@
         <div class="k">読み終えたら ─ 原典へ進むか</div>
         <h3>この下読みは、ここで完結です</h3>
         <p>ここまでで掴めるのは、〔掴めたこと〕。ここから先 — 〔原典でしか確かめられないこと〕 — は原典でしか確かめられません。</p>
-        <p><b>進むなら:</b> 〔原典で最初に読むべき箇所と読み方〕。<a href="〔原典リンク〕">〔原典リンク表示名〕</a></p>
+        <p><b>進むなら:</b> 〔原典で最初に読むべき箇所と読み方〕。<a href="〔原典リンク〕" target="_blank" rel="noopener noreferrer">〔原典リンク表示名〕</a></p>
         <p><b>止めるなら:</b> 〔止めても持ち帰れる問い、判断基準、次の行動。〕</p>
       </div>
     </section>
