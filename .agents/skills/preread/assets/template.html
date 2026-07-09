@@ -295,7 +295,8 @@
   .quiz .opts button.correct { opacity: 1; border-color: var(--green); background: var(--green-soft); color: var(--green); font-weight: 600; }
   .quiz .opts button.wrong { opacity: 1; border-color: var(--vermilion); background: var(--vermilion-soft); color: var(--vermilion); }
   .quiz .kaisetsu { display: none; margin-top: 16px; font-size: 13.5px; line-height: 1.9; color: var(--ink); border-top: 1px dashed var(--line); padding-top: 14px; }
-  .quiz .kaisetsu b { color: var(--green); font-weight: 600; }
+  /* 正解ラベルを独立行にし、解説を次の行へ回す(#fig-text b と同じ扱い)。 */
+  .quiz .kaisetsu b { display: block; margin-bottom: 2px; color: var(--green); font-weight: 600; }
   .quiz.answered .kaisetsu { display: block; animation: rise .5s ease; }
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
 
