@@ -162,8 +162,15 @@
   .pop .en { display: block; font-size: 11px; color: #b7ae9c; font-style: italic; margin-bottom: 2px; }
   .term.open .pop { opacity: 1; pointer-events: auto; transform: translateX(-50%); }
 
+  /* ───────── カード共通(数式・視覚化・図・クイズ) ───────── */
+  .formula, .viz, .figure, .quiz {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; margin: 0 0 1.4em;
+    box-shadow: 0 2px 0 var(--paper-deep);
+  }
+
   /* 数式カード */
-  .formula { background: var(--card); border: 1px solid var(--line); border-radius: 14px; margin: 0 0 1.4em; overflow: hidden; box-shadow: 0 2px 0 var(--paper-deep); }
+  .formula { overflow: hidden; }
   .formula .fx { font-family: var(--mono); font-size: 15px; text-align: center; padding: 22px 16px 18px; letter-spacing: .04em; }
   .formula .fx sub { font-size: .7em; }
   .formula button {
@@ -179,7 +186,7 @@
   .formula .yaku code { font-family: var(--mono); color: var(--vermilion); margin-right: 10px; font-size: 12.5px; }
 
   /* ───────── 視覚化カード ───────── */
-  .viz { background: var(--card); border: 1px solid var(--line); border-radius: 14px; margin: 0 0 1.4em; padding: 18px 22px 16px; font-family: var(--ui); box-shadow: 0 2px 0 var(--paper-deep); }
+  .viz { padding: 18px 22px 16px; font-family: var(--ui); }
   .viz .viz-title { font-size: 12px; letter-spacing: .12em; color: var(--ink-soft); margin-bottom: 16px; }
   .viz .viz-cap { font-size: 11.5px; color: var(--ink); margin-top: 14px; line-height: 1.8; border-left: 3px solid var(--vermilion); padding: 2px 0 2px 12px; }
 
@@ -232,7 +239,7 @@
   .ladder-axis { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--ink-soft); margin-top: 8px; letter-spacing: .06em; }
 
   /* ───────── 図カード(図を日本語で読む) ───────── */
-  .figure { background: var(--card); border: 1px solid var(--line); border-radius: 14px; margin: 0 0 1.4em; overflow: hidden; box-shadow: 0 2px 0 var(--paper-deep); }
+  .figure { overflow: hidden; }
   .figure .fig-title { font-family: var(--ui); font-size: 12px; letter-spacing: .12em; color: var(--ink-soft); padding: 14px 20px 0; }
   .fig { display: grid; grid-template-columns: 1fr 74px 1.15fr 74px 1fr; gap: 10px; align-items: center; padding: 18px 20px 8px; font-family: var(--ui); }
   .fbox { border: 1.5px solid var(--line-strong); border-radius: 10px; background: var(--paper); padding: 10px; transition: all .3s ease; }
@@ -262,10 +269,7 @@
 
   /* ───────── クイズ ───────── */
   .quiz {
-    background: var(--card); border: 1px solid var(--line);
-    border-radius: 14px; padding: 24px 26px 20px;
-    margin: 0 0 1.4em; position: relative;
-    box-shadow: 0 2px 0 var(--paper-deep);
+    padding: 24px 26px 20px; position: relative;
     font-family: var(--ui);
   }
   .quiz::before {
