@@ -34,9 +34,16 @@ disable-model-invocation: true
 
 ### 3. 前提チェックと書き直し計画
 
-読者プロファイル `~/.config/preread/reader-profile.md` を読む。
-無ければ [references/reader-profile.example.md](references/reader-profile.example.md)
-の見出しに沿って読者に 2〜3 問聞き取り、実体を作成してから続行する。
+読者プロファイルを次の優先順で解決する:
+
+1. 文脈に読者プロファイルがあればそれを使う(プロジェクトの
+   AGENTS.md がプロファイルのファイルを指している場合など)
+2. 無ければカレントディレクトリの `PROFILE.md` を探す
+3. それも無ければ [references/reader-profile.example.md](references/reader-profile.example.md)
+   の見出しに沿って読者に 2〜3 問聞き取り、カレントディレクトリに
+   `PROFILE.md` を作成してから続行する。git リポジトリ内なら
+   「個人情報を含むならコミットに注意(必要なら .gitignore)」と一言添える
+
 文書の鍵概念を列挙し、読者が持っていない前提を特定する。書き直しは
 内容の範囲を維持したまま行う(Learn Your Way の制約 — 易しくしても
 原文が主張していないことを足さない、主張の強度を変えない)。
@@ -83,6 +90,5 @@ JS 冒頭の「文書ごとに差し替えるデータ」(FIG_STEPS / MAP / WIRE
   何が下読みから抜けていたかを references の該当ファイルに追記する
   (このスキル自体を検証中の PoC として扱う)
 - 読者からプロファイルの変更依頼があったら(現場が変わった、前提の
-  見立てが違う、例が現場に合わない、など)、その場で
-  `~/.config/preread/reader-profile.md` を編集して反映する
-  (個人データなのでリポジトリには入れない。雛形は references/ 側)
+  見立てが違う、例が現場に合わない、など)、その場で工程 3 の解決順で
+  実際に使っているプロファイルの実体を編集して反映する
