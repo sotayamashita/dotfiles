@@ -44,6 +44,9 @@ dir:.codex/skills/*
 # Yazi
 .config/yazi/yazi.toml
 
+# herdr
+.config/herdr/config.toml
+
 # Starship prompt
 .config/starship.toml
 

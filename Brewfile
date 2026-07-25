@@ -71,6 +71,7 @@ cask "codex"
 cask "claude-code"
 brew "pi-coding-agent"
 brew "agent-browser"
+brew "herdr"
 
 
 # ------------------------------
