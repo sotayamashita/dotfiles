@@ -68,6 +68,17 @@
           }
         ]
       }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "tldraw-offline",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh '/Users/sotayamashita/skills/tldraw-offline/inject-server-context.sh' SubagentStart"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
