@@ -87,12 +87,6 @@ if test -d $ANDROID_HOME
     fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
 end
 
-# Google Cloud SDK
-# https://cloud.google.com/sdk/docs/install
-if test -f "$HOME/google-cloud-sdk/path.fish.inc"
-    . "$HOME/google-cloud-sdk/path.fish.inc"
-end
-
 # fnox
 # https://fnox.jdx.dev/guide/shell-integration.html#enable-shell-integration
 # activate only defines shell functions (~6ms). Secrets are resolved on cd into dirs with fnox.toml
