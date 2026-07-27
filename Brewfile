@@ -48,7 +48,7 @@ brew "shellcheck"               # Shell  (https://github.com/koalaman/shellcheck
 brew "shfmt"                    # Shell  (https://github.com/mvdan/sh)
 brew "actionlint"               # GHA    (https://github.com/rhysd/actionlint)
 brew "zizmor"                   # GHA    (https://github.com/woodruffw/zizmor)
-
+brew "lazygit"
 
 # ------------------------------
 # File Management & Media
