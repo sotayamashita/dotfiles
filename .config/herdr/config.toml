@@ -164,7 +164,7 @@ prefix = "ctrl+`"
 
 # Automatically copy text selected by mouse drag.
 # Set false to keep drag selection visible without copying; double-click still copies a word.
-copy_on_select = false
+# copy_on_select = true
 
 # Host cursor policy: "auto", "native", or "drawn".
 # "auto" draws Herdr's own cursor on native Windows builds and WSL to avoid ConPTY cursor flicker, and uses the native terminal cursor elsewhere.
@@ -312,3 +312,26 @@ pane_history = false
 # Maximum scrollback buffer size in bytes retained per pane terminal.
 # Matches Ghostty's default scrollback-limit behavior.
 # scrollback_limit_bytes = 10000000
+
+# Custom
+
+# Open in a split beside your work
+# via https://github.com/smarzban/herdr-file-viewer
+[[keys.command]]
+key = "prefix+f"
+type = "shell"
+command = "herdr plugin action invoke open-file-viewer --plugin herdr-file-viewer"
+
+# Open in its own tab
+# via https://github.com/smarzban/herdr-file-viewer
+[[keys.command]]
+key = "prefix+shift+f"
+type = "shell"
+command = "herdr plugin action invoke open-file-viewer-tab --plugin herdr-file-viewer"
+
+# Fork the active Codex or Claude Code session into a new pane
+[[keys.command]]
+key = "prefix+shift+y"
+type = "shell"
+command = "~/.config/herdr/fork-agent-session.sh"
+description = "fork active agent session"
