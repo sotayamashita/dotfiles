@@ -17,6 +17,44 @@ notify_failure() {
 }
 
 #######################################
+# Starts an agent after its pane's shell becomes available.
+# Globals:
+#   NEW_PANE_ID
+# Arguments:
+#   $1: Agent name
+#   $2: Agent kind
+#   $@: Agent arguments
+#######################################
+start_agent() {
+  local agent_name="$1"
+  local agent_kind="$2"
+  local attempt output
+  shift 2
+
+  # Herdr can return a newly split pane before its interactive shell is ready.
+  for ((attempt = 1; attempt <= 20; attempt++)); do
+    if output="$(
+      herdr agent start "${agent_name}" \
+        --kind "${agent_kind}" \
+        --pane "${NEW_PANE_ID}" \
+        -- "$@" 2>&1
+    )"; then
+      printf '%s\n' "${output}"
+      return
+    fi
+
+    if [[ "${output}" != *'"code":"agent_pane_busy"'* ]]; then
+      printf '%s\n' "${output}" >&2
+      return 1
+    fi
+    sleep 0.1
+  done
+
+  printf '%s\n' "${output}" >&2
+  return 1
+}
+
+#######################################
 # Removes the pane created by this script after a startup failure.
 # Globals:
 #   NEW_PANE_ID
@@ -103,10 +141,7 @@ main() {
   )"
   agent_name="fork_${agent}_$(date +%s)_$$"
 
-  herdr agent start "${agent_name}" \
-    --kind "${agent}" \
-    --pane "${NEW_PANE_ID}" \
-    -- "${agent_arguments[@]}"
+  start_agent "${agent_name}" "${agent}" "${agent_arguments[@]}"
 
   trap - EXIT
 }
