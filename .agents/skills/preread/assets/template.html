@@ -1,736 +1,2225 @@
-<!DOCTYPE html>
+<!doctype html>
+<!--
+  下読みテンプレート。
+  このファイルを複製して 41-preread/<domain>/<slug>.html に置く。
+  arXiv の場合は <YYMM-NNNNNvV>-<slug>.html とし、版番号を残す。
+  〔〕を埋め、使わない部品を削除する。外部通信なしで動く自己完結 HTML にする。
+  Mermaid は生成時に SVG 化して埋め込み、元記述も data-mermaid-source に残す。
+-->
 <html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>〔文書タイトル〕 — 下読み</title>
-<style>
-  :root {
-    --paper: #f6f1e7;
-    --paper-deep: #efe8d8;
-    --card: #fffcf4;
-    --ink: #211d16;
-    --ink-soft: #6b6250;
-    --line: #d9cfba;
-    --line-strong: #978567;
-    --vermilion: #b23a26;
-    --vermilion-soft: #f3ddd6;
-    --indigo: #31527b;
-    --indigo-soft: #e3e9f2;
-    --green: #3c6b4f;
-    --green-soft: #e2ede5;
-    --text: "Helvetica Neue", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Arial, "Noto Sans JP", Meiryo, sans-serif;
-    --ui: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
-    --mono: "SF Mono", "Menlo", "Consolas", monospace;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: auto; }
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--text);
-    line-height: 1.8;
-    font-size: 18px;
-    -webkit-font-smoothing: antialiased;
-  }
-  body::before {
-    content: "";
-    position: fixed; inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: .5;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.5 0 0 0 0 0.42 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>〔文書タイトル〕 — 下読み</title>
+        <style>
+            :root {
+                --paper: #f6f1e7;
+                --paper-deep: #efe8d8;
+                --card: #fffcf4;
+                --ink: #211d16;
+                --ink-soft: #6b6250;
+                --line: #d9cfba;
+                --line-strong: #978567;
+                --vermilion: #b23a26;
+                --vermilion-soft: #f3ddd6;
+                --indigo: #31527b;
+                --indigo-soft: #e3e9f2;
+                --green: #3c6b4f;
+                --green-soft: #e2ede5;
+                --text:
+                    "Helvetica Neue", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Arial,
+                    "Noto Sans JP", Meiryo, sans-serif;
+                --ui: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+                --mono: "SF Mono", "Menlo", "Consolas", monospace;
+                --content-width: 720px;
+                --wide-content-width: 960px;
+                /* Mermaid のテーマ変数に渡す図の配色。紙のパレットに合わせる。 */
+                --diagram-fill: var(--indigo-soft);
+                --diagram-fill-alt: var(--vermilion-soft);
+                --diagram-line: var(--ink-soft);
+                --diagram-border: var(--indigo);
+            }
+            /* Custom scrollbar styling. Thanks @pranathiperii. */
+            ::-webkit-scrollbar {
+                width: 5px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--line-strong);
+                border-radius: 5px;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                background: var(--paper);
+                color: var(--ink);
+                font-family: var(--text);
+                line-height: 1.8;
+                font-size: 18px;
+                -webkit-font-smoothing: antialiased;
+            }
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 0;
+                opacity: 0.5;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.5 0 0 0 0 0.42 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+            }
+            main {
+                position: relative;
+                z-index: 1;
+                max-width: var(--content-width);
+                margin: 0 auto;
+                padding: 64px 24px 80px;
+            }
 
-  /* ───────── ヘッダー ───────── */
-  header {
-    position: sticky; top: 0; z-index: 50;
-    background: color-mix(in srgb, var(--paper) 88%, white);
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid var(--line);
-    font-family: var(--ui);
-  }
-  .bar {
-    max-width: 1140px; margin: 0 auto;
-    display: flex; align-items: center; gap: 16px;
-    padding: 10px 20px;
-  }
-  .brand { font-size: 12px; letter-spacing: .18em; color: var(--ink-soft); white-space: nowrap; }
-  .brand b { color: var(--vermilion); font-weight: 600; }
-  .ver { font-size: 10px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--ink-soft); letter-spacing: .1em; }
-  .quiz-count { margin-left: auto; font-size: 12px; color: var(--ink-soft); white-space: nowrap; display: flex; align-items: center; gap: 8px; }
-  .quiz-dots { display: flex; gap: 4px; }
-  .quiz-dots i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--line-strong); display: block; transition: all .3s; }
-  .quiz-dots i.done { background: var(--vermilion); border-color: var(--vermilion); }
-  #scrollbar { height: 2px; background: var(--vermilion); width: 0%; transition: width .1s linear; }
+            /* ───────── 表紙 ───────── */
+            .lesson-header {
+                margin-bottom: 34px;
+            }
+            .eyebrow {
+                font-family: var(--ui);
+                font-size: 12px;
+                letter-spacing: 0.25em;
+                color: var(--vermilion);
+                margin-bottom: 18px;
+            }
+            h1 {
+                font-size: clamp(26px, 4.4vw, 38px);
+                font-weight: 600;
+                line-height: 1.5;
+                letter-spacing: 0.02em;
+                margin-bottom: 14px;
+                text-wrap: balance;
+                word-break: auto-phrase;
+            }
+            .lead {
+                font-size: 1.12em;
+                line-height: 1.9;
+                color: var(--ink);
+                margin-bottom: 30px;
+            }
 
-  /* ───────── 表紙 ───────── */
-  .hero {
-    max-width: 1140px; margin: 0 auto; padding: 72px 24px 10px;
-    display: grid; grid-template-columns: 224px minmax(0,1fr); gap: 48px;
-    position: relative; z-index: 1;
-  }
-  .hero > * { grid-column: 2; max-width: 720px; width: 100%; }
-  .hero .kicker { font-family: var(--ui); font-size: 12px; letter-spacing: .25em; color: var(--vermilion); margin-bottom: 20px; }
-  .hero h1 { font-size: clamp(26px, 4.4vw, 40px); font-weight: 600; line-height: 1.5; letter-spacing: .02em; margin-bottom: 14px; text-wrap: balance; word-break: auto-phrase; }
-  .meta {
-    font-family: var(--ui); font-size: 12.5px; color: var(--ink-soft);
-    display: grid; grid-template-columns: 4.5em minmax(0, 1fr);
-    gap: 9px 16px; align-items: baseline;
-    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    padding: 14px 2px;
-  }
-  .meta b { color: var(--ink); font-weight: 600; }
-  /* 値は 1 行に収め、あふれたら … で省略する。長い著者名や原題はホバー用に title 属性を添えてよい。 */
-  .meta .mv { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .meta a.mv { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 2px; }
-  .lede { margin-top: 30px; font-size: 1.15em; line-height: 1.9; max-width: 680px; }
+            /* ───────── 目次(details で畳む) ───────── */
+            .lesson-toc,
+            .reference-toc {
+                font-family: var(--ui);
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                box-shadow: 0 2px 0 var(--paper-deep);
+                padding: 14px 18px;
+                margin-bottom: 14px;
+            }
+            .lesson-toc summary,
+            .reference-toc summary {
+                cursor: pointer;
+                font-size: 12.5px;
+                letter-spacing: 0.15em;
+                color: var(--ink-soft);
+            }
+            .lesson-toc ol,
+            .reference-toc ol {
+                margin: 12px 0 4px;
+                padding-left: 1.6em;
+                display: grid;
+                gap: 7px;
+                font-size: 13.5px;
+            }
+            .lesson-toc a,
+            .reference-toc a {
+                color: var(--ink-soft);
+                text-decoration: underline;
+                text-decoration-color: var(--line-strong);
+                text-underline-offset: 2px;
+            }
+            .lesson-toc a:hover,
+            .reference-toc a:hover {
+                color: var(--ink);
+            }
+            .lesson-toc a[aria-current="page"],
+            .reference-toc a[aria-current="page"] {
+                color: var(--ink);
+                font-weight: 600;
+                text-decoration: none;
+            }
 
-  /* ───────── レイアウト ───────── */
-  main { position: relative; z-index: 1; }
-  .layout {
-    max-width: 1140px; margin: 0 auto;
-    display: grid; grid-template-columns: 224px minmax(0,1fr);
-    gap: 48px; padding: 0 24px 80px;
-  }
-  article { max-width: 720px; }
+            /* ───────── 本文 ───────── */
+            section {
+                padding-top: 40px;
+            }
+            h2 {
+                font-size: 1.4em;
+                font-weight: 600;
+                line-height: 1.4;
+                letter-spacing: 0.03em;
+                margin-bottom: 0.9em;
+                padding-bottom: 12px;
+                border-bottom: 1px solid var(--line);
+                text-wrap: balance;
+                word-break: auto-phrase;
+            }
+            h3.subhead {
+                font-size: 1.2em;
+                font-weight: 600;
+                line-height: 1.5;
+                margin-top: 1.6em;
+                margin-bottom: 0.5em;
+                letter-spacing: 0.02em;
+            }
+            section p {
+                margin-bottom: 1.4em;
+            }
+            section ul,
+            section ol {
+                margin: 0 0 1.4em 1.5em;
+            }
+            em {
+                font-style: normal;
+                background: linear-gradient(transparent 68%, var(--vermilion-soft) 68%);
+            }
+            code {
+                font-family: var(--mono);
+                font-size: 0.85em;
+                background: var(--paper-deep);
+                border-radius: 6px;
+                padding: 0.1em 0.4em;
+            }
+            /* リンクは用語(.term)と同じ藍色。実線の下線で用語(点線)と区別する。
+     リンクは 2 種類。どちらも藍色の下線で、外部だけ ↗ が付く。
+       内部リンク: vault 内ドキュメントへ。href="obsidian://open?path=<URLエンコードした絶対パス>"。↗ なし・target は付けない。
+       外部リンク: Web 資料へ。href="https://…" target="_blank" rel="noopener noreferrer"。↗ 付き。 */
+            main a {
+                color: var(--indigo);
+                text-decoration: underline;
+                text-underline-offset: 2px;
+            }
+            main a:hover {
+                text-decoration-thickness: 2px;
+            }
+            /* 外部リンク(新しいタブ)にだけアイコンを添えて「vault を出て Web へ行く」印にする。 */
+            main a[target="_blank"]:not([href^="obsidian://"]) {
+                background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22%236b7280%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20class=%22icon%20icon-tabler%20icons-tabler-outline%20icon-tabler-arrow-up-right%22%3E%3Cpath%20stroke=%22none%22%20d=%22M0%200h24v24H0z%22%20fill=%22none%22%20/%3E%3Cpath%20d=%22M17%207l-10%2010%22%20/%3E%3Cpath%20d=%22M8%207l9%200l0%209%22%20/%3E%3C/svg%3E");
+                background-position: right 33%;
+                background-repeat: no-repeat;
+                background-size: 0.7em;
+                padding-right: 0.75em;
+            }
+            .acronym {
+                font-family: var(--ui);
+                font-size: 0.82em;
+                color: var(--ink-soft);
+            }
 
-  /* ───────── 目次 ───────── */
-  nav.mini { position: sticky; top: 76px; align-self: start; font-family: var(--ui); padding-top: 56px; }
-  nav.mini .mini-title,
-  .mobile-toc .mini-title {
-    font-family: var(--ui); font-size: 12px; letter-spacing: .25em;
-    color: var(--ink-soft); margin-bottom: 14px; padding-left: 15px;
-  }
-  nav.mini a,
-  .mobile-toc a {
-    display: block; text-decoration: none; color: var(--ink-soft);
-    font-size: 12px; line-height: 1.5;
-    border-left: 3px solid transparent;
-    padding: 4px 0 4px 12px; margin: 0 0 6px;
-    transition: color .2s ease; position: relative;
-  }
-  nav.mini a .k,
-  .mobile-toc a .k { display: block; font-size: 9.5px; letter-spacing: .18em; color: var(--ink-soft); }
-  nav.mini a.lv1,
-  .mobile-toc a.lv1 { margin-left: 15px; }
-  nav.mini a:hover,
-  .mobile-toc a:hover { color: var(--ink); text-decoration: underline; }
-  nav.mini a.now { border-left-color: var(--vermilion); color: var(--ink); }
-  .mobile-toc { display: none; font-family: var(--ui); margin-top: 34px; max-width: 680px; }
+            /* 注記。誤解しやすい点や補助線に使う。警告は .aside.warning。 */
+            .aside {
+                font-family: var(--ui);
+                font-size: 13.5px;
+                line-height: 1.9;
+                color: var(--ink);
+                border-left: 3px solid var(--indigo);
+                background: var(--indigo-soft);
+                padding: 14px 18px;
+                border-radius: 0 10px 10px 0;
+                margin: 0 0 1.4em;
+            }
+            .aside b {
+                color: var(--indigo);
+            }
+            .aside.warning {
+                border-left-color: var(--vermilion);
+                background: var(--vermilion-soft);
+            }
+            .aside.warning b {
+                color: var(--vermilion);
+            }
 
-  /* ───────── 章 ───────── */
-  section.chapter { padding-top: 56px; }
-  .ch-num {
-    font-family: var(--ui); font-size: 12px;
-    letter-spacing: .25em; color: var(--vermilion);
-    margin-bottom: 10px;
-  }
-  .ch-num::before { content: "CHAPTER "; }
-  section.chapter h2 { font-size: 1.5em; font-weight: 600; line-height: 1.33; letter-spacing: .03em; margin-bottom: 0.9em; padding-bottom: 12px; border-bottom: 1px solid var(--line); max-width: 680px; text-wrap: balance; word-break: auto-phrase; }
-  section.chapter h3.subhead { font-family: var(--text); font-size: 1.25em; font-weight: 600; line-height: 1.5; color: var(--ink); margin-top: 1.6em; margin-bottom: 0.5em; letter-spacing: .02em; }
-  section.chapter p { margin-bottom: 1.4em; max-width: 680px; }
-  section.chapter em { font-style: normal; background: linear-gradient(transparent 68%, var(--vermilion-soft) 68%); }
-  /* article 内のリンクは用語(.term)と同じ藍色。実線の下線で用語(点線)と区別する。
-     .verdict a / #map-detail a は各自のスタイルで上書きされる。外部リンクには下の ↗ が付く。 */
-  article a { color: var(--indigo); text-decoration: underline; text-underline-offset: 2px; }
-  article a:hover { text-decoration-thickness: 2px; }
-  /* 新しいタブで開くリンク(target="_blank")には ↗ を添えて視覚化する。 */
-  a[target="_blank"]::after { content: "\2197"; display: inline-block; font-size: .72em; line-height: 1; vertical-align: super; margin-left: 1px; }
-  .acronym { font-family: var(--ui); font-size: .82em; color: var(--ink-soft); }
-  .aside {
-    font-family: var(--ui); font-size: 13.5px; line-height: 1.9;
-    color: var(--ink);
-    border-left: 3px solid var(--indigo); background: var(--indigo-soft);
-    padding: 14px 18px; border-radius: 0 10px 10px 0;
-    margin: 0 0 1.4em;
-  }
-  .aside b { color: var(--indigo); }
+            /* 用語ポップオーバー */
+            .term {
+                border-bottom: 1.5px dotted var(--indigo);
+                color: var(--indigo);
+                cursor: pointer;
+                position: relative;
+            }
+            .pop {
+                position: absolute;
+                left: 50%;
+                bottom: calc(100% + 10px);
+                transform: translateX(-50%) translateY(4px);
+                width: 264px;
+                z-index: 30;
+                background: var(--ink);
+                color: var(--paper);
+                font-family: var(--ui);
+                font-size: 12.5px;
+                line-height: 1.75;
+                padding: 12px 14px;
+                border-radius: 10px;
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.25s ease;
+                box-shadow: 0 10px 30px rgba(33, 29, 22, 0.25);
+            }
+            .pop::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                border: 7px solid transparent;
+                border-top-color: var(--ink);
+            }
+            .pop .en {
+                display: block;
+                font-size: 11px;
+                color: #b7ae9c;
+                font-style: italic;
+                margin-bottom: 2px;
+            }
+            .term.open .pop {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateX(-50%);
+            }
 
-  /* 用語ポップオーバー */
-  .term { border-bottom: 1.5px dotted var(--indigo); color: var(--indigo); cursor: pointer; position: relative; }
-  .pop {
-    position: absolute; left: 50%; bottom: calc(100% + 10px);
-    transform: translateX(-50%) translateY(4px);
-    width: 264px; z-index: 30;
-    background: var(--ink); color: var(--paper);
-    font-family: var(--ui); font-size: 12.5px; line-height: 1.75;
-    padding: 12px 14px; border-radius: 10px;
-    opacity: 0; pointer-events: none; transition: all .25s ease;
-    box-shadow: 0 10px 30px rgba(33,29,22,.25);
-  }
-  .pop::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--ink); }
-  .pop .en { display: block; font-size: 11px; color: #b7ae9c; font-style: italic; margin-bottom: 2px; }
-  .term.open .pop { opacity: 1; pointer-events: auto; transform: translateX(-50%); }
+            /* ───────── コードブロック ───────── */
+            /* 端末やコマンド、出力例を見せる暗色ブロック。ポップオーバーと同じ暗色系で紙面に馴染ませる。 */
+            .codeblock {
+                font-family: var(--mono);
+                font-size: 13.5px;
+                line-height: 1.7;
+                background: var(--ink);
+                color: var(--paper);
+                border-radius: 12px;
+                box-shadow: 0 2px 0 var(--paper-deep);
+                padding: 16px 18px;
+                margin: 0 0 1.4em;
+                overflow-x: auto;
+                white-space: pre;
+                tab-size: 2;
+            }
+            /* ブロック内の code は暗色地に合わせ、インライン code の明色装飾を打ち消す。 */
+            .codeblock code {
+                background: none;
+                padding: 0;
+                border-radius: 0;
+                font-size: 1em;
+                color: inherit;
+            }
+            /* プレースホルダや強調したいトークン。朱色でコマンドの可変部を示す。 */
+            .codeblock .tok {
+                color: #e8a08c;
+            }
+            /* 任意のラベル(ファイル名やシェル名)。無ければ省略してよい。 */
+            .codeblock-label {
+                font-family: var(--ui);
+                font-size: 12px;
+                letter-spacing: 0.12em;
+                color: var(--ink-soft);
+                margin-bottom: 8px;
+            }
 
-  /* ───────── カード共通(数式・視覚化・図・クイズ) ───────── */
-  .formula, .viz, .figure, .quiz {
-    background: var(--card); border: 1px solid var(--line);
-    border-radius: 14px; margin: 0 0 1.4em;
-    box-shadow: 0 2px 0 var(--paper-deep);
-  }
+            /* ───────── 表 ───────── */
+            .table-frame {
+                overflow-x: auto;
+                margin: 0 0 1.4em;
+                -webkit-overflow-scrolling: touch;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-family: var(--ui);
+                font-size: 13.5px;
+                line-height: 1.65;
+                margin: 0;
+            }
+            th,
+            td {
+                text-align: left;
+                vertical-align: top;
+                padding: 12px 16px;
+                border-bottom: 1px solid var(--line);
+            }
+            thead {
+                background: var(--paper-deep);
+            }
+            thead th {
+                font-size: 12px;
+                letter-spacing: 0.08em;
+                color: var(--ink-soft);
+                font-weight: 600;
+                border-bottom: 1px solid var(--line-strong);
+            }
+            tbody tr:nth-child(even) {
+                background: rgba(239, 232, 216, 0.38);
+            }
+            /* 位置ではなく、HTML で行見出しと明示されたセルだけを強調する。 */
+            tbody th[scope="row"] {
+                color: var(--ink);
+                font-size: inherit;
+                font-weight: 600;
+                letter-spacing: normal;
+            }
 
-  /* 数式カード */
-  .formula { overflow: hidden; }
-  .formula .fx { font-family: var(--mono); font-size: 15px; text-align: center; padding: 22px 16px 18px; letter-spacing: .04em; }
-  .formula .fx sub { font-size: .7em; }
-  .formula button {
-    width: 100%; border: none; border-top: 1px dashed var(--line-strong);
-    background: transparent; font-family: var(--ui); font-size: 12.5px;
-    color: var(--vermilion); padding: 10px; cursor: pointer; letter-spacing: .1em;
-  }
-  .formula button:hover { background: var(--vermilion-soft); }
-  .formula .yaku { display: none; font-family: var(--ui); font-size: 13.5px; padding: 6px 22px 18px; color: var(--ink); line-height: 1.9; }
-  .formula.open .yaku { display: block; }
-  .formula .yaku li { list-style: none; padding: 4px 0; border-bottom: 1px dotted var(--line); }
-  .formula .yaku li:last-child { border-bottom: none; }
-  .formula .yaku code { font-family: var(--mono); color: var(--vermilion); margin-right: 10px; font-size: 12.5px; }
+            /* ───────── クイズ ───────── */
+            .quiz {
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                margin: 0 0 1.4em;
+                box-shadow: 0 2px 0 var(--paper-deep);
+                padding: 24px 26px 20px;
+                position: relative;
+                font-family: var(--ui);
+            }
+            .quiz::before {
+                content: "問 " attr(data-q);
+                position: absolute;
+                top: -13px;
+                left: 20px;
+                background: var(--vermilion);
+                color: var(--paper);
+                font-size: 12px;
+                letter-spacing: 0.15em;
+                padding: 3px 14px;
+                border-radius: 999px;
+            }
+            .quiz h3 {
+                font-family: var(--text);
+                font-size: 16.5px;
+                font-weight: 600;
+                margin: 4px 0 16px;
+                line-height: 1.8;
+            }
+            .quiz .opts {
+                display: grid;
+                gap: 8px;
+            }
+            .quiz .opts button {
+                text-align: left;
+                font-family: var(--ui);
+                font-size: 14px;
+                line-height: 1.7;
+                background: transparent;
+                border: 1px solid var(--line-strong);
+                border-radius: 10px;
+                padding: 11px 14px;
+                cursor: pointer;
+                color: var(--ink);
+                transition: all 0.2s ease;
+            }
+            .quiz .opts button:hover:not(:disabled) {
+                border-color: var(--vermilion);
+                transform: translateX(3px);
+            }
+            .quiz .opts button:disabled {
+                cursor: default;
+                opacity: 0.55;
+            }
+            .quiz .opts button.correct {
+                opacity: 1;
+                border-color: var(--green);
+                background: var(--green-soft);
+                color: var(--green);
+                font-weight: 600;
+            }
+            .quiz .opts button.wrong {
+                opacity: 1;
+                border-color: var(--vermilion);
+                background: var(--vermilion-soft);
+                color: var(--vermilion);
+            }
+            .quiz .kaisetsu {
+                display: none;
+                margin-top: 16px;
+                font-size: 13.5px;
+                line-height: 1.9;
+                color: var(--ink);
+                border-top: 1px dashed var(--line);
+                padding-top: 14px;
+            }
+            /* 正解ラベルを独立行にし、解説を次の行へ回す。 */
+            .quiz .kaisetsu b {
+                display: block;
+                margin-bottom: 2px;
+                color: var(--green);
+                font-weight: 600;
+            }
+            .quiz.answered .kaisetsu {
+                display: block;
+                animation: rise 0.5s ease;
+            }
+            @keyframes rise {
+                from {
+                    opacity: 0;
+                    transform: translateY(8px);
+                }
+                to {
+                    opacity: 1;
+                }
+            }
 
-  /* ───────── 視覚化カード ───────── */
-  .viz { padding: 18px 22px 16px; font-family: var(--ui); }
-  .viz .viz-title { font-size: 12px; letter-spacing: .12em; color: var(--ink-soft); margin-bottom: 16px; }
-  .viz .viz-cap { font-size: 11.5px; color: var(--ink); margin-top: 14px; line-height: 1.8; border-left: 3px solid var(--vermilion); padding: 2px 0 2px 12px; }
+            /* ───────── 図(Mermaid) ───────── */
+            .diagram {
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                box-shadow: 0 2px 0 var(--paper-deep);
+                margin: 0 0 1.4em;
+                padding: 18px 22px 16px;
+                font-family: var(--ui);
+                overflow-x: auto;
+            }
+            .diagram .diagram-title {
+                font-size: 12px;
+                letter-spacing: 0.12em;
+                color: var(--ink-soft);
+                margin-bottom: 12px;
+            }
+            /* 処理前の Mermaid 原文を見せない。描画完了で表示する。 */
+            .mermaid:not([data-processed="true"]) {
+                visibility: hidden;
+            }
+            .diagram.mermaid-unavailable .mermaid {
+                display: none;
+            }
+            .diagram.mermaid-unavailable::after {
+                content: "図を表示できませんでした。";
+                display: block;
+                font-size: 13px;
+                color: var(--ink-soft);
+                padding: 8px 0;
+            }
+            /* 描画に成功した図はクリックで拡大モーダルを開く(.zoomable は JS が付与) */
+            .diagram.zoomable {
+                cursor: zoom-in;
+            }
+            .diagram.zoomable .diagram-title::after {
+                content: "クリックで拡大";
+                float: right;
+                font-size: 11px;
+                letter-spacing: 0.06em;
+            }
 
-  /* 01: ふたつのループ */
-  .loops { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .loop { border: 1.5px solid var(--line-strong); border-radius: 10px; padding: 14px 14px 12px; position: relative; }
-  .loop.evolve { border-color: var(--vermilion); }
-  .loop .lp-t { font-size: 12.5px; font-weight: 600; text-align: center; }
-  .loop .lp-s { font-size: 10.5px; color: var(--ink-soft); text-align: center; display: block; margin-bottom: 10px; }
-  .loop .lchip { font-size: 11px; text-align: center; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--paper); padding: 5px 6px; line-height: 1.5; }
-  .loop .lchip.human { border-color: var(--indigo); color: var(--indigo); background: var(--indigo-soft); }
-  .loop .lchip.auto { border-color: var(--vermilion); color: var(--vermilion); background: var(--vermilion-soft); }
-  .loop .dn { text-align: center; font-size: 11px; color: var(--ink-soft); line-height: 1.3; }
-  .loop .back { text-align: center; font-size: 10.5px; color: var(--ink-soft); margin-top: 7px; letter-spacing: .06em; }
+            /* 本文の読みやすい行長は保ち、比較・俯瞰する部品だけ左右へ張り出す。 */
+            .table-frame,
+            .diagram {
+                width: min(var(--wide-content-width), calc(100vw - 32px));
+                margin-left: 50%;
+                transform: translateX(-50%);
+            }
 
-  /* 02: 対応図 */
-  .mapping { display: grid; gap: 8px; }
-  .mhead { display: grid; grid-template-columns: 1fr 34px 1fr; gap: 6px; font-size: 10.5px; letter-spacing: .12em; color: var(--ink-soft); text-align: center; }
-  .mrow { display: grid; grid-template-columns: 1fr 34px 1fr; align-items: center; gap: 6px; cursor: default; }
-  .mcell { border: 1px solid var(--line-strong); border-radius: 6px; padding: 8px 10px; font-size: 12px; text-align: center; background: var(--paper); line-height: 1.6; transition: all .2s ease; }
-  .mcell small { display: block; font-size: 10px; color: var(--ink-soft); }
-  .mrow .eq { text-align: center; color: var(--ink-soft); font-size: 14px; }
-  .mrow:hover .mcell { border-color: var(--vermilion); background: var(--vermilion-soft); }
+            /* ───────── 図の拡大モーダル(DOM は JS が生成) ───────── */
+            dialog.diagram-modal {
+                position: fixed;
+                inset: 0;
+                margin: auto; /* 画面中央に固定 */
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                background: var(--card);
+                padding: 0;
+                width: min(98vw, 1440px);
+                height: min(94vh, 1000px);
+                box-shadow: 0 18px 50px rgba(33, 29, 22, 0.3);
+            }
+            dialog.diagram-modal[open] {
+                display: flex;
+                flex-direction: column;
+            }
+            dialog.diagram-modal::backdrop {
+                background: rgba(33, 29, 22, 0.55);
+            }
+            .dm-bar {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 14px;
+                border-bottom: 1px solid var(--line);
+                font-family: var(--ui);
+            }
+            .dm-title {
+                font-size: 12px;
+                letter-spacing: 0.12em;
+                color: var(--ink-soft);
+                margin-right: auto;
+            }
+            .dm-bar button {
+                font-family: var(--ui);
+                font-size: 12.5px;
+                min-width: 34px;
+                height: 30px;
+                padding: 0 10px;
+                border-radius: 999px;
+                border: 1.5px solid var(--line-strong);
+                background: transparent;
+                color: var(--ink-soft);
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .dm-bar button:hover {
+                border-color: var(--vermilion);
+                color: var(--vermilion);
+            }
+            .dm-stage {
+                flex: 1;
+                min-height: 0;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: grab;
+                touch-action: none;
+            }
+            .dm-stage.dragging {
+                cursor: grabbing;
+            }
+            .dm-canvas {
+                flex: none;
+                transform-origin: center;
+            }
 
-  /* 03: 軌跡の解剖図 */
-  .traj-chain { display: flex; align-items: center; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
-  .estep { border: 1.5px solid var(--line-strong); border-radius: 6px; background: var(--paper); padding: 5px 12px; font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
-  .estep.now { border-color: var(--vermilion); background: var(--vermilion-soft); color: var(--vermilion); font-weight: 600; }
-  .traj-chain .ar { color: var(--ink-soft); font-size: 13px; }
-  .anatomy { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
-  .slot { border: 1px solid var(--line-strong); border-radius: 6px; background: var(--paper); padding: 8px 4px; text-align: center; }
-  .slot code { font-family: var(--mono); font-size: 12px; color: var(--vermilion); display: block; }
-  .slot span { font-size: 10px; color: var(--ink-soft); line-height: 1.5; display: block; margin-top: 3px; }
-  .slot.late { border-style: dashed; border-color: var(--indigo); }
-  .late-note { display: flex; justify-content: flex-end; margin-top: 8px; }
-  .late-chip {
-    font-size: 10.5px; color: var(--indigo); background: var(--indigo-soft);
-    border: 1px dashed var(--indigo); border-radius: 6px; padding: 4px 10px;
-  }
+            /* ───────── 出典・関連リンク ───────── */
+            .source-list {
+                font-family: var(--ui);
+                font-size: 13.5px;
+                line-height: 2;
+                margin: 0 0 1.4em 1.5em;
+            }
 
-  /* 05: 介入の階段 */
-  .ladder { display: flex; align-items: flex-end; gap: 8px; padding-top: 6px; }
-  .rung { flex: 1; border: 1.5px solid var(--line-strong); border-bottom-width: 3px; border-radius: 10px 10px 0 0; padding: 8px 6px; text-align: center; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; background: var(--paper); }
-  .rung .rn { font-size: 11.5px; font-weight: 600; line-height: 1.5; }
-  .rung .rc { font-size: 9.5px; color: var(--ink-soft); line-height: 1.5; }
-  .rung.r1 { height: 74px;  border-color: var(--green); background: var(--green-soft); }
-  .rung.r2 { height: 104px; }
-  .rung.r3 { height: 134px; }
-  .rung.r4 { height: 164px; border-color: var(--vermilion); background: var(--vermilion-soft); }
-  .ladder-axis { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--ink-soft); margin-top: 8px; letter-spacing: .06em; }
+            @media (max-width: 640px) {
+                body {
+                    font-size: 16px;
+                }
+                main {
+                    padding: 44px 18px 60px;
+                }
+                .table-frame,
+                .diagram {
+                    width: 100%;
+                    margin-left: 0;
+                    transform: none;
+                }
+                th,
+                td {
+                    padding: 8px;
+                }
+            }
 
-  /* ───────── 図カード(図を日本語で読む) ───────── */
-  .figure { overflow: hidden; }
-  .figure .fig-title { font-family: var(--ui); font-size: 12px; letter-spacing: .12em; color: var(--ink-soft); padding: 14px 20px 0; }
-  .fig { display: grid; grid-template-columns: 1fr 74px 1.15fr 74px 1fr; gap: 10px; align-items: center; padding: 18px 20px 8px; font-family: var(--ui); }
-  .fbox { border: 1.5px solid var(--line-strong); border-radius: 10px; background: var(--paper); padding: 10px; transition: all .3s ease; }
-  .fbox .fb-t { font-size: 12px; font-weight: 600; text-align: center; margin-bottom: 8px; line-height: 1.5; }
-  .fbox .fb-s { font-size: 10px; color: var(--ink-soft); text-align: center; display: block; margin-top: -6px; margin-bottom: 8px; }
-  .chip { font-size: 10.5px; text-align: center; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 6px; background: var(--card); padding: 4px 6px; margin: 4px 0; line-height: 1.5; transition: all .3s ease; }
-  .farrow { font-size: 10px; color: var(--ink-soft); text-align: center; line-height: 1.6; padding: 6px 0; transition: all .3s ease; border-radius: 6px; }
-  .farrow .ar { display: block; font-size: 15px; letter-spacing: -1px; color: var(--ink-soft); transition: all .3s ease; }
-  .fstack { display: grid; gap: 2px; }
-  .fstack .dn { text-align: center; font-size: 11px; color: var(--ink-soft); line-height: 1; }
-  .hl, .hl .chip { border-color: var(--vermilion) !important; background: var(--vermilion-soft) !important; }
-  .hl .fb-t, .hl.farrow, .hl .ar { color: var(--vermilion) !important; }
-  .hl { box-shadow: 0 0 0 3px color-mix(in srgb, var(--vermilion) 18%, transparent); }
-  .fig-cap { font-family: var(--ui); font-size: 11px; color: var(--ink-soft); padding: 8px 20px 14px; }
-  .fig-guide { border-top: 1px dashed var(--line); padding: 14px 20px 18px; font-family: var(--ui); }
-  .fig-guide .fg-label { font-size: 12.5px; color: var(--vermilion); letter-spacing: .1em; margin-bottom: 10px; }
-  .fig-steps { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-  .fig-steps button {
-    font-family: var(--ui); font-size: 12.5px;
-    width: 34px; height: 34px; border-radius: 50%;
-    border: 1.5px solid var(--line-strong); background: transparent; color: var(--ink-soft);
-    cursor: pointer; transition: all .2s ease;
-  }
-  .fig-steps button:hover { border-color: var(--vermilion); color: var(--vermilion); }
-  .fig-steps button.on { background: var(--vermilion); border-color: var(--vermilion); color: var(--paper); }
-  #fig-text { font-size: 13.5px; line-height: 1.9; color: var(--ink); min-height: 3.6em; }
-  /* ステップのラベル(① …)を独立行にし、説明を次の行へ回す。 */
-  #fig-text b { display: block; margin-bottom: 2px; }
+            /* ───────── 下読み用の外枠 ───────── */
+            .site-header {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                background: color-mix(in srgb, var(--paper) 88%, white);
+                backdrop-filter: blur(6px);
+                border-bottom: 1px solid var(--line);
+                font-family: var(--ui);
+            }
+            .bar {
+                max-width: 1140px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                padding: 10px 20px;
+            }
+            .brand {
+                font-size: 12px;
+                letter-spacing: 0.18em;
+                color: var(--ink-soft);
+                white-space: nowrap;
+            }
+            .brand b {
+                color: var(--vermilion);
+                font-weight: 600;
+            }
+            .quiz-count {
+                margin-left: auto;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--ink-soft);
+                font-size: 12px;
+                white-space: nowrap;
+            }
+            .quiz-dots {
+                display: flex;
+                gap: 4px;
+            }
+            .quiz-dots i {
+                display: block;
+                width: 8px;
+                height: 8px;
+                border: 1.5px solid var(--line-strong);
+                border-radius: 50%;
+            }
+            .quiz-dots i.done {
+                background: var(--vermilion);
+                border-color: var(--vermilion);
+            }
+            #scrollbar {
+                width: 0;
+                height: 2px;
+                background: var(--vermilion);
+            }
+            .hero {
+                position: relative;
+                z-index: 1;
+                max-width: 1140px;
+                margin: 0 auto;
+                padding: 72px 24px 10px;
+                display: grid;
+                grid-template-columns: 224px minmax(0, 1fr);
+                gap: 48px;
+            }
+            .hero > * {
+                grid-column: 2;
+                width: 100%;
+                max-width: 720px;
+            }
+            .hero .kicker {
+                margin-bottom: 20px;
+                color: var(--vermilion);
+                font-family: var(--ui);
+                font-size: 12px;
+                letter-spacing: 0.25em;
+            }
+            .meta {
+                display: grid;
+                grid-template-columns: 4.5em minmax(0, 1fr);
+                gap: 9px 16px;
+                align-items: baseline;
+                padding: 14px 2px;
+                border-top: 1px solid var(--line);
+                border-bottom: 1px solid var(--line);
+                color: var(--ink-soft);
+                font-family: var(--ui);
+                font-size: 12.5px;
+            }
+            .meta b {
+                color: var(--ink);
+                font-weight: 600;
+            }
+            .meta .mv {
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .meta a.mv {
+                color: var(--ink);
+                text-decoration: underline;
+                text-decoration-color: var(--line-strong);
+                text-underline-offset: 2px;
+            }
+            .lede {
+                max-width: 680px;
+                margin-top: 30px;
+                font-size: 1.15em;
+                line-height: 1.9;
+            }
+            main.layout {
+                max-width: 1140px;
+                margin: 0 auto;
+                padding: 0 24px 80px;
+                display: grid;
+                grid-template-columns: 224px minmax(0, 1fr);
+                gap: 48px;
+            }
+            article {
+                max-width: 720px;
+            }
+            nav.mini {
+                position: sticky;
+                top: 76px;
+                align-self: start;
+                padding-top: 56px;
+                font-family: var(--ui);
+            }
+            nav.mini .mini-title,
+            .mobile-toc .mini-title {
+                margin-bottom: 14px;
+                padding-left: 15px;
+                color: var(--ink-soft);
+                font-size: 12px;
+                letter-spacing: 0.25em;
+            }
+            nav.mini a,
+            .mobile-toc a {
+                display: block;
+                margin-bottom: 6px;
+                padding: 4px 0 4px 12px;
+                border-left: 3px solid transparent;
+                color: var(--ink-soft);
+                font-size: 12px;
+                line-height: 1.5;
+                text-decoration: none;
+            }
+            nav.mini a .k,
+            .mobile-toc a .k {
+                display: block;
+                color: var(--ink-soft);
+                font-size: 9.5px;
+                letter-spacing: 0.18em;
+            }
+            nav.mini a.now,
+            .mobile-toc a.now {
+                border-left-color: var(--vermilion);
+                color: var(--ink);
+            }
+            .mobile-toc {
+                display: none;
+                margin-top: 34px;
+                font-family: var(--ui);
+            }
+            section.chapter {
+                padding-top: 56px;
+                scroll-margin-top: 76px;
+            }
+            .ch-num {
+                margin-bottom: 10px;
+                color: var(--vermilion);
+                font-family: var(--ui);
+                font-size: 12px;
+                letter-spacing: 0.25em;
+            }
+            .ch-num::before {
+                content: "CHAPTER ";
+            }
 
-  /* ───────── クイズ ───────── */
-  .quiz {
-    padding: 24px 26px 20px; position: relative;
-    font-family: var(--ui);
-  }
-  .quiz::before {
-    content: "問 " attr(data-q);
-    position: absolute; top: -13px; left: 20px;
-    background: var(--vermilion); color: var(--paper);
-    font-size: 12px; letter-spacing: .15em;
-    padding: 3px 14px; border-radius: 999px;
-  }
-  .quiz h3 { font-family: var(--text); font-size: 16.5px; font-weight: 600; margin: 4px 0 16px; line-height: 1.8; }
-  .quiz .opts { display: grid; gap: 8px; }
-  .quiz .opts button {
-    text-align: left; font-family: var(--ui); font-size: 14px; line-height: 1.7;
-    background: transparent; border: 1px solid var(--line-strong); border-radius: 10px;
-    padding: 11px 14px; cursor: pointer; color: var(--ink);
-    transition: all .2s ease;
-  }
-  .quiz .opts button:hover:not(:disabled) { border-color: var(--vermilion); transform: translateX(3px); }
-  .quiz .opts button:disabled { cursor: default; opacity: .55; }
-  .quiz .opts button.correct { opacity: 1; border-color: var(--green); background: var(--green-soft); color: var(--green); font-weight: 600; }
-  .quiz .opts button.wrong { opacity: 1; border-color: var(--vermilion); background: var(--vermilion-soft); color: var(--vermilion); }
-  .quiz .kaisetsu { display: none; margin-top: 16px; font-size: 13.5px; line-height: 1.9; color: var(--ink); border-top: 1px dashed var(--line); padding-top: 14px; }
-  /* 正解ラベルを独立行にし、解説を次の行へ回す(#fig-text b と同じ扱い)。 */
-  .quiz .kaisetsu b { display: block; margin-bottom: 2px; color: var(--green); font-weight: 600; }
-  .quiz.answered .kaisetsu { display: block; animation: rise .5s ease; }
-  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
+            /* 文書種別ごとの心像図。生成時は該当する1種類だけを残す。 */
+            .map-patterns {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-bottom: 1.4em;
+                font-family: var(--ui);
+            }
+            .map-pattern {
+                min-width: 0;
+                padding: 22px;
+                border-radius: 14px;
+                background: var(--card);
+                box-shadow: 0 2px 0 var(--paper-deep);
+            }
+            .pattern-question {
+                margin-bottom: 2px;
+                color: var(--ink);
+                font-size: 13px;
+                font-weight: 600;
+                line-height: 1.6;
+            }
+            .pattern-kind {
+                margin-bottom: 13px;
+                color: var(--vermilion);
+                font-size: 10px;
+                letter-spacing: 0.15em;
+            }
+            .pattern-flow {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 190px;
+            }
+            .pattern-stack {
+                display: grid;
+                gap: 6px;
+                width: 100%;
+            }
+            .pattern-row {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+                min-width: 0;
+            }
+            .pattern-node {
+                min-width: 0;
+                min-height: 76px;
+                padding: 10px 12px;
+                border: 1px solid var(--line-strong);
+                border-radius: 10px;
+                background: var(--paper);
+                color: var(--ink);
+                font: inherit;
+                cursor: pointer;
+                appearance: none;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+            .pattern-node.root {
+                border-color: var(--ink);
+                background: var(--ink);
+                color: var(--paper);
+            }
+            .pattern-node.wide {
+                width: min(300px, 86%);
+            }
+            .pattern-node.grow {
+                flex: 1;
+            }
+            .pattern-node .node-label {
+                display: block;
+                margin-bottom: 5px;
+                color: var(--ink-soft);
+                font-size: 10px;
+                font-weight: 400;
+                letter-spacing: 0.1em;
+                line-height: 1.3;
+            }
+            .pattern-node .node-text {
+                display: block;
+                font-size: 12.5px;
+                font-weight: 600;
+                line-height: 1.7;
+            }
+            .pattern-node.root .node-label {
+                color: #b7ae9c;
+            }
+            .pattern-node:hover,
+            .pattern-node:focus-visible {
+                border-color: var(--vermilion);
+                outline: none;
+                transform: translateY(-1px);
+            }
+            .pattern-node.on {
+                border-color: var(--vermilion);
+                background: var(--vermilion-soft);
+            }
+            .pattern-node.root.on {
+                background: var(--ink);
+                box-shadow: 0 0 0 2px var(--vermilion);
+            }
+            .pattern-detail {
+                display: none;
+                margin-top: 18px;
+                padding: 22px 24px;
+                border-radius: 12px;
+                background: var(--paper);
+                box-shadow: 0 2px 0 var(--paper-deep);
+            }
+            .pattern-detail.show {
+                display: block;
+            }
+            .pattern-detail .detail-kind {
+                margin-bottom: 8px;
+                color: var(--vermilion);
+                font-size: 10px;
+                letter-spacing: 0.14em;
+            }
+            .pattern-detail h3 {
+                margin: 0 0 8px;
+                font-family: var(--serif);
+                font-size: 18px;
+            }
+            .pattern-detail p {
+                margin: 0 0 12px;
+                font-family: var(--serif);
+                font-size: 14px;
+            }
+            .pattern-detail a {
+                color: var(--vermilion);
+                font-size: 13px;
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+            .pattern-arrow {
+                flex: none;
+                color: var(--ink-soft);
+                font-size: 13px;
+                line-height: 1;
+            }
+            .pattern-down {
+                color: var(--ink-soft);
+                font-size: 12px;
+                line-height: 1;
+                text-align: center;
+            }
+            .pattern-fork {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+            }
+            .pattern-fork.two {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .pattern-note {
+                padding: 5px 8px;
+                border-left: 3px solid var(--indigo);
+                color: var(--ink);
+                font-size: 10.5px;
+                line-height: 1.5;
+            }
+            @media (max-width: 640px) {
+                .map-pattern {
+                    padding: 16px;
+                }
+                .pattern-flow {
+                    min-height: 0;
+                }
+                .pattern-fork,
+                .pattern-fork.two {
+                    grid-template-columns: 1fr;
+                }
+            }
 
-  /* ───────── 心像図(本文埋め込み) ───────── */
-  .map-hint { font-family: var(--ui); font-size: 12.5px; color: var(--ink-soft); margin-bottom: 26px; letter-spacing: .08em; }
-  .map-stage { position: relative; }
-  #wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  #wires path { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
-  .map-grid { display: grid; gap: 34px; position: relative; }
-  .map-row { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
-  .node {
-    font-family: var(--ui); cursor: pointer;
-    background: var(--card); border: 1.5px solid var(--line-strong); border-radius: 14px;
-    padding: 12px 16px; max-width: 220px; text-align: center;
-    transition: all .25s ease; position: relative; z-index: 2;
-  }
-  .node .tag { font-size: 10px; letter-spacing: .2em; color: var(--ink-soft); display: block; margin-bottom: 3px; }
-  .node .t { font-family: var(--text); font-size: 13.5px; font-weight: 600; line-height: 1.6; }
-  .node:hover { transform: translateY(-3px); border-color: var(--ink-soft); box-shadow: 0 8px 20px rgba(33,29,22,.08); }
-  .node.on { border-color: var(--vermilion); background: var(--vermilion-soft); }
-  .node.root { border-color: var(--ink); background: var(--ink); }
-  .node.root .t { color: var(--paper); font-size: 14.5px; }
-  .node.root .tag { color: #b7ae9c; }
-  #map-detail { margin-top: 30px; background: var(--card); border-radius: 14px; padding: 22px 26px; display: none; font-family: var(--ui); }
-  #map-detail.show { display: block; animation: rise .45s ease; }
-  #map-detail .dk { font-size: 11px; letter-spacing: .25em; color: var(--vermilion); margin-bottom: 8px; }
-  #map-detail h3 { font-family: var(--text); font-size: 18px; margin-bottom: 8px; }
-  #map-detail p { font-size: 13.5px; line-height: 1.95; color: var(--ink); margin-bottom: 12px; }
-  #map-detail a { font-size: 13px; color: var(--vermilion); text-decoration: none; border-bottom: 1px solid var(--vermilion); }
+            /* 下読み固有の意味づけ */
+            .aside.connection {
+                border-left-color: var(--green);
+                background: var(--green-soft);
+            }
+            .aside.connection b {
+                color: var(--green);
+            }
+            .aside.viewpoint {
+                border-left-color: var(--vermilion);
+                background: var(--vermilion-soft);
+            }
+            .aside.viewpoint b {
+                color: var(--vermilion);
+            }
+            .formula {
+                margin-bottom: 1.4em;
+                overflow: hidden;
+                border-radius: 14px;
+                background: var(--card);
+            }
+            .formula .fx {
+                padding: 22px 16px 18px;
+                font-family: var(--mono);
+                font-size: 15px;
+                text-align: center;
+            }
+            .formula button {
+                width: 100%;
+                padding: 10px;
+                border: 0;
+                border-top: 1px dashed var(--line-strong);
+                background: transparent;
+                color: var(--vermilion);
+                cursor: pointer;
+                font-family: var(--ui);
+            }
+            .formula .yaku {
+                display: none;
+                padding: 6px 22px 18px;
+                font-family: var(--ui);
+                font-size: 13.5px;
+            }
+            .formula.open .yaku {
+                display: block;
+            }
+            .sim-steps {
+                display: flex;
+                gap: 6px;
+                margin-bottom: 16px;
+                flex-wrap: wrap;
+            }
+            .sim-steps button {
+                padding: 6px 12px;
+                border: 1.5px solid var(--line-strong);
+                border-radius: 10px;
+                background: transparent;
+                color: var(--ink-soft);
+                cursor: pointer;
+                font-family: var(--ui);
+                font-size: 10.5px;
+                line-height: 1.5;
+                text-align: left;
+                transition: all 0.2s;
+            }
+            .sim-steps button b {
+                display: block;
+                font-size: 11.5px;
+                letter-spacing: 0.04em;
+            }
+            .sim-steps button.on {
+                border-color: var(--ink);
+                background: var(--ink);
+                color: var(--paper);
+            }
+            .sim-card {
+                display: none;
+            }
+            .sim-card.on {
+                display: block;
+                animation: rise 0.4s ease;
+            }
+            .sim-card .nar {
+                margin-bottom: 14px;
+                font-family: var(--text);
+                font-size: 14.5px;
+                line-height: 1.85;
+            }
+            .viz {
+                margin-bottom: 1.4em;
+                padding: 18px 22px 16px;
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                background: var(--card);
+                box-shadow: 0 2px 0 var(--paper-deep);
+                font-family: var(--ui);
+            }
+            .viz .viz-title {
+                margin-bottom: 16px;
+                color: var(--ink-soft);
+                font-size: 12px;
+                letter-spacing: 0.12em;
+            }
+            .data-card {
+                margin-bottom: 12px;
+                padding: 14px 18px;
+                overflow-x: auto;
+                border-radius: 10px;
+                background: #2a2620;
+                color: #e8e0cf;
+                font-family: var(--mono);
+                font-size: 11px;
+                line-height: 1.85;
+                white-space: normal;
+            }
+            .data-row {
+                display: grid;
+                grid-template-columns: minmax(112px, 0.38fr) minmax(0, 1fr);
+                gap: 12px;
+                align-items: baseline;
+                padding: 3px 0;
+                border-bottom: 1px solid rgba(232, 224, 207, 0.09);
+            }
+            .data-row:last-child {
+                border-bottom: 0;
+            }
+            .data-row code {
+                min-width: 0;
+                padding: 0;
+                overflow-wrap: anywhere;
+                border-radius: 0;
+                background: transparent;
+                color: #e8e0cf;
+                font: inherit;
+            }
+            .data-card .dk2 {
+                color: #e08870;
+            }
+            .sim-note {
+                padding: 2px 0 2px 12px;
+                border-left: 3px solid var(--vermilion);
+                color: var(--ink);
+                font-family: var(--ui);
+                font-size: 12px;
+                line-height: 1.9;
+            }
+            .gloss {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 1.4em;
+                font-family: var(--ui);
+            }
+            .gitem {
+                padding: 12px 14px;
+                border-radius: 10px;
+                background: var(--card);
+            }
+            .gitem .gt {
+                font-size: 13.5px;
+                font-weight: 600;
+            }
+            .gitem .ge {
+                margin-left: 8px;
+                color: var(--ink-soft);
+                font-size: 11px;
+            }
+            .gitem p {
+                margin: 4px 0 0;
+                font-size: 12.5px;
+            }
+            .verdict {
+                margin-top: 3em;
+                padding: 30px;
+                border-radius: 14px;
+                background: var(--ink);
+                color: var(--paper);
+                font-family: var(--ui);
+            }
+            .verdict .k {
+                margin-bottom: 10px;
+                color: var(--vermilion-soft);
+                font-size: 11px;
+                letter-spacing: 0.25em;
+            }
+            .verdict h3 {
+                margin-bottom: 10px;
+                font-size: 20px;
+            }
+            .verdict p {
+                margin-bottom: 1em;
+                color: #e6dfd0;
+                font-size: 13.5px;
+            }
+            .verdict a {
+                color: var(--paper);
+            }
+            footer {
+                position: relative;
+                z-index: 1;
+                padding: 30px 20px 44px;
+                color: var(--ink-soft);
+                font-family: var(--ui);
+                font-size: 11.5px;
+                letter-spacing: 0.08em;
+                text-align: center;
+            }
 
-  /* ───────── 用語集 ───────── */
-  .gloss { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: var(--ui); }
-  .gitem { background: var(--card); border-radius: 10px; padding: 12px 14px; }
-  .gitem .gt { font-weight: 600; font-size: 13.5px; }
-  .gitem .ge { font-size: 11px; color: var(--ink-soft); font-style: italic; margin-left: 8px; }
-  .gitem p { font-size: 12.5px; color: var(--ink); line-height: 1.85; margin: 4px 0 0 !important; }
-  @media (max-width: 640px) { .gloss { grid-template-columns: 1fr; } }
+            @media (max-width: 880px) {
+                .hero,
+                main.layout {
+                    grid-template-columns: 1fr;
+                    gap: 0;
+                }
+                .hero > * {
+                    grid-column: 1;
+                }
+                nav.mini {
+                    display: none;
+                }
+                .mobile-toc {
+                    display: block;
+                }
+            }
+            @media (max-width: 640px) {
+                .bar {
+                    padding: 10px 14px;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
+                .brand .sub {
+                    display: none;
+                }
+                .quiz-count {
+                    margin-left: auto;
+                }
+                .hero {
+                    padding: 48px 18px 10px;
+                }
+                main.layout {
+                    padding: 0 18px 60px;
+                }
+                .gloss {
+                    grid-template-columns: 1fr;
+                }
+            }
+            @media (max-width: 520px) {
+                .data-row {
+                    grid-template-columns: 1fr;
+                    gap: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="bar">
+                <div class="brand">
+                    <b>下読み</b> <span class="sub">｜ 〔文書の短い名前〕</span>
+                </div>
+                <!-- #qdots の i 数は .quiz の数と一致させる。 -->
+                <div class="quiz-count">
+                    <span>理解チェック <b id="qc">0</b>/1</span>
+                    <span class="quiz-dots" id="qdots"><i></i></span>
+                </div>
+            </div>
+            <div id="scrollbar"></div>
+        </header>
 
-  /* ───────── 締めのカード ───────── */
-  .verdict { margin: 3em 0 0; padding: 30px 30px; border: 1.5px solid var(--ink); border-radius: 14px; background: var(--ink); color: var(--paper); font-family: var(--ui); }
-  .verdict .k { font-size: 11px; letter-spacing: .25em; color: var(--vermilion-soft); margin-bottom: 10px; }
-  .verdict h3 { font-family: var(--text); font-size: 20px; margin-bottom: 10px; }
-  .verdict p { font-size: 13.5px; line-height: 1.9; color: #cfc8b8; margin-bottom: 1em !important; }
-  .verdict p:last-child { margin-bottom: 0 !important; }
-  .verdict p b { color: var(--paper); font-weight: 600; }
-  .verdict a { color: var(--paper); text-decoration: underline; text-underline-offset: 3px; }
-
-  footer {
-    font-family: var(--ui); font-size: 11.5px; color: var(--ink-soft);
-    text-align: center; padding: 30px 20px 44px; letter-spacing: .08em;
-    position: relative; z-index: 1;
-  }
-
-  @media (max-width: 880px) {
-    .hero { grid-template-columns: 1fr; gap: 0; }
-    .hero > * { grid-column: 1; }
-    .layout { grid-template-columns: 1fr; gap: 0; }
-    nav.mini { display: none; }
-    .mobile-toc { display: block; }
-    .bar { padding: 10px 14px; gap: 10px; }
-    .brand span.sub { display: none; }
-    .fig { grid-template-columns: 1fr; }
-    .farrow .ar { transform: rotate(90deg); display: inline-block; }
-    .loops { grid-template-columns: 1fr; }
-    .anatomy { grid-template-columns: repeat(3, 1fr); }
-  }
-
-  /* ── v4: ワークトエグザンプル(worked example) ── */
-  .sim-steps { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-  .sim-steps button {
-    font-family: var(--ui); font-size: 10.5px; padding: 6px 12px; border-radius: 10px;
-    border: 1.5px solid var(--line-strong); background: transparent; color: var(--ink-soft);
-    cursor: pointer; transition: all .2s; line-height: 1.5; text-align: left;
-  }
-  .sim-steps button b { display: block; font-size: 11.5px; letter-spacing: .04em; }
-  .sim-steps button.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-  .sim-steps button:hover:not(.on) { border-color: var(--vermilion); color: var(--vermilion); }
-  .sim-card { display: none; }
-  .sim-card.on { display: block; animation: rise .4s ease; }
-  .sim-card .nar { font-family: var(--text); font-size: 14.5px; line-height: 1.85; margin-bottom: 14px; }
-  .data-card {
-    background: #2a2620; color: #e8e0cf; border-radius: 10px; padding: 14px 16px;
-    font-family: var(--mono); font-size: 11px; line-height: 1.85;
-    overflow-x: auto; white-space: pre; margin-bottom: 12px;
-  }
-  .data-card .dk2 { color: #e08870; }
-  .data-card .dc { color: #a89e85; }
-  .data-card .dg { color: #9fc4a4; }
-  .sim-note { font-family: var(--ui); font-size: 12px; color: var(--ink); line-height: 1.9; border-left: 3px solid var(--vermilion); padding: 2px 0 2px 12px; }
-  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-  .stat { border-radius: 10px; background: var(--paper); padding: 10px 6px; text-align: center; font-family: var(--ui); }
-  .stat .sv { font-size: 22px; font-weight: 600; color: var(--vermilion); }
-  .stat .sl { font-size: 10px; color: var(--ink-soft); line-height: 1.55; }
-  .bar-wrap { background: var(--paper-deep); border-radius: 6px; height: 15px; overflow: hidden; margin: 5px 0 3px; }
-  .bar-fill { height: 100%; background: var(--vermilion); border-radius: 6px; }
-  .replay-dots { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
-  .rdot { width: 17px; height: 17px; border-radius: 50%; }
-  .rdot.ok { background: var(--green-soft); border: 1.5px solid var(--green); }
-  .rdot.ng { background: var(--vermilion-soft); border: 1.5px solid var(--vermilion); }
-  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: var(--ui); font-size: 11.5px; margin-bottom: 12px; }
-  .ba > div { border-radius: 10px; padding: 10px 12px; background: var(--paper); }
-</style>
-</head>
-<body>
-
-<header>
-  <div class="bar">
-    <div class="brand"><b>下読み</b> <span class="sub">｜ 〔文書の短い名前〕</span></div>
-    <!-- #qdots の <i> 数は .quiz ブロック数と一致させる。 -->
-    <div class="quiz-count">
-      <span>理解チェック <b id="qc">0</b>/1</span>
-      <span class="quiz-dots" id="qdots"><i></i></span>
-    </div>
-  </div>
-  <div id="scrollbar"></div>
-</header>
-
-<div class="hero">
-  <!-- 文書ごとに 1 回だけ置く表紙。mobile-toc は JS が nav.mini から複製して埋める。 -->
-  <div class="kicker">〔文書種別〕 ─ 読了目安 〔N〕分</div>
-  <h1>〔文書タイトル〕</h1>
-  <!-- 出典メタ。ラベル + 値の 2 列グリッド。値は 1 行で省略される。原典は原文へのリンク。 -->
-  <div class="meta">
-    <b>原典</b><a class="mv" href="〔原典リンク〕" target="_blank" rel="noopener noreferrer">〔原典のタイトル・識別子〕</a>
-    <b>著者</b><span class="mv">〔著者・組織〕</span>
-    <b>分野</b><span class="mv">〔分野・カテゴリ〕</span>
-  </div>
-  <p class="lede">〔読者の言葉で書き直したリード文〕</p>
-  <nav class="mobile-toc" aria-label="目次">
-    <div class="mini-title">目次</div>
-    <div class="mobile-toc-links"></div>
-  </nav>
-</div>
-
-<div class="layout">
-  <nav class="mini">
-    <div class="mini-title">目次</div>
-    <!-- data-s は対応する section id と一致させる。<span class="k"> は章の役割を短く示す。 -->
-    <a href="#s0" data-s="s0"><span class="k">OVERVIEW</span>全体の地図</a>
-    <a href="#s1" data-s="s1"><span class="k">〔役割〕</span>〔章タイトル〕</a>
-    <div class="rail">
-      <a href="#s1" data-s="s1" class="lv1"><span class="k">〔下位役割〕</span>〔下位章タイトル〕</a>
-    </div>
-  </nav>
-
-  <article>
-
-    <section class="chapter" id="s0">
-      <div class="ch-num">00</div>
-      <h2>まず、全体の地図</h2>
-      <p class="map-hint">〔読み始める前に掴ませたい全体像の説明〕</p>
-      <!-- map-row は階層ごとに繰り返す。node の data-d は MAP と WIRES のキーに一致させる。 -->
-      <div class="map-stage">
-        <svg id="wires"></svg>
-        <div class="map-grid">
-          <div class="map-row">
-            <div class="node root" data-d="root"><span class="tag">〔中心〕</span><span class="t">〔中心ノードの要約〕</span></div>
-          </div>
-          <div class="map-row">
-            <div class="node" data-d="〔子ノードのdata-d〕"><span class="tag">〔子〕</span><span class="t">〔子ノードの要約〕</span></div>
-          </div>
+        <div class="hero">
+            <div class="kicker">〔文書種別〕 ─ 読了目安 10 分</div>
+            <h1>〔文書タイトル〕</h1>
+            <div class="meta">
+                <b>原典</b>
+                <a
+                    class="mv"
+                    href="〔原典URL〕"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="〔原典の正式タイトル〕"
+                    >〔原典のタイトル・識別子〕</a
+                >
+                <b>著者</b>
+                <span class="mv" title="〔著者全員〕">〔著者・組織〕</span>
+                <b>分野</b>
+                <span class="mv">〔分野・カテゴリ｜検証の程度〕</span>
+            </div>
+            <p class="lede">
+                〔読者が原典を読むか判断するための導入。原典が何を問い、何を根拠に、
+                どこまで答えているかを2〜3文で示す。〕
+            </p>
+            <nav class="mobile-toc" aria-label="目次">
+                <div class="mini-title">目次</div>
+                <div class="mobile-toc-links"></div>
+            </nav>
         </div>
+
+        <main class="layout">
+            <nav class="mini" aria-label="目次">
+                <div class="mini-title">目次</div>
+                <!-- data-s は対応する section の id と一致させる。 -->
+                <a href="#s0" data-s="s0"><span class="k">OVERVIEW</span>全体の地図</a>
+                <a href="#s1" data-s="s1"><span class="k">QUESTION</span>原典は何を問うか</a>
+                <a href="#s2" data-s="s2"><span class="k">EVIDENCE</span>何を根拠に答えるか</a>
+                <a href="#s3" data-s="s3"><span class="k">PRACTICE</span>現場で1周追う</a>
+                <a href="#s9" data-s="s9"><span class="k">VERDICT</span>用語と読む判断</a>
+            </nav>
+
+            <article>
+                <section class="chapter" id="s0">
+                    <div class="ch-num">00</div>
+                    <h2>まず、全体の地図</h2>
+                    <p>
+                        原典が何を根拠に話を進めるかによって、地図の形を選ぶ。生成時は、
+                        原典の主な文書種別に合う1種類だけを残し、箱の中身を原典に合わせて書き換える。
+                        地図は全体像、押下後の欄は「その要素の要約」と「本文の該当箇所への入口」を担う。
+                    </p>
+
+                    <!--
+                      実証論文・立場表明・サーベイ・チュートリアルの4種類。
+                      生成時は該当する .map-pattern だけを残す。
+                      ブログは、主な根拠に応じて立場表明または実証論文を基礎にし、
+                      「事実」と「著者の見立て」を別の箱にする。
+                      各 .pattern-node の data-summary に2文以内の要約、
+                      data-target に対応する本文の節IDを書く。
+                    -->
+                    <div class="map-patterns">
+                        <figure class="map-pattern" data-document-type="empirical">
+                            <figcaption>
+                                <div class="pattern-question">何を試し、何が観測されたか</div>
+                                <div class="pattern-kind">実証論文</div>
+                            </figcaption>
+                            <div class="pattern-flow">
+                                <div class="pattern-stack">
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node root wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔この問いが生じた背景と、著者が確かめようとした関係を2文以内で書く。〕"
+                                            data-target="#s1"
+                                        >
+                                            <span class="node-label">問い</span>
+                                            <span class="node-text"
+                                                >〔何を変えると、何が良くなるのか〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ どのように確かめたか</div>
+                                    <div class="pattern-fork">
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔比較した仕組み、条件、測定方法を2文以内で書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">手法</span>
+                                            <span class="node-text">〔比較した仕組み・条件〕</span>
+                                        </div>
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔問いへの答えを支える主要な数値または観察結果を2文以内で書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">証拠</span>
+                                            <span class="node-text">〔主要な数値・観察結果〕</span>
+                                        </div>
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔この証拠だけでは答えられない条件や、分離できない効果を2文以内で書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">限界</span>
+                                            <span class="node-text"
+                                                >〔未検証の条件・分離できない効果〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ 何を確かめるために読むか</div>
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔読者が原典で設計と証拠のどちらを重点的に確かめるかを書く。〕"
+                                            data-target="#s9"
+                                        >
+                                            <span class="node-label">読む判断</span>
+                                            <span class="node-text"
+                                                >〔設計を借りるか、証拠を監査するか〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </figure>
+
+                        <figure class="map-pattern" data-document-type="position">
+                            <figcaption>
+                                <div class="pattern-question">何を主張し、何が支えるか</div>
+                                <div class="pattern-kind">立場表明</div>
+                            </figcaption>
+                            <div class="pattern-flow">
+                                <div class="pattern-stack">
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node root wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔著者が既存の捉え方の何を問題にしているかを2文以内で書く。〕"
+                                            data-target="#s1"
+                                        >
+                                            <span class="node-label">中心の問い</span>
+                                            <span class="node-text"
+                                                >〔何を問題として捉え直すべきか〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ 著者の答え</div>
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔問いに対して著者が採る立場と、その適用範囲を2文以内で書く。〕"
+                                            data-target="#s1"
+                                        >
+                                            <span class="node-label">主張</span>
+                                            <span class="node-text"
+                                                >〔著者が採るべきだと考える立場〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ 何が主張を支えるか</div>
+                                    <div class="pattern-fork two">
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔第1の理由が主張をどう支えるかを2文以内で書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">柱A</span>
+                                            <span class="node-text">〔主張を支える第1の理由〕</span>
+                                        </div>
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔第2の理由が主張をどう支えるかを2文以内で書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">柱B</span>
+                                            <span class="node-text">〔主張を支える第2の理由〕</span>
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ どこまで具体化されているか</div>
+                                    <div class="pattern-fork two">
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔著者が示した実現方法と、必要な条件を2文以内で書く。〕"
+                                            data-target="#s3"
+                                        >
+                                            <span class="node-label">実装</span>
+                                            <span class="node-text"
+                                                >〔実現方法として示されたもの〕</span
+                                            >
+                                        </div>
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔著者が認める未解決点または反論の余地を2文以内で書く。〕"
+                                            data-target="#s9"
+                                        >
+                                            <span class="node-label">限界</span>
+                                            <span class="node-text"
+                                                >〔著者が未解決と認めること〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </figure>
+
+                        <figure class="map-pattern" data-document-type="survey">
+                            <figcaption>
+                                <div class="pattern-question">何を軸に研究群を分けるか</div>
+                                <div class="pattern-kind">サーベイ</div>
+                            </figcaption>
+                            <div class="pattern-flow">
+                                <div class="pattern-stack">
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node root wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔このサーベイが見渡す対象と、対象外にする範囲を2文以内で書く。〕"
+                                            data-target="#s1"
+                                        >
+                                            <span class="node-label">中心テーマ</span>
+                                            <span class="node-text"
+                                                >〔どの研究領域を見渡すのか〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ どの観点で分けるか</div>
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔著者が研究群を分ける基準と、その基準を選んだ理由を書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">分類軸</span>
+                                            <span class="node-text"
+                                                >〔著者が研究群を比較する基準〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ 何が同じで、何が違うか</div>
+                                    <div class="pattern-fork">
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔第1の研究系統が何を重視し、何を得意とするかを書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">系統A</span>
+                                            <span class="node-text">〔第1の系統と特徴〕</span>
+                                        </div>
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔第2の研究系統が何を重視し、何を得意とするかを書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">系統B</span>
+                                            <span class="node-text">〔第2の系統と特徴〕</span>
+                                        </div>
+                                        <div
+                                            class="pattern-node"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔第3の研究系統が何を重視し、何を得意とするかを書く。〕"
+                                            data-target="#s2"
+                                        >
+                                            <span class="node-label">系統C</span>
+                                            <span class="node-text">〔第3の系統と特徴〕</span>
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ 著者は次に何が必要だと見るか</div>
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔著者が未整理とみなす問題と、次に必要な研究を書く。〕"
+                                            data-target="#s9"
+                                        >
+                                            <span class="node-label">今後の方向</span>
+                                            <span class="node-text"
+                                                >〔未整理の問題・今後の研究課題〕</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </figure>
+
+                        <figure class="map-pattern" data-document-type="tutorial">
+                            <figcaption>
+                                <div class="pattern-question">何を順番に行い、どこで詰まるか</div>
+                                <div class="pattern-kind">チュートリアル</div>
+                            </figcaption>
+                            <div class="pattern-flow">
+                                <div class="pattern-stack">
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node root wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔開始前に必要な環境、権限、知識を2文以内で書く。〕"
+                                            data-target="#s1"
+                                        >
+                                            <span class="node-label">前提</span>
+                                            <span class="node-text">〔始める前に必要な状態〕</span>
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ 最初に何をするか</div>
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔最初に行う操作と、その操作が成功したと分かる状態を書く。〕"
+                                            data-target="#s3"
+                                        >
+                                            <span class="node-label">手順1</span>
+                                            <span class="node-text">〔最初に行う操作〕</span>
+                                        </div>
+                                    </div>
+                                    <div class="pattern-down">↓ 次に何を判断するか</div>
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔次に行う操作または判断と、代表的なつまずきを書く。〕"
+                                            data-target="#s3"
+                                        >
+                                            <span class="node-label">手順2</span>
+                                            <span class="node-text">〔次に判断すること〕</span>
+                                        </div>
+                                    </div>
+                                    <div class="pattern-note">
+                                        つまずきどころ：〔この手順で何が起きたら、何を確認するか〕
+                                    </div>
+                                    <div class="pattern-down">↓ 何ができれば完了か</div>
+                                    <div class="pattern-row">
+                                        <div
+                                            class="pattern-node wide"
+                                            role="button"
+                                            tabindex="0"
+                                            data-summary="〔完了時に読者ができることと、確認方法を2文以内で書く。〕"
+                                            data-target="#s9"
+                                        >
+                                            <span class="node-label">完成形</span>
+                                            <span class="node-text">〔できるようになる状態〕</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </figure>
+                    </div>
+                </section>
+
+                <section class="chapter" id="s1">
+                    <div class="ch-num">01</div>
+                    <h2>原典は何を問うか</h2>
+                    <p>
+                        〔原典の問題設定を、誰が・いつ・何に困り、著者が何を明らかに
+                        しようとしているかの順に書く。重要語は
+                        <span class="term"
+                            >〔用語〕<span class="pop"
+                                ><span class="en">〔原語〕</span
+                                >〔標準用語か現場独自かも含む説明〕</span
+                            ></span
+                        >
+                        の形で説明する。〕
+                    </p>
+                    <div class="aside">
+                        <b>先に置く補助線:</b>
+                        〔読者に不足している前提を、本文の流れを止めない長さで補う。〕
+                    </div>
+
+                    <!-- ブログや立場表明では、事実と著者の見立てを分ける。不要なら削除する。 -->
+                    <div class="aside viewpoint">
+                        <b>著者の見立て:</b>
+                        〔原典が証拠で確かめた事実ではなく、著者が導いた解釈や提案。〕
+                    </div>
+
+                    <!-- 主題が重なる既読資料があるときだけ使う。 -->
+                    <div class="aside connection">
+                        <b>既読との接続:</b>
+                        〔既読のどの資料の何と、どの基準で関係するか。〕
+                    </div>
+
+                    <div class="quiz" data-q="1">
+                        <h3>〔本文を読んでいれば答えられる理解確認の問い〕</h3>
+                        <div class="opts">
+                            <button>〔長さを揃えた選択肢A〕</button>
+                            <button data-correct>〔長さを揃えた選択肢B〕</button>
+                            <button>〔長さを揃えた選択肢C〕</button>
+                        </div>
+                        <div class="kaisetsu">
+                            <b>〔正解ラベル〕</b>
+                            〔正解の理由と、誤答がどの前提を取り違えているか。〕
+                        </div>
+                    </div>
+                </section>
+
+                <section class="chapter" id="s2">
+                    <div class="ch-num">02</div>
+                    <h2>何を根拠に、どこまで答えるか</h2>
+                    <p>
+                        〔著者が使った手法、比較対象、データ、観察結果を分けて説明する。
+                        「示した」「示唆した」など、原典の主張の強さを変えない。〕
+                    </p>
+
+                    <div class="table-frame">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">〔何を確かめるか〕</th>
+                                    <th scope="col">〔使った根拠〕</th>
+                                    <th scope="col">〔言える範囲〕</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">〔問いまたは比較〕</th>
+                                    <td>〔実験・事例・引用など〕</td>
+                                    <td>〔結論と限界〕</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">〔問いまたは比較〕</th>
+                                    <td>〔実験・事例・引用など〕</td>
+                                    <td>〔結論と限界〕</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 数式がない文書では削除する。 -->
+                    <div class="formula">
+                        <div class="fx">〔数式・疑似コード・記法〕</div>
+                        <div class="yaku">
+                            <p>
+                                〔記号を日本語へ置き換え、数式全体を誰が何をする式かとして読む。〕
+                            </p>
+                        </div>
+                        <button type="button">▽ 数式を日本語で読む</button>
+                    </div>
+
+                    <!--
+                      Mermaid の元記述から生成した SVG を .diagram-canvas 内へ埋め込む。
+                      下の SVG は構造の見本。生成時に原典に沿った図へ置き換える。
+                      data-mermaid-source に Mermaid の元記述を必ず残す。
+                    -->
+                    <div class="diagram">
+                        <div class="diagram-title">FIGURE ─ 〔図のタイトル〕</div>
+                        <div class="diagram-canvas">
+                            <svg
+                                viewBox="0 0 640 180"
+                                role="img"
+                                aria-label="〔図の代替説明〕"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <defs>
+                                    <marker
+                                        id="template-arrow"
+                                        viewBox="0 0 10 10"
+                                        refX="9"
+                                        refY="5"
+                                        markerWidth="7"
+                                        markerHeight="7"
+                                        orient="auto-start-reverse"
+                                    >
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b6250" />
+                                    </marker>
+                                </defs>
+                                <rect
+                                    x="20"
+                                    y="50"
+                                    width="160"
+                                    height="70"
+                                    rx="10"
+                                    fill="#e3e9f2"
+                                    stroke="#31527b"
+                                    stroke-width="2"
+                                />
+                                <rect
+                                    x="240"
+                                    y="50"
+                                    width="160"
+                                    height="70"
+                                    rx="10"
+                                    fill="#fffcf4"
+                                    stroke="#978567"
+                                    stroke-width="2"
+                                />
+                                <rect
+                                    x="460"
+                                    y="50"
+                                    width="160"
+                                    height="70"
+                                    rx="10"
+                                    fill="#f3ddd6"
+                                    stroke="#b23a26"
+                                    stroke-width="2"
+                                />
+                                <path
+                                    d="M 180 85 L 232 85"
+                                    stroke="#6b6250"
+                                    stroke-width="2"
+                                    marker-end="url(#template-arrow)"
+                                />
+                                <path
+                                    d="M 400 85 L 452 85"
+                                    stroke="#6b6250"
+                                    stroke-width="2"
+                                    marker-end="url(#template-arrow)"
+                                />
+                                <text
+                                    x="100"
+                                    y="91"
+                                    text-anchor="middle"
+                                    font-size="15"
+                                    fill="#211d16"
+                                >
+                                    〔入力〕
+                                </text>
+                                <text
+                                    x="320"
+                                    y="91"
+                                    text-anchor="middle"
+                                    font-size="15"
+                                    fill="#211d16"
+                                >
+                                    〔処理〕
+                                </text>
+                                <text
+                                    x="540"
+                                    y="91"
+                                    text-anchor="middle"
+                                    font-size="15"
+                                    fill="#211d16"
+                                >
+                                    〔結果〕
+                                </text>
+                            </svg>
+                            <script type="text/plain" data-mermaid-source>
+                                flowchart LR
+                                    A["〔入力〕"] --> B["〔処理〕"]
+                                    B --> C["〔結果〕"]
+                            </script>
+                        </div>
+                    </div>
+
+                    <div class="aside warning">
+                        <b>限界:</b>
+                        〔標本数、比較条件、未検証の部品、一般化できない範囲など。〕
+                    </div>
+                </section>
+
+                <section class="chapter" id="s3">
+                    <div class="ch-num">03</div>
+                    <h2>現実世界で1周追う</h2>
+                    <p>
+                        〔原典の仕組みを、読者の日常にある担当サービス、評価、実行記録などへ
+                        置き換えた1つの具体例で追う。原典にない効果は加えない。〕
+                    </p>
+                    <div class="viz">
+                        <div class="viz-title">
+                            WORKED EXAMPLE ─ 〔同じ仕組みを、現場の1事例で追う〕
+                        </div>
+                        <div class="sim-steps" id="sim-steps">
+                            <button type="button" class="on"><b>Step 1</b>〔最初の状態〕</button>
+                            <button type="button"><b>Step 2</b>〔途中の処理〕</button>
+                            <button type="button"><b>Step 3</b>〔最後の判断〕</button>
+                        </div>
+                        <div class="sim-card on">
+                            <p class="nar">〔誰が、いつ、何を入力するか。〕</p>
+                            <div class="data-card">
+                                <div class="data-row">
+                                    <span class="dk2">〔項目〕</span><code>〔値〕</code>
+                                </div>
+                                <div class="data-row">
+                                    <span class="dk2">〔項目〕</span><code>〔値〕</code>
+                                </div>
+                                <div class="data-row">
+                                    <span class="dk2">〔結果〕</span><code>〔観測結果〕</code>
+                                </div>
+                            </div>
+                            <div class="sim-note">〔この段階で持ち帰る1つの要点。〕</div>
+                        </div>
+                        <div class="sim-card">
+                            <p class="nar">〔誰が、どのように、何を処理するか。〕</p>
+                            <div class="data-card">
+                                <div class="data-row">
+                                    <span class="dk2">〔入力〕</span><code>〔見えている情報〕</code>
+                                </div>
+                                <div class="data-row">
+                                    <span class="dk2">〔処理〕</span><code>〔行った処理〕</code>
+                                </div>
+                                <div class="data-row">
+                                    <span class="dk2">〔制約〕</span><code>〔使わない情報〕</code>
+                                </div>
+                            </div>
+                            <div class="sim-note">〔この段階で持ち帰る1つの要点。〕</div>
+                        </div>
+                        <div class="sim-card">
+                            <p class="nar">〔誰が結果を使い、何を判断できるか。〕</p>
+                            <div class="data-card">
+                                <div class="data-row">
+                                    <span class="dk2">〔変更〕</span><code>〔変えたもの〕</code>
+                                </div>
+                                <div class="data-row">
+                                    <span class="dk2">〔維持〕</span
+                                    ><code>〔変えなかったもの〕</code>
+                                </div>
+                                <div class="data-row">
+                                    <span class="dk2">〔判断〕</span><code>〔言える範囲〕</code>
+                                </div>
+                            </div>
+                            <div class="sim-note">〔この段階で持ち帰る1つの要点。〕</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="chapter" id="s9">
+                    <div class="ch-num">09</div>
+                    <h2>用語と読む判断</h2>
+                    <p>〔本文で判断に必要だった用語だけを短く整理する。〕</p>
+                    <div class="gloss">
+                        <div class="gitem">
+                            <span class="gt">〔用語〕</span><span class="ge">〔原語〕</span>
+                            <p>〔この文書での意味。〕</p>
+                        </div>
+                        <div class="gitem">
+                            <span class="gt">〔用語〕</span><span class="ge">〔原語〕</span>
+                            <p>〔この文書での意味。〕</p>
+                        </div>
+                    </div>
+
+                    <div class="verdict">
+                        <div class="k">読み終えたら ─ 原典へ進むか</div>
+                        <h3>この下読みは、ここで完結です</h3>
+                        <p>
+                            ここまでで、〔掴めた骨組み・証拠・限界・現場への当てはめ〕まで確認した。
+                            一方、〔主張の正確な強度・全文・実装詳細など〕は原典でしか確かめられない。
+                        </p>
+                        <p>
+                            <b>進むなら:</b>
+                            〔どの章の知識を念頭に、原典のどこから読むか。〕
+                            <a href="〔原典URL〕" target="_blank" rel="noopener noreferrer"
+                                >原典を開く</a
+                            >。
+                        </p>
+                        <p>
+                            <b>止めるなら:</b>
+                            読まないことも正しい判断である。〔今後の仕事へ持ち帰る問いを1つ。〕
+                        </p>
+                    </div>
+
+                    <ul class="source-list">
+                        <li>
+                            <a href="〔原典URL〕" target="_blank" rel="noopener noreferrer"
+                                >〔原典の書誌情報〕</a
+                            >
+                        </li>
+                    </ul>
+                </section>
+            </article>
+        </main>
+
+        <footer>
+            下読み ｜ 原典: 〔著者・文書名・版〕 ｜ この教材は LLM
+            による再構成であり、正確さは原典で確認してください
+        </footer>
+
+        <script>
+            // ── クイズ ──
+            let solved = 0;
+            const quizCount = document.getElementById("qc");
+            const quizDots = document.querySelectorAll("#qdots i");
+            document.querySelectorAll(".quiz").forEach((quiz, quizIndex) => {
+                quiz.querySelectorAll(".opts button").forEach((btn) => {
+                    btn.addEventListener("click", () => {
+                        if (quiz.classList.contains("answered")) return;
+                        quiz.classList.add("answered");
+                        quiz.querySelectorAll(".opts button").forEach((b) => {
+                            b.disabled = true;
+                            if (b.hasAttribute("data-correct")) b.classList.add("correct");
+                        });
+                        if (!btn.hasAttribute("data-correct")) btn.classList.add("wrong");
+                        solved += 1;
+                        if (quizCount) quizCount.textContent = String(solved);
+                        if (quizDots[quizIndex]) quizDots[quizIndex].classList.add("done");
+                    });
+                });
+            });
+
+            // ── 用語ポップオーバー ──
+            document.querySelectorAll(".term").forEach((t) => {
+                t.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    document
+                        .querySelectorAll(".term.open")
+                        .forEach((x) => x !== t && x.classList.remove("open"));
+                    t.classList.toggle("open");
+                });
+            });
+            addEventListener("click", () =>
+                document.querySelectorAll(".term.open").forEach((x) => x.classList.remove("open")),
+            );
+
+            // ── 数式の読み下し ──
+            document.querySelectorAll(".formula button").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const formula = button.closest(".formula");
+                    if (!formula) return;
+                    formula.classList.toggle("open");
+                    button.textContent = formula.classList.contains("open")
+                        ? "△ 閉じる"
+                        : "▽ 数式を日本語で読む";
+                });
+            });
+
+            // ── 全体の地図から要約と本文へ進む ──
+            document.querySelectorAll(".map-pattern").forEach((pattern) => {
+                const detail = document.createElement("div");
+                detail.className = "pattern-detail";
+                detail.setAttribute("aria-live", "polite");
+                detail.innerHTML = `
+                    <div class="detail-kind"></div>
+                    <h3></h3>
+                    <p></p>
+                    <a href="#">この節を読みに行く →</a>`;
+                pattern.appendChild(detail);
+
+                const nodes = pattern.querySelectorAll(".pattern-node");
+                const showDetail = (node) => {
+                    nodes.forEach((item) => {
+                        const selected = item === node;
+                        item.classList.toggle("on", selected);
+                        item.setAttribute("aria-pressed", String(selected));
+                    });
+                    const label = node.querySelector(".node-label")?.textContent || "要点";
+                    const title = node.querySelector(".node-text")?.textContent || "";
+                    detail.querySelector(".detail-kind").textContent = label;
+                    detail.querySelector("h3").textContent = title;
+                    detail.querySelector("p").textContent = node.dataset.summary || "";
+                    detail.querySelector("a").setAttribute("href", node.dataset.target || "#s1");
+                    detail.classList.add("show");
+                };
+
+                nodes.forEach((node) => {
+                    node.setAttribute("aria-pressed", "false");
+                    node.addEventListener("click", () => showDetail(node));
+                    node.addEventListener("keydown", (event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            showDetail(node);
+                        }
+                    });
+                });
+            });
+
+            // ── 現実世界で回してみる ──
+            const simButtons = document.querySelectorAll("#sim-steps button");
+            const simCards = document.querySelectorAll(".sim-card");
+            simButtons.forEach((button, index) => {
+                button.addEventListener("click", () => {
+                    simButtons.forEach((item, itemIndex) =>
+                        item.classList.toggle("on", itemIndex === index),
+                    );
+                    simCards.forEach((item, itemIndex) =>
+                        item.classList.toggle("on", itemIndex === index),
+                    );
+                });
+            });
+
+            // ── 目次・読了進捗 ──
+            const desktopToc = document.querySelector("nav.mini");
+            const mobileToc = document.querySelector(".mobile-toc-links");
+            if (desktopToc && mobileToc) {
+                desktopToc
+                    .querySelectorAll("a")
+                    .forEach((link) => mobileToc.appendChild(link.cloneNode(true)));
+            }
+            const tocLinks = document.querySelectorAll("[data-s]");
+            const sections = document.querySelectorAll("section.chapter");
+            const siteHeader = document.querySelector(".site-header");
+            const syncHeaderOffset = () => {
+                const offset = (siteHeader?.offsetHeight || 68) + 8;
+                sections.forEach((section) => (section.style.scrollMarginTop = offset + "px"));
+            };
+            const markCurrent = (id) => {
+                tocLinks.forEach((link) => link.classList.toggle("now", link.dataset.s === id));
+            };
+            if (sections[0]) markCurrent(sections[0].id);
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    const visible = entries
+                        .filter((entry) => entry.isIntersecting)
+                        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+                    if (visible) markCurrent(visible.target.id);
+                },
+                { rootMargin: "-20% 0px -65% 0px" },
+            );
+            sections.forEach((section) => observer.observe(section));
+            const syncProgress = () => {
+                const root = document.documentElement;
+                const max = root.scrollHeight - root.clientHeight;
+                const ratio = max > 0 ? root.scrollTop / max : 0;
+                const bar = document.getElementById("scrollbar");
+                if (bar) bar.style.width = Math.min(100, Math.max(0, ratio * 100)) + "%";
+            };
+            syncHeaderOffset();
+            syncProgress();
+            addEventListener("resize", syncHeaderOffset);
+            addEventListener("scroll", syncProgress, { passive: true });
+        </script>
+
+        <!-- ── 埋め込み済み Mermaid 図 + 拡大モーダル ──
+     生成時に Mermaid 10 で SVG 化し、data-mermaid-source と一緒に HTML へ埋め込む。
+     図はクリック(または Enter/Space)で <dialog> の拡大モーダルを開く。
+     モーダル内は ＋/− ボタンとホイールで変倍、ドラッグで移動、% ボタンで全体表示に戻す。 -->
+        <script>
+            (() => {
+                const diagrams = Array.from(document.querySelectorAll(".diagram"));
+                if (!diagrams.length) return;
+
+                // ── 拡大モーダル(DOM は初回オープン時に 1 つだけ生成し、全図で使い回す) ──
+                const MIN = 0.25,
+                    MAX = 4;
+                let dialog = null,
+                    stage = null,
+                    canvas = null,
+                    resetBtn = null,
+                    titleEl = null;
+                let k = 1,
+                    fit = 1,
+                    px = 0,
+                    py = 0;
+
+                const apply = () => {
+                    canvas.style.transform = `translate(${px}px, ${py}px) scale(${k})`;
+                    resetBtn.textContent = Math.round((k / fit) * 100) + "%";
+                };
+                const setZoom = (next) => {
+                    k = Math.min(MAX, Math.max(MIN, next));
+                    apply();
+                };
+
+                function buildDialog() {
+                    dialog = document.createElement("dialog");
+                    dialog.className = "diagram-modal";
+                    dialog.innerHTML = `
+      <div class="dm-bar">
+        <span class="dm-title"></span>
+        <button type="button" data-zoom="out" aria-label="縮小">−</button>
+        <button type="button" data-zoom="reset" aria-label="全体表示に戻す">100%</button>
+        <button type="button" data-zoom="in" aria-label="拡大">＋</button>
+        <button type="button" data-close aria-label="閉じる">✕</button>
       </div>
-      <div id="map-detail">
-        <div class="dk" id="md-k"></div>
-        <h3 id="md-t"></h3>
-        <p id="md-p"></p>
-        <a href="#" id="md-a">この節を読みに行く →</a>
-      </div>
-    </section>
+      <div class="dm-stage"><div class="dm-canvas"></div></div>`;
+                    document.body.appendChild(dialog);
+                    stage = dialog.querySelector(".dm-stage");
+                    canvas = dialog.querySelector(".dm-canvas");
+                    resetBtn = dialog.querySelector('[data-zoom="reset"]');
+                    titleEl = dialog.querySelector(".dm-title");
 
-    <section class="chapter" id="s1">
-      <div class="ch-num">01</div>
-      <h2>〔章タイトル〕</h2>
-      <!-- 外部リンクは target="_blank" rel="noopener noreferrer" を既定にする(ページ内アンカーには付けない)。 -->
-      <p>〔本文の段落。重要語は <span class="term">〔用語〕<span class="pop"><span class="en">〔原語〕</span>〔用語の短い説明〕</span></span> の形で説明を添える。原文にリンクがあれば <a href="〔リンク先URL〕" target="_blank" rel="noopener noreferrer">〔リンクテキスト〕</a> の形で残す。〕</p>
-      <div class="aside"><b>〔注記ラベル〕:</b> 〔読み手が誤解しやすい点、または本文を読む前に置く補助線。〕</div>
+                    dialog
+                        .querySelector("[data-close]")
+                        .addEventListener("click", () => dialog.close());
+                    // 背景クリックで閉じる(内容はすべて子要素なので、target が dialog 自身なのは backdrop のみ)
+                    dialog.addEventListener("click", (e) => {
+                        if (e.target === dialog) dialog.close();
+                    });
+                    dialog
+                        .querySelector('[data-zoom="in"]')
+                        .addEventListener("click", () => setZoom(k * 1.25));
+                    dialog
+                        .querySelector('[data-zoom="out"]')
+                        .addEventListener("click", () => setZoom(k / 1.25));
+                    resetBtn.addEventListener("click", () => {
+                        px = py = 0;
+                        setZoom(fit);
+                    });
 
-      <div class="formula" id="f1">
-        <div class="fx">〔数式・疑似コード・記法〕</div>
-        <div class="yaku">
-          <li><code>〔記号〕</code>〔記号の意味〕</li>
-          <li><code>〔記号〕</code>〔記号の意味〕</li>
-        </div>
-        <button>▽ 数式を日本語で読む</button>
-      </div>
+                    // ホイール(トラックパッドのピンチ含む)で変倍
+                    stage.addEventListener(
+                        "wheel",
+                        (e) => {
+                            e.preventDefault();
+                            setZoom(k * (e.deltaY < 0 ? 1.1 : 1 / 1.1));
+                        },
+                        { passive: false },
+                    );
 
-      <!-- quiz options must be similar length. -->
-      <div class="quiz" data-q="1">
-        <h3>〔理解確認の問い〕</h3>
-        <div class="opts">
-          <button>〔選択肢 A〕</button>
-          <button data-correct>〔選択肢 B〕</button>
-          <button>〔選択肢 C〕</button>
-        </div>
-        <div class="kaisetsu"><b>〔正解ラベル〕</b>〔なぜそれが正解か。誤答との違いも短く書く。〕</div>
-      </div>
+                    // ドラッグで移動
+                    let drag = null;
+                    stage.addEventListener("pointerdown", (e) => {
+                        drag = { x: e.clientX - px, y: e.clientY - py };
+                        stage.setPointerCapture(e.pointerId);
+                        stage.classList.add("dragging");
+                    });
+                    stage.addEventListener("pointermove", (e) => {
+                        if (!drag) return;
+                        px = e.clientX - drag.x;
+                        py = e.clientY - drag.y;
+                        apply();
+                    });
+                    const endDrag = () => {
+                        drag = null;
+                        stage.classList.remove("dragging");
+                    };
+                    stage.addEventListener("pointerup", endDrag);
+                    stage.addEventListener("pointercancel", endDrag);
+                }
 
-      <div class="figure">
-        <div class="fig-title">FIGURE ─ 〔図のタイトル〕</div>
-        <div class="fig">
-          <div class="fbox" id="fg-placeholder">
-            <div class="fb-t">〔図中の要素〕</div>
-            <span class="fb-s">〔図中の補足〕</span>
-            <div class="chip">〔最小の図示内容〕</div>
-          </div>
-        </div>
-        <div class="fig-cap">〔図の出典・省略した内容〕</div>
-        <div class="fig-guide">
-          <div class="fg-label">▽ 図を日本語で読む — 押した順に、図の対応する場所が点灯します</div>
-          <div class="fig-steps">
-            <button data-step="0" class="on">1</button>
-          </div>
-          <div id="fig-text"></div>
-        </div>
-      </div>
+                function openModal(diagram) {
+                    const svg = diagram.querySelector("svg");
+                    if (!svg) return;
+                    if (!dialog) buildDialog();
+                    const t = diagram.querySelector(".diagram-title");
+                    titleEl.textContent = t ? t.textContent : "図";
+                    // 描画済み SVG を複製してモーダルへ(矢印マーカーの参照先は原本が DOM に残るので壊れない)
+                    const r = svg.getBoundingClientRect();
+                    const clone = svg.cloneNode(true);
+                    clone.style.maxWidth = "none";
+                    clone.style.width = r.width + "px";
+                    clone.style.height = r.height + "px";
+                    canvas.replaceChildren(clone);
+                    dialog.showModal();
+                    // 舞台に収まる倍率を 100% とする
+                    const sr = stage.getBoundingClientRect();
+                    fit = Math.min(
+                        MAX,
+                        Math.max(MIN, Math.min(sr.width / r.width, sr.height / r.height) * 0.92),
+                    );
+                    px = py = 0;
+                    setZoom(fit);
+                }
 
-      <div class="viz">
-        <div class="viz-title">SIM ─ 〔段送りコンポーネントのタイトル〕</div>
-        <div class="sim-steps" id="sim-steps">
-          <button class="on"><b>Step 1</b>〔最初の状態〕</button>
-          <button><b>Step 2</b>〔次の状態〕</button>
-        </div>
-        <div class="sim-card on">
-          <p class="nar">〔Step 1 で読む説明。〕</p>
-          <div class="sim-note">〔Step 1 の要点。〕</div>
-        </div>
-        <div class="sim-card">
-          <p class="nar">〔Step 2 で読む説明。〕</p>
-          <div class="sim-note">〔Step 2 の要点。〕</div>
-        </div>
-      </div>
-    </section>
+                function enableModal() {
+                    diagrams.forEach((d) => {
+                        if (!d.querySelector("svg")) return;
+                        d.classList.add("zoomable");
+                        d.setAttribute("tabindex", "0");
+                        d.setAttribute("role", "button");
+                        d.setAttribute("aria-label", "図を拡大表示する");
+                        d.addEventListener("click", () => openModal(d));
+                        d.addEventListener("keydown", (e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                openModal(d);
+                            }
+                        });
+                    });
+                }
 
-    <section class="chapter" id="s9">
-      <div class="ch-num">09</div>
-      <h2>用語集</h2>
-      <p class="map-hint">〔本文で触れた用語のまとめ。〕</p>
-      <!-- gitem は用語ごとに繰り返す。 -->
-      <div class="gloss">
-        <div class="gitem"><span class="gt">〔用語〕</span><span class="ge">〔原語〕</span><p>〔用語の説明。〕</p></div>
-        <div class="gitem"><span class="gt">〔用語〕</span><span class="ge">〔原語〕</span><p>〔用語の説明。〕</p></div>
-      </div>
-
-      <div class="verdict">
-        <div class="k">読み終えたら ─ 原典へ進むか</div>
-        <h3>この下読みは、ここで完結です</h3>
-        <p>ここまでで掴めるのは、〔掴めたこと〕。ここから先 — 〔原典でしか確かめられないこと〕 — は原典でしか確かめられません。</p>
-        <p><b>進むなら:</b> 〔原典で最初に読むべき箇所と読み方〕。<a href="〔原典リンク〕" target="_blank" rel="noopener noreferrer">〔原典リンク表示名〕</a></p>
-        <p><b>止めるなら:</b> 〔止めても持ち帰れる問い、判断基準、次の行動。〕</p>
-      </div>
-    </section>
-
-  </article>
-</div>
-
-<footer>下読み ｜ 原典: 〔原典の書誌 + リンク〕 ｜ この教材は LLM による再構成であり、正確さは原典で確認してください</footer>
-
-<script>
-// ── 文書ごとに差し替えるデータ ──
-const FIG_STEPS = [
-  { hl: ['fg-placeholder'],
-    t: '<b>① 〔読む順番〕</b>〔この図でまず見せたいこと。〕' }
-];
-const MAP = {
-  root: { k: '〔中心〕', t: '〔中心ノードの題名〕', p: '〔中心ノードの説明〕', s: '#s1' },
-  '〔子ノードのdata-d〕': { k: '〔子〕', t: '〔子ノードの題名〕', p: '〔子ノードの説明〕', s: '#s1' }
-};
-const WIRES = [['root','〔子ノードのdata-d〕']];
-
-// ── スクロール進捗 ──
-const sb = document.getElementById('scrollbar');
-if (sb) {
-  addEventListener('scroll', () => {
-    const h = document.documentElement;
-    const max = h.scrollHeight - h.clientHeight;
-    sb.style.width = (max > 0 ? h.scrollTop / max * 100 : 0) + '%';
-  }, { passive: true });
-}
-
-// ── 章のフェードイン & ミニマップ現在地 ──
-const chapters = document.querySelectorAll('.chapter');
-const miniLinks = document.querySelectorAll('nav.mini a');
-const mobileTocLinks = document.querySelector('.mobile-toc-links');
-if (mobileTocLinks) {
-  miniLinks.forEach(a => {
-    const clone = a.cloneNode(true);
-    clone.classList.remove('now');
-    clone.removeAttribute('data-s');
-    clone.addEventListener('click', e => {
-      e.preventDefault();
-      const target = document.querySelector(clone.getAttribute('href'));
-      if (target) target.scrollIntoView({ block: 'start' });
-    });
-    mobileTocLinks.appendChild(clone);
-  });
-}
-const stickyHeader = document.querySelector('header');
-const setJumpMargin = () => {
-  const h = (stickyHeader ? stickyHeader.offsetHeight : 0) + 8;
-  chapters.forEach(s => s.style.scrollMarginTop = h + 'px');
-};
-setJumpMargin();
-addEventListener('resize', setJumpMargin);
-if (chapters.length && miniLinks.length && 'IntersectionObserver' in window) {
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) {
-      miniLinks.forEach(a => a.classList.toggle('now', a.dataset.s === e.target.id));
-    }
-  }), { threshold: 0.12 });
-  chapters.forEach(c => io.observe(c));
-}
-
-// ── クイズ ──
-let solved = 0;
-const qc = document.getElementById('qc');
-const dots = document.querySelectorAll('#qdots i');
-document.querySelectorAll('.quiz').forEach((quiz, qi) => {
-  quiz.querySelectorAll('.opts button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (quiz.classList.contains('answered')) return;
-      quiz.classList.add('answered');
-      quiz.querySelectorAll('.opts button').forEach(b => {
-        b.disabled = true;
-        if (b.hasAttribute('data-correct')) b.classList.add('correct');
-      });
-      if (!btn.hasAttribute('data-correct')) btn.classList.add('wrong');
-      solved++;
-      if (qc) qc.textContent = solved;
-      if (dots[qi]) dots[qi].classList.add('done');
-    });
-  });
-});
-
-// ── 用語ポップオーバー ──
-document.querySelectorAll('.term').forEach(t => {
-  t.addEventListener('click', e => {
-    e.stopPropagation();
-    document.querySelectorAll('.term.open').forEach(x => x !== t && x.classList.remove('open'));
-    t.classList.toggle('open');
-  });
-});
-addEventListener('click', () => document.querySelectorAll('.term.open').forEach(x => x.classList.remove('open')));
-
-// ── 数式の日本語訳 ──
-document.querySelectorAll('.formula button').forEach(b => {
-  b.addEventListener('click', () => {
-    const f = b.closest('.formula');
-    if (!f) return;
-    f.classList.toggle('open');
-    b.textContent = f.classList.contains('open') ? '△ 閉じる' : '▽ 数式を日本語で読む';
-  });
-});
-
-// ── 図を日本語で読む ──
-const figText = document.getElementById('fig-text');
-const stepBtns = document.querySelectorAll('.fig-steps button');
-function showStep(i) {
-  if (!figText || !stepBtns.length || !FIG_STEPS[i]) return;
-  stepBtns.forEach(b => b.classList.toggle('on', +b.dataset.step === i));
-  document.querySelectorAll('.hl').forEach(x => x.classList.remove('hl'));
-  FIG_STEPS[i].hl.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add('hl');
-  });
-  figText.innerHTML = FIG_STEPS[i].t;
-}
-stepBtns.forEach(b => b.addEventListener('click', () => showStep(+b.dataset.step)));
-if (figText && stepBtns.length) showStep(0);
-
-// ── 心像図(本文埋め込み) ──
-const detail = document.getElementById('map-detail');
-document.querySelectorAll('.node').forEach(n => {
-  n.addEventListener('click', () => {
-    document.querySelectorAll('.node').forEach(x => x.classList.toggle('on', x === n));
-    const d = MAP[n.dataset.d];
-    if (!d || !detail) return;
-    const mdK = document.getElementById('md-k');
-    const mdT = document.getElementById('md-t');
-    const mdP = document.getElementById('md-p');
-    const mdA = document.getElementById('md-a');
-    if (mdK) mdK.textContent = d.k;
-    if (mdT) mdT.textContent = d.t;
-    if (mdP) mdP.textContent = d.p;
-    if (mdA) mdA.onclick = ev => {
-      ev.preventDefault();
-      const target = document.querySelector(d.s);
-      if (target) target.scrollIntoView();
-    };
-    detail.classList.add('show');
-    requestAnimationFrame(drawWires);
-  });
-});
-
-// ── 心像図の結線 ──
-function drawWires() {
-  const svg = document.getElementById('wires');
-  const stage = document.querySelector('.map-stage');
-  if (!svg || !stage) return;
-  const sr = stage.getBoundingClientRect();
-  if (!sr.width) return;
-  svg.setAttribute('viewBox', `0 0 ${sr.width} ${sr.height}`);
-  const pt = id => {
-    const el = document.querySelector(`[data-d="${id}"]`);
-    if (!el) return null;
-    const r = el.getBoundingClientRect();
-    return { x: r.left - sr.left + r.width / 2, top: r.top - sr.top, bot: r.top - sr.top + r.height };
-  };
-  const link = (a, b) => {
-    const p = pt(a), q = pt(b);
-    if (!p || !q) return '';
-    const my = (p.bot + q.top) / 2;
-    return `<path d="M ${p.x} ${p.bot} C ${p.x} ${my}, ${q.x} ${my}, ${q.x} ${q.top}"/>`;
-  };
-  svg.innerHTML = WIRES.map(([a, b]) => link(a, b)).join('');
-}
-addEventListener('load', () => { drawWires(); setTimeout(drawWires, 400); });
-addEventListener('resize', drawWires);
-
-// ── ミニマップ: クリックで該当セクションへ ──
-miniLinks.forEach(a => a.addEventListener('click', e => {
-  e.preventDefault();
-  const target = document.querySelector(a.getAttribute('href'));
-  if (target) target.scrollIntoView({ block: 'start' });
-}));
-
-// ── 段送りコンポーネント ──
-const simBtns = document.querySelectorAll('#sim-steps button');
-const simCards = document.querySelectorAll('.sim-card');
-simBtns.forEach((b, i) => b.addEventListener('click', () => {
-  simBtns.forEach((x, j) => x.classList.toggle('on', j === i));
-  simCards.forEach((c, j) => c.classList.toggle('on', j === i));
-}));
-
-</script>
-</body>
+                enableModal();
+            })();
+        </script>
+    </body>
 </html>

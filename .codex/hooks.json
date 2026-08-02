@@ -1,25 +1,36 @@
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.codex/hooks/sfw-gate.sh",
-            "statusMessage": "Checking Bash command"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
         "hooks": [
           {
-            "type": "command",
             "command": "~/.codex/hooks/sfw-post-edit.sh",
-            "statusMessage": "Checking dependency manifest edits"
+            "statusMessage": "Checking dependency manifest edits",
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "~/.codex/hooks/sfw-gate.sh",
+            "statusMessage": "Checking Bash command",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bash '~/.codex/herdr-agent-state.sh' session",
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
@@ -30,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh '/Users/sotayamashita/skills/tldraw-offline/inject-server-context.sh' SubagentStart"
+            "command": "sh '~/skills/tldraw-offline/inject-server-context.sh' SubagentStart"
           }
         ]
       }

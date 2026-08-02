@@ -59,7 +59,7 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/sotayamashita/.claude/hooks/herdr-agent-state.sh' session",
+            "command": "bash '~/.claude/hooks/herdr-agent-state.sh' session",
             "timeout": 10,
             "type": "command"
           }
@@ -69,13 +69,13 @@
     ],
     "SubagentStart": [
       {
+        "matcher": "tldraw-offline",
         "hooks": [
           {
-            "command": "sh '/Users/sotayamashita/skills/tldraw-offline/inject-server-context.sh' SubagentStart",
-            "type": "command"
+            "type": "command",
+            "command": "sh '~/skills/tldraw-offline/inject-server-context.sh' SubagentStart"
           }
-        ],
-        "matcher": "tldraw-offline"
+        ]
       }
     ]
   },

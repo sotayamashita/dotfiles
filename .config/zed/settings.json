@@ -24,21 +24,14 @@
     "dock": "right"
   },
   "agent_servers": {
-    "codex-acp": {
-      "default_config_options": {
-        "mode": "full-access"
-      },
+    "claude-acp": {
       "type": "registry"
     },
-    "claude-acp": {
-      "favorite_config_option_values": {
-        "effort": [
-          "xhigh"
-        ]
-      },
+    "codex-acp": {
       "default_config_options": {
-        "mode": "bypassPermissions",
-        "effort": "xhigh"
+        "reasoning_effort": "medium",
+        "model": "gpt-5.5",
+        "mode": "full-access"
       },
       "type": "registry"
     },
@@ -74,11 +67,7 @@
   // Apply theme with automatic dark/light mode switching based on system.
   // List available themes: View > Theme Selector (cmd-k cmd-t)
   // See: https://zed.dev/docs/configuring-zed#theme
-  "theme": {
-    "mode": "system",
-    "light": "One Light",
-    "dark": "One Dark"
-  },
+  "theme": "Flexoki Dark",
   // File icon theme for project panel and tabs.
   // See: https://zed.dev/docs/configuring-zed#icon-theme
   "icon_theme": {

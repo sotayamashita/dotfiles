@@ -5,6 +5,7 @@ node   = "lts"
 pnpm   = "latest"
 python = "3.13"
 rust   = "latest"
+bun    = "latest"
 
 # Ruby Gems
 "gem:cocoapods" = "latest"
