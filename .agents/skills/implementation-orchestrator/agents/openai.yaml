@@ -1,0 +1,7 @@
+interface:
+  display_name: "Implementation Orchestrator"
+  short_description: "Route implementation"
+  default_prompt: "Use $implementation-orchestrator to implement this change, verify it against requirements, and validate it against user needs."
+
+policy:
+  allow_implicit_invocation: true
