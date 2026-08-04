@@ -14,6 +14,8 @@ thread_id="11111111-2222-4333-8444-555555555555"
 role="implementation_orchestrator_independent_verifier"
 prompt_token="PROMPT_CONTENT_MUST_NOT_APPEAR_7d7a9e"
 transcript="$sessions_dir/rollout-2026-08-03T00-00-00-$thread_id.jsonl"
+attestations_dir="$test_codex_home/implementation-orchestrator/attestations"
+attestation_file="$attestations_dir/$thread_id.json"
 
 mkdir -p "$sessions_dir" "$agents_dir"
 
@@ -32,6 +34,10 @@ run_cli() {
 
 run_hook() {
   HOME="$test_home" CODEX_HOME="$test_codex_home" python3 "$inspector" --hook
+}
+
+run_wait_hook() {
+  HOME="$test_home" CODEX_HOME="$test_codex_home" python3 "$inspector" --wait-hook
 }
 
 write_profile() {
@@ -68,6 +74,11 @@ write_rollout() {
     write_turn_context "$transcript_model" "$transcript_effort" "$transcript_sandbox"
     printf '{"type":"response_item","payload":{"message":"%s"}}\n' "$prompt_token"
   } >"$transcript"
+}
+
+write_completed_rollout() {
+  write_rollout "$@"
+  printf '{"type":"event_msg","payload":{"type":"task_complete"}}\n' >>"$transcript"
 }
 
 write_rollout_without_role() {
@@ -242,6 +253,43 @@ assert_no_prompt_token() {
   fi
 }
 
+assert_hook_attestation_file() {
+  local expected_source=$1
+  if [[ ! -f "$attestation_file" ]]; then
+    fail "hook attestation file was not written"
+  fi
+  if ! python3 - "$attestation_file" "$expected_source" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as source:
+    payload = json.load(source)
+
+allowed = {
+    "source",
+    "status",
+    "thread_id",
+    "parent_thread_id",
+    "agent_id",
+    "agent_role",
+    "model",
+    "effort",
+    "sandbox_policy_type",
+    "permission_profile_type",
+    "cwd",
+    "configured_service_tier",
+}
+if set(payload) != allowed:
+    raise SystemExit(1)
+if payload["source"] != sys.argv[2] or payload["status"] != "ok":
+    raise SystemExit(1)
+PY
+  then
+    fail "hook attestation file was not allowlisted"
+  fi
+  assert_no_prompt_token "$(<"$attestation_file")"
+}
+
 expect_cli_failure() {
   local label=$1
   local expected_error=$2
@@ -278,7 +326,16 @@ hook_output=$(printf '{"agent_transcript_path":"%s","agent_id":"%s","session_id"
   "$transcript" "$thread_id" "$role" "$prompt_token" | run_hook)
 assert_json_field "$hook_output" systemMessage '"RUNTIME_ATTESTATION_OK"'
 assert_no_prompt_token "$hook_output"
+assert_hook_attestation_file "SubagentStop"
 pass "hook success"
+
+write_completed_rollout "$role" "gpt-5.6-sol" "high" "read-only"
+printf '{"type":"session_meta","payload":{"base_instructions":"%s"}}\n' "$prompt_token" \
+  >"$sessions_dir/rollout-unrelated.jsonl"
+wait_hook_output=$(printf '{"session_id":"parent-01"}\n' | run_wait_hook)
+assert_json_field "$wait_hook_output" systemMessage '"RUNTIME_ATTESTATION_OK"'
+assert_hook_attestation_file "WaitFallback"
+pass "wait fallback completed child ignores unrelated malformed rollout"
 
 expect_cli_failure invalid_uuid "thread id must be a lowercase UUID" "INVALID-$prompt_token"
 
@@ -294,12 +351,11 @@ assert_no_prompt_token "$outside_output"
 pass "outside hook path"
 
 write_rollout "$role" "gpt-5.6-sol" "high" "read-only"
-agent_id_mismatch_output=$(printf '{"agent_transcript_path":"%s","agent_id":"66666666-7777-4888-8999-aaaaaaaaaaaa","session_id":"parent-01","agent_type":"%s","last_assistant_message":"%s"}\n' \
+opaque_agent_id_output=$(printf '{"agent_transcript_path":"%s","agent_id":"agent_runtime_attestation_probe","session_id":"parent-01","agent_type":"%s","last_assistant_message":"%s"}\n' \
   "$transcript" "$role" "$prompt_token" | run_hook)
-assert_json_field "$agent_id_mismatch_output" continue false
-assert_json_field "$agent_id_mismatch_output" systemMessage '"RUNTIME_ATTESTATION_FAILED"'
-assert_no_prompt_token "$agent_id_mismatch_output"
-pass "hook agent id mismatch"
+assert_json_field "$opaque_agent_id_output" systemMessage '"RUNTIME_ATTESTATION_OK"'
+assert_no_prompt_token "$opaque_agent_id_output"
+pass "hook opaque agent id"
 
 parent_session_mismatch_output=$(printf '{"agent_transcript_path":"%s","agent_id":"%s","session_id":"different-parent","agent_type":"%s","last_assistant_message":"%s"}\n' \
   "$transcript" "$thread_id" "$role" "$prompt_token" | run_hook)

@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
@@ -157,6 +158,49 @@ def read_rollout_metadata(transcript: Path) -> tuple[Mapping[str, Any], list[Map
     if not turn_contexts:
         raise AttestationError("missing turn context")
     return session_metadata[0], turn_contexts
+
+
+def read_session_metadata(transcript: Path) -> Mapping[str, Any]:
+    """Read only the leading session metadata while locating a child rollout."""
+
+    try:
+        with transcript.open("r", encoding="utf-8") as source:
+            for line in source:
+                if not line.strip():
+                    continue
+                record = json.loads(line)
+                if not isinstance(record, Mapping):
+                    raise AttestationError("invalid rollout JSONL")
+                if record.get("type") != "session_meta":
+                    continue
+                payload = record.get("payload")
+                if not isinstance(payload, Mapping):
+                    raise AttestationError("invalid rollout metadata")
+                return payload
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise AttestationError("invalid rollout JSONL") from exc
+    raise AttestationError("missing or ambiguous session metadata")
+
+
+def rollout_is_complete(transcript: Path) -> bool:
+    try:
+        with transcript.open("r", encoding="utf-8") as source:
+            for line in source:
+                if not line.strip():
+                    continue
+                record = json.loads(line)
+                if not isinstance(record, Mapping):
+                    raise AttestationError("invalid rollout JSONL")
+                if record.get("type") != "event_msg":
+                    continue
+                payload = record.get("payload")
+                if not isinstance(payload, Mapping):
+                    raise AttestationError("invalid rollout metadata")
+                if payload.get("type") == "task_complete":
+                    return True
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise AttestationError("invalid rollout JSONL") from exc
+    return False
 
 
 def profile_for_role(agent_role: str) -> AgentProfile:
@@ -371,6 +415,58 @@ def inspect_by_thread(thread_id: str) -> dict[str, Any]:
     return attest_transcript(transcript, expected_thread_id=thread_id)
 
 
+def hook_attestations_root() -> Path:
+    root = resolved_directory(codex_home(), "Codex home directory unavailable")
+    candidate = root / "implementation-orchestrator" / "attestations"
+    try:
+        candidate.mkdir(mode=0o700, parents=True, exist_ok=True)
+    except OSError as exc:
+        raise AttestationError("attestations directory unavailable") from exc
+    resolved = resolved_directory(candidate, "attestations directory unavailable")
+    if not is_inside(root, resolved):
+        raise AttestationError("invalid attestations directory")
+    return resolved
+
+
+def write_hook_attestation(attestation: Mapping[str, Any], *, source: str) -> None:
+    thread_id = attestation.get("thread_id")
+    if not isinstance(thread_id, str) or not THREAD_ID_RE.fullmatch(thread_id):
+        raise AttestationError("invalid thread identifier")
+
+    # Persist only the same routing metadata that the CLI emits. Hook input and
+    # rollout contents can contain prompts, so neither is copied to the audit.
+    audit = {"source": source, **attestation}
+    encoded = (json.dumps(audit, ensure_ascii=True, separators=(",", ":")) + "\n").encode(
+        "utf-8"
+    )
+    directory = hook_attestations_root()
+    target = directory / f"{thread_id}.json"
+    descriptor: int | None = None
+    temporary_path: str | None = None
+    try:
+        descriptor, temporary_path = tempfile.mkstemp(
+            prefix=".attestation-", suffix=".tmp", dir=directory
+        )
+        os.fchmod(descriptor, 0o600)
+        with os.fdopen(descriptor, "wb") as destination:
+            descriptor = None
+            destination.write(encoded)
+            destination.flush()
+            os.fsync(destination.fileno())
+        os.replace(temporary_path, target)
+        temporary_path = None
+    except OSError as exc:
+        raise AttestationError("could not write hook attestation") from exc
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+        if temporary_path is not None:
+            try:
+                os.unlink(temporary_path)
+            except OSError:
+                pass
+
+
 def inspect_hook() -> int:
     try:
         hook_input = json.loads(sys.stdin.read())
@@ -379,21 +475,23 @@ def inspect_hook() -> int:
         transcript_path = required_string(
             hook_input, "agent_transcript_path", "transcript path"
         )
-        # SubagentStop identifies the child rollout as agent_id and keeps the
-        # parent rollout in the common session_id field.
-        expected_thread_id = required_string(hook_input, "agent_id", "agent identifier")
+        # `agent_id` is an opaque runtime identifier. Native rollout metadata
+        # does not expose it, so it cannot be compared with the rollout's
+        # thread identifier. Require it to be present, then bind the hook to
+        # the hook-provided transcript path, parent session, and agent role.
+        required_string(hook_input, "agent_id", "agent identifier")
         expected_parent_thread_id = required_string(
             hook_input, "session_id", "parent session identifier"
         )
         expected_agent_role = optional_string(hook_input, "agent_type", "agent role")
         root = sessions_root()
         transcript = resolve_hook_transcript(root, transcript_path)
-        attest_transcript(
+        attestation = attest_transcript(
             transcript,
-            expected_thread_id=expected_thread_id,
             expected_parent_thread_id=expected_parent_thread_id,
             expected_agent_role=expected_agent_role,
         )
+        write_hook_attestation(attestation, source="SubagentStop")
     except Exception:
         # SubagentStop requires a JSON response. Do not expose the failure detail:
         # hook input and transcripts can contain prompts or assistant messages.
@@ -411,11 +509,79 @@ def inspect_hook() -> int:
     return 0
 
 
+def completed_child_transcripts(parent_thread_id: str) -> list[Path]:
+    root = sessions_root()
+    try:
+        candidates = root.rglob("rollout-*.jsonl")
+        transcripts = list(candidates)
+    except OSError as exc:
+        raise AttestationError("could not enumerate rollout files") from exc
+
+    completed_children: list[Path] = []
+    for candidate in transcripts:
+        try:
+            resolved = candidate.resolve(strict=True)
+        except (OSError, RuntimeError, ValueError) as exc:
+            continue
+        if not is_inside(root, resolved) or not resolved.is_file():
+            continue
+        try:
+            session_metadata = read_session_metadata(resolved)
+        except AttestationError:
+            # A malformed rollout cannot be associated with this parent, so it
+            # must not prevent attesting a completed, well-formed child.
+            continue
+        transcript_parent = optional_string(
+            session_metadata, "parent_thread_id", "parent identifier"
+        )
+        if transcript_parent != parent_thread_id:
+            continue
+        agent_role = optional_string(session_metadata, "agent_role", "agent role")
+        if agent_role is None or not agent_role.startswith("implementation_orchestrator_"):
+            continue
+        if rollout_is_complete(resolved):
+            completed_children.append(resolved)
+    return completed_children
+
+
+def inspect_wait_hook() -> int:
+    try:
+        hook_input = json.loads(sys.stdin.read())
+        if not isinstance(hook_input, Mapping):
+            raise AttestationError("invalid hook input")
+        parent_thread_id = required_string(
+            hook_input, "session_id", "parent session identifier"
+        )
+        attested = 0
+        for transcript in completed_child_transcripts(parent_thread_id):
+            attestation = attest_transcript(
+                transcript, expected_parent_thread_id=parent_thread_id
+            )
+            write_hook_attestation(attestation, source="WaitFallback")
+            attested += 1
+    except Exception:
+        emit_json(
+            {
+                "continue": False,
+                "systemMessage": "RUNTIME_ATTESTATION_FAILED",
+            }
+        )
+        return 0
+
+    if attested:
+        emit_json({"systemMessage": "RUNTIME_ATTESTATION_OK"})
+    return 0
+
+
 def main(arguments: Sequence[str]) -> int:
     if list(arguments) == ["--hook"]:
         return inspect_hook()
+    if list(arguments) == ["--wait-hook"]:
+        return inspect_wait_hook()
     if len(arguments) != 1:
-        sys.stderr.write("usage: runtime_attestation.py THREAD_ID | --hook\n")
+        sys.stderr.write(
+            "usage: runtime_attestation.py THREAD_ID | --hook | --wait-hook\n"
+        )
         return 2
     try:
         emit_json(inspect_by_thread(arguments[0]))

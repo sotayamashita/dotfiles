@@ -85,10 +85,15 @@ service tier was observed at runtime.
 
 Run the inspector explicitly after every delegated result. Do not rely on a
 `SubagentStop` hook message as the only evidence: the verified Codex 0.146.0
-client did not invoke project or user `SubagentStop` hooks for native custom
-agents. The inspector's `--hook` mode remains a compatibility adapter for a
-runtime that does deliver the documented hook event, but it does not replace
-the explicit thread-ID inspection.
+client can omit a success message from the parent event stream. When the
+configured `SubagentStop` hook runs successfully, it writes an allowlisted
+automatic attestation to
+`~/.codex/implementation-orchestrator/attestations/<child-thread-id>.json`.
+If a client omits `SubagentStop`, the configured `PostToolUse` fallback runs
+after the primary calls `Wait`, attesting completed custom subagents with
+`source: "WaitFallback"`. Require either source with `status: "ok"`; otherwise
+use the explicit thread-ID inspection above. The automatic record supplements
+but does not replace explicit inspection when detailed reporting is required.
 
 ## Route by residual implementation uncertainty
 

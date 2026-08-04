@@ -10,6 +10,16 @@
           }
         ],
         "matcher": "Edit|Write"
+      },
+      {
+        "matcher": ".*[Ww]ait.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.agents/skills/implementation-orchestrator/scripts/runtime_attestation.py --wait-hook",
+            "statusMessage": "Attesting completed subagents"
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -42,6 +52,18 @@
           {
             "type": "command",
             "command": "sh '~/skills/tldraw-offline/inject-server-context.sh' SubagentStart"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "^implementation_orchestrator_.*$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.agents/skills/implementation-orchestrator/scripts/runtime_attestation.py --hook",
+            "statusMessage": "Attesting subagent runtime"
           }
         ]
       }
