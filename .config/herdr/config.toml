@@ -321,3 +321,10 @@ key = "prefix+shift+f"
 type = "shell"
 command = "~/.config/herdr/fork-agent-session.sh"
 description = "fork active agent session"
+
+# Review the active working tree in Hunk and follow changes
+[[keys.command]]
+key = "prefix+shift+h"
+type = "pane"
+command = "~/.config/herdr/open-hunk.sh"
+description = "review working tree with Hunk"
