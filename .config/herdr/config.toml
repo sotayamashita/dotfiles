@@ -325,6 +325,6 @@ description = "fork active agent session"
 # Review the active working tree in Hunk and follow changes
 [[keys.command]]
 key = "prefix+shift+h"
-type = "pane"
+type = "shell"
 command = "~/.config/herdr/open-hunk.sh"
 description = "review working tree with Hunk"
