@@ -1,10 +1,22 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.codex/hooks/sfw-gate.sh\"",
+            "statusMessage": "Checking Bash command",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
     "PostToolUse": [
       {
         "hooks": [
           {
-            "command": "~/.codex/hooks/sfw-post-edit.sh",
+            "command": "\"$HOME/.codex/hooks/sfw-post-edit.sh\"",
             "statusMessage": "Checking dependency manifest edits",
             "type": "command"
           }
@@ -16,29 +28,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.agents/skills/implementation-orchestrator/scripts/runtime_attestation.py --wait-hook",
+            "command": "python3 \"$HOME/.agents/skills/implementation-orchestrator/scripts/runtime_attestation.py\" --wait-hook",
             "statusMessage": "Attesting completed subagents"
           }
         ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "~/.codex/hooks/sfw-gate.sh",
-            "statusMessage": "Checking Bash command",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
       }
     ],
     "SessionStart": [
       {
         "hooks": [
           {
-            "command": "bash '~/.codex/herdr-agent-state.sh' session",
+            "command": "bash \"$HOME/.codex/herdr-agent-state.sh\" session",
             "timeout": 10,
             "type": "command"
           }
@@ -51,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh '~/skills/tldraw-offline/inject-server-context.sh' SubagentStart"
+            "command": "sh \"$HOME/skills/tldraw-offline/inject-server-context.sh\" SubagentStart"
           }
         ]
       }
@@ -62,7 +62,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.agents/skills/implementation-orchestrator/scripts/runtime_attestation.py --hook",
+            "command": "python3 \"$HOME/.agents/skills/implementation-orchestrator/scripts/runtime_attestation.py\" --hook",
             "statusMessage": "Attesting subagent runtime"
           }
         ]
