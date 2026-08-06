@@ -1,8 +1,5 @@
 # AGENTS.md
 
-User-level defaults for coding agents.
-Keep this file minimal and vendor-neutral.
-
 <!-- Priorities & Precedence-->
 
 When guidance conflicts, more specific wins:

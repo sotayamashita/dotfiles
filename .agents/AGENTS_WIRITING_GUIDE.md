@@ -1,0 +1,2 @@
+- User-level defaults for coding agents.
+- Keep this file minimal and vendor-neutral.
