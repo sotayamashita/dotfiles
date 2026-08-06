@@ -421,4 +421,55 @@ expect_cli_failure conflicting_sandbox "conflicting sandbox policy" "$thread_id"
 write_rollout "$role" "gpt-5.6-sol" "high" "danger-full-access"
 expect_cli_failure sandbox_mismatch "sandbox policy does not match agent profile" "$thread_id"
 
+app_turn_id="aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"
+write_app_server_rollout() {
+  local app_model=$1
+  local app_effort=$2
+  local app_cwd=$3
+  local app_approval=$4
+  local app_sandbox=$5
+  local app_cli_version=$6
+  cat >"$transcript" <<EOF
+{"type":"session_meta","payload":{"id":"$thread_id","session_id":"$thread_id","originator":"implementation-orchestrator-independent-gate","source":"vscode","cli_version":"$app_cli_version","cwd":"/safe/workspace"}}
+{"type":"turn_context","payload":{"turn_id":"$app_turn_id","cwd":"$app_cwd","workspace_roots":["$app_cwd"],"approval_policy":"$app_approval","sandbox_policy":{"type":"$app_sandbox"},"permission_profile":{"type":"managed","network":"restricted"},"model":"$app_model","effort":"$app_effort"}}
+{"type":"event_msg","payload":{"type":"task_complete","turn_id":"$app_turn_id","error":null}}
+EOF
+}
+
+write_app_server_rollout gpt-5.6-sol high /safe/workspace never read-only 0.146.0
+app_output=$(run_cli --app-server "$thread_id" "$app_turn_id" /safe/workspace vscode 0.146.0)
+assert_json_field "$app_output" status '"ok"'
+assert_json_field "$app_output" runtime_kind '"app-server"'
+assert_json_field "$app_output" source '"vscode"'
+assert_json_field "$app_output" sandbox_policy_type '"read-only"'
+pass "App Server attestation uses its separate read-only contract"
+
+expect_cli_failure app_source_mismatch "source does not match thread/start response" \
+  --app-server "$thread_id" "$app_turn_id" /safe/workspace appServer 0.146.0
+
+write_app_server_rollout gpt-5.6-terra high /safe/workspace never read-only 0.146.0
+expect_cli_failure app_model_mismatch "model does not match independent gate policy" \
+  --app-server "$thread_id" "$app_turn_id" /safe/workspace vscode 0.146.0
+
+write_app_server_rollout gpt-5.6-sol max /safe/workspace never read-only 0.146.0
+expect_cli_failure app_effort_mismatch "effort does not match independent gate policy" \
+  --app-server "$thread_id" "$app_turn_id" /safe/workspace vscode 0.146.0
+
+write_app_server_rollout gpt-5.6-sol high /different/workspace never read-only 0.146.0
+expect_cli_failure app_cwd_mismatch "working directory mismatch" \
+  --app-server "$thread_id" "$app_turn_id" /safe/workspace vscode 0.146.0
+
+write_app_server_rollout gpt-5.6-sol high /safe/workspace on-request read-only 0.146.0
+expect_cli_failure app_approval_mismatch "App Server approval policy is not never" \
+  --app-server "$thread_id" "$app_turn_id" /safe/workspace vscode 0.146.0
+
+write_app_server_rollout gpt-5.6-sol high /safe/workspace never read-only 0.145.0
+expect_cli_failure app_cli_version_mismatch \
+  "CLI version does not match thread/start response" \
+  --app-server "$thread_id" "$app_turn_id" /safe/workspace vscode 0.146.0
+
+write_app_server_rollout gpt-5.6-sol high /safe/workspace never danger-full-access 0.146.0
+expect_cli_failure app_sandbox_mismatch "App Server sandbox policy is not read-only" \
+  --app-server "$thread_id" "$app_turn_id" /safe/workspace vscode 0.146.0
+
 printf 'runtime attestation tests passed\n'

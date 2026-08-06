@@ -22,6 +22,9 @@ from typing import Any, Mapping, Sequence
 THREAD_ID_RE = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
 )
+APP_SERVER_ORIGINATOR = "implementation-orchestrator-independent-gate"
+APP_SERVER_MODEL = "gpt-5.6-sol"
+APP_SERVER_EFFORT = "high"
 
 
 class AttestationError(Exception):
@@ -201,6 +204,38 @@ def rollout_is_complete(transcript: Path) -> bool:
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise AttestationError("invalid rollout JSONL") from exc
     return False
+
+
+def read_app_server_completion(
+    transcript: Path, expected_turn_id: str
+) -> Mapping[str, Any]:
+    completions: list[Mapping[str, Any]] = []
+    try:
+        with transcript.open("r", encoding="utf-8") as source:
+            for line in source:
+                if not line.strip():
+                    continue
+                record = json.loads(line)
+                if not isinstance(record, Mapping):
+                    raise AttestationError("invalid rollout JSONL")
+                if record.get("type") != "event_msg":
+                    continue
+                payload = record.get("payload")
+                if not isinstance(payload, Mapping):
+                    raise AttestationError("invalid rollout metadata")
+                if payload.get("type") != "task_complete":
+                    continue
+                if payload.get("turn_id") == expected_turn_id:
+                    completions.append(payload)
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise AttestationError("invalid rollout JSONL") from exc
+
+    if len(completions) != 1:
+        raise AttestationError("missing or ambiguous App Server turn completion")
+    completion = completions[0]
+    if completion.get("error") is not None:
+        raise AttestationError("App Server turn did not complete successfully")
+    return completion
 
 
 def profile_for_role(agent_role: str) -> AgentProfile:
@@ -415,6 +450,143 @@ def inspect_by_thread(thread_id: str) -> dict[str, Any]:
     return attest_transcript(transcript, expected_thread_id=thread_id)
 
 
+def attest_app_server_transcript(
+    transcript: Path,
+    *,
+    expected_thread_id: str,
+    expected_turn_id: str,
+    expected_cwd: str,
+    expected_source: str,
+    expected_cli_version: str,
+) -> dict[str, Any]:
+    """Attest one fresh App Server gate without applying subagent semantics."""
+
+    session_metadata, turn_contexts = read_rollout_metadata(transcript)
+    if len(turn_contexts) != 1:
+        raise AttestationError("App Server gate must contain exactly one turn context")
+    turn_context = turn_contexts[0]
+
+    thread_id = one_consistent_value(
+        "thread identifier",
+        [
+            optional_string(session_metadata, "id", "thread identifier"),
+            optional_string(session_metadata, "session_id", "thread identifier"),
+        ],
+        required=True,
+    )
+    if thread_id != expected_thread_id:
+        raise AttestationError("thread identifier mismatch")
+    if not THREAD_ID_RE.fullmatch(expected_thread_id):
+        raise AttestationError("invalid thread identifier")
+
+    if optional_string(session_metadata, "parent_thread_id", "parent identifier") is not None:
+        raise AttestationError("App Server gate unexpectedly has a parent thread")
+    if optional_string(session_metadata, "agent_role", "agent role") is not None:
+        raise AttestationError("App Server gate unexpectedly has an agent role")
+
+    turn_id = required_string(turn_context, "turn_id", "turn identifier")
+    if turn_id != expected_turn_id:
+        raise AttestationError("turn identifier mismatch")
+    if not THREAD_ID_RE.fullmatch(turn_id):
+        raise AttestationError("invalid turn identifier")
+
+    originator = required_string(session_metadata, "originator", "originator")
+    if originator != APP_SERVER_ORIGINATOR:
+        raise AttestationError("originator does not match independent gate runner")
+    source = required_string(session_metadata, "source", "source")
+    if source != expected_source:
+        raise AttestationError("source does not match thread/start response")
+    cli_version = required_string(session_metadata, "cli_version", "CLI version")
+    if cli_version != expected_cli_version:
+        raise AttestationError("CLI version does not match thread/start response")
+
+    model = required_string(turn_context, "model", "model")
+    if model != APP_SERVER_MODEL:
+        raise AttestationError("model does not match independent gate policy")
+    effort = required_string(turn_context, "effort", "effort")
+    if effort != APP_SERVER_EFFORT:
+        raise AttestationError("effort does not match independent gate policy")
+    sandbox_policy_type = policy_type(
+        turn_context,
+        direct_keys=("sandbox_mode", "sandbox_policy_type"),
+        object_key="sandbox_policy",
+        label="sandbox policy",
+    )
+    if sandbox_policy_type != "read-only":
+        raise AttestationError("App Server sandbox policy is not read-only")
+    approval_policy = required_string(turn_context, "approval_policy", "approval policy")
+    if approval_policy != "never":
+        raise AttestationError("App Server approval policy is not never")
+    cwd = required_string(turn_context, "cwd", "working directory")
+    if cwd != expected_cwd:
+        raise AttestationError("working directory mismatch")
+
+    workspace_roots = turn_context.get("workspace_roots")
+    if workspace_roots != [expected_cwd]:
+        raise AttestationError("workspace roots do not match working directory")
+    permission_profile_type = policy_type(
+        turn_context,
+        direct_keys=("permission_profile_type",),
+        object_key="permission_profile",
+        label="permission profile",
+    )
+    if permission_profile_type != "managed":
+        raise AttestationError("App Server permission profile is not managed")
+    permission_profile = turn_context.get("permission_profile")
+    if not isinstance(permission_profile, Mapping):
+        raise AttestationError("invalid permission profile")
+    network_policy = required_string(permission_profile, "network", "network policy")
+    if network_policy != "restricted":
+        raise AttestationError("App Server network policy is not restricted")
+
+    read_app_server_completion(transcript, expected_turn_id)
+    return {
+        "status": "ok",
+        "runtime_kind": "app-server",
+        "thread_id": thread_id,
+        "turn_id": turn_id,
+        "originator": originator,
+        "source": source,
+        "cli_version": cli_version,
+        "model": model,
+        "effort": effort,
+        "sandbox_policy_type": sandbox_policy_type,
+        "permission_profile_type": permission_profile_type,
+        "network_policy": network_policy,
+        "approval_policy": approval_policy,
+        "cwd": cwd,
+    }
+
+
+def inspect_app_server_thread(
+    thread_id: str,
+    turn_id: str,
+    expected_cwd: str,
+    expected_source: str,
+    expected_cli_version: str,
+) -> dict[str, Any]:
+    if not THREAD_ID_RE.fullmatch(thread_id):
+        raise AttestationError("thread id must be a lowercase UUID")
+    if not THREAD_ID_RE.fullmatch(turn_id):
+        raise AttestationError("turn id must be a lowercase UUID")
+    if not expected_cwd or not Path(expected_cwd).is_absolute():
+        raise AttestationError("working directory must be absolute")
+    if not expected_source:
+        raise AttestationError("source must be nonempty")
+    if not expected_cli_version:
+        raise AttestationError("CLI version must be nonempty")
+    root = sessions_root()
+    transcript = transcript_for_thread(root, thread_id)
+    return attest_app_server_transcript(
+        transcript,
+        expected_thread_id=thread_id,
+        expected_turn_id=turn_id,
+        expected_cwd=expected_cwd,
+        expected_source=expected_source,
+        expected_cli_version=expected_cli_version,
+    )
+
+
 def hook_attestations_root() -> Path:
     root = resolved_directory(codex_home(), "Codex home directory unavailable")
     candidate = root / "implementation-orchestrator" / "attestations"
@@ -578,9 +750,21 @@ def main(arguments: Sequence[str]) -> int:
         return inspect_hook()
     if list(arguments) == ["--wait-hook"]:
         return inspect_wait_hook()
+    if len(arguments) == 6 and arguments[0] == "--app-server":
+        try:
+            emit_json(
+                inspect_app_server_thread(
+                    arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]
+                )
+            )
+        except AttestationError as exc:
+            sys.stderr.write(f"RUNTIME_ATTESTATION_ERROR: {exc}\n")
+            return 1
+        return 0
     if len(arguments) != 1:
         sys.stderr.write(
-            "usage: runtime_attestation.py THREAD_ID | --hook | --wait-hook\n"
+            "usage: runtime_attestation.py THREAD_ID | --hook | --wait-hook | "
+            "--app-server THREAD_ID TURN_ID CWD SOURCE CLI_VERSION\n"
         )
         return 2
     try:

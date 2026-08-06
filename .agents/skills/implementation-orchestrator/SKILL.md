@@ -51,9 +51,10 @@ Never override those values per spawn.
 
 ## Attest every delegated result
 
-Before accepting a result from every implementation worker, Independent
-Verifier, or Independent Validator, attest its native routing. This applies to
-the routine, complex, critical, verifier, and validator lanes equally.
+Before accepting a result from every natively delegated implementation worker,
+attest its native routing. This applies to the routine, complex, and critical
+lanes. Independent Verification and Independent Validation use the separate App
+Server attestation contract below.
 
 1. Inspect the native public spawn/result metadata first. Record the selected
    role and every exposed model, effort, sandbox, permission, and thread value.
@@ -146,10 +147,13 @@ gate starts only after these checks pass.
 
 ## Run Independent Verification
 
-Read [verification-contract.md](references/verification-contract.md). Spawn a new
-`implementation_orchestrator_independent_verifier` with `fork_turns: none`.
-Require it to remain read-only and compare the implementation only with the
-verification baseline.
+Read [verification-contract.md](references/verification-contract.md). Write the
+input packet to a UTF-8 file, then run the contract's `verification` command.
+The runner starts one fresh `codex app-server --stdio` thread with its own
+read-only sandbox, structured output schema, and runtime attestation. Parent
+permissions do not need to change. Keep the
+`implementation_orchestrator_independent_verifier` custom-agent profile intact;
+it records the role policy but is not the automatic gate transport.
 
 Accept exactly one verdict:
 
@@ -165,10 +169,12 @@ capability unless implementation itself failed.
 ## Run Independent Validation
 
 After Verification returns `conforms`, read
-[validation-contract.md](references/validation-contract.md). Spawn a new
-`implementation_orchestrator_independent_validator` with `fork_turns: none`.
-Require it to remain read-only and compare observed outcomes only with the
-validation baseline.
+[validation-contract.md](references/validation-contract.md). Write a separate
+input packet and run the contract's `validation` command as a separate process.
+The runner starts another fresh App Server thread. Never reuse the Verification
+thread or combine both gates in one invocation. Keep the
+`implementation_orchestrator_independent_validator` custom-agent profile intact;
+it records the role policy but is not the automatic gate transport.
 
 Accept exactly one verdict:
 
@@ -183,13 +189,16 @@ and ask for the missing user observation or decision.
 
 ## Preserve independence
 
-Verification and Validation must use different fresh threads from each other and
-from every implementer. Both request `sandbox_mode = "read-only"`. Inspect the
-observed sandbox when available. If the host broadens it, record exact repository
-state before and after the review and reject the result if anything changed. Do
-not claim model-family independence when the primary, verifier, and validator use
-the same model family; independence then means separate role, context, and
-read-only execution only.
+Verification and Validation must use different fresh App Server threads from
+each other and from every implementer. Run
+`scripts/run_independent_gate.py` once per named gate. It requests thread sandbox
+`read-only`, turn sandbox policy `readOnly` with network disabled, approval
+`never`, `gpt-5.6-sol`, effort `high`, service tier `default`, and the exact
+working directory. It rejects missing or mismatched rollout attestation and a
+changed SHA-256 hash of `git diff --binary`. An unchanged diff cannot compensate
+for missing runtime evidence or a non-read-only sandbox. Do not claim model-family
+independence when the primary, verifier, and validator use the same model family;
+independence then means a separate fresh context and attested read-only execution.
 
 ## Report completion precisely
 
