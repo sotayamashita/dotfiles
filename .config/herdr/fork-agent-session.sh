@@ -75,11 +75,11 @@ cleanup_on_error() {
 }
 
 main() {
-  local agent agent_name cwd
+  local agent agent_name approval_policy cwd permission_mode
   local -a agent_arguments
   local direction='down'
   local pane_height pane_json pane_rect pane_width
-  local session_id
+  local permission_settings sandbox_mode session_file session_id state_dir
 
   trap cleanup_on_error EXIT
 
@@ -106,10 +106,64 @@ main() {
 
   case "${agent}" in
     codex)
-      agent_arguments=(fork "${session_id}")
+      state_dir="${CODEX_HOME:-${HOME}/.codex}"
+      session_file="$(
+        fd --type f --glob "rollout-*-${session_id}.jsonl" \
+          --max-results 1 "${state_dir}/sessions"
+      )"
+      permission_settings="$(
+        jq -ers '
+          [
+            .[]
+            | select(.type == "turn_context")
+            | [
+                .payload.sandbox_policy.type,
+                .payload.approval_policy
+              ]
+            | select(all(.[]; type == "string" and length > 0))
+          ]
+          | last
+          | @tsv
+        ' "${session_file}"
+      )"
+      IFS=$'\t' read -r sandbox_mode approval_policy \
+        <<<"${permission_settings}"
+      case "${sandbox_mode}" in
+        read-only | workspace-write | danger-full-access) ;;
+        *) return 1 ;;
+      esac
+      case "${approval_policy}" in
+        untrusted | on-request | never) ;;
+        *) return 1 ;;
+      esac
+      agent_arguments=(
+        fork
+        --sandbox "${sandbox_mode}"
+        --ask-for-approval "${approval_policy}"
+        "${session_id}"
+      )
       ;;
     claude)
-      agent_arguments=(--resume "${session_id}" --fork-session)
+      state_dir="${CLAUDE_CONFIG_DIR:-${HOME}/.claude}"
+      session_file="$(
+        fd --type f --glob "${session_id}.jsonl" \
+          --max-results 1 "${state_dir}/projects"
+      )"
+      permission_mode="$(
+        jq -ers '
+          [.[] | .permissionMode? | select(type == "string" and length > 0)]
+          | last
+        ' "${session_file}"
+      )"
+      case "${permission_mode}" in
+        acceptEdits | auto | bypassPermissions | manual | dontAsk | plan) ;;
+        *) return 1 ;;
+      esac
+      agent_arguments=(
+        --permission-mode "${permission_mode}"
+        --resume "${session_id}"
+        --fork-session
+      )
       ;;
     *)
       notify_failure "Session forking supports only Codex and Claude Code."
