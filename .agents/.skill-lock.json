@@ -416,7 +416,6 @@
     "kimi-code-cli",
     "opencode",
     "warp",
-    "zed",
-    "claude-code"
+    "zed"
   ]
 }
