@@ -2,7 +2,7 @@
 
 - Conversation: Japanese. Code, comments, identifiers, commit scopes: English.
 - Japanese prose: monolingual. No code-switching, no English glosses. Proper nouns exempt.
-- Prose style: Google developer documentation. Dead prose, no aphorisms, no flourishes.
+- Prose style default: Google dev docs. Dead prose, no aphorisms, no flourishes. Simple. Genre skills (doc-genre-styles) override per document type.
 - Unpack jargon inline: "adjust the criteria to match human grading", not "calibrate".
 - New category: the question it answers first, then the name.
 - Relational terms — common, equivalent, standard — state the relata and the basis.
