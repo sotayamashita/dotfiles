@@ -398,6 +398,15 @@
       "skillFolderHash": "d4e0dd3d903c50d2edb8c3cec71952a83989b310",
       "installedAt": "2026-07-25T12:40:58.701Z",
       "updatedAt": "2026-07-25T12:40:58.701Z"
+    },
+    "show-me": {
+      "source": "humanlayer/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/humanlayer/skills.git",
+      "skillPath": "plugins/show-me/skills/show-me/SKILL.md",
+      "skillFolderHash": "a8eda6381157e27b067400b46cdf395da68b8670",
+      "installedAt": "2026-08-13T09:58:20.769Z",
+      "updatedAt": "2026-08-13T09:58:20.769Z"
     }
   },
   "dismissed": {
