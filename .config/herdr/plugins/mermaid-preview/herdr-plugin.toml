@@ -1,0 +1,12 @@
+id = "sotayamashita.mermaid-preview"
+name = "Mermaid Preview"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Render the latest Mermaid block from an agent session in a side pane."
+platforms = ["macos", "linux"]
+
+[[actions]]
+id = "show"
+title = "Show latest Mermaid diagram"
+contexts = ["pane"]
+command = ["python3", "scripts/mermaid_preview.py"]

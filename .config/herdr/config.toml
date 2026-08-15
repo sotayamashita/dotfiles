@@ -285,7 +285,7 @@ prefix = "ctrl+b"
 # allow_nested = false
 # Experimental local Kitty graphics rendering for attached clients.
 # Requires a Kitty graphics-compatible outer terminal.
-# kitty_graphics = false
+kitty_graphics = true
 # Save recent pane screen history across full server restarts.
 pane_history = false
 # While prefix mode is active, temporarily switch the macOS host input
@@ -318,13 +318,20 @@ switch_ascii_input_source_in_prefix = true
 # Fork the active Codex or Claude Code session into a new pane
 [[keys.command]]
 key = "prefix+shift+f"
-type = "shell"
-command = "~/.config/herdr/fork-agent-session.sh"
+type = "plugin_action"
+command = "sotayamashita.agent-session-fork.fork"
 description = "fork active agent session"
 
 # Review the active working tree in Hunk and follow changes
 [[keys.command]]
 key = "prefix+shift+h"
-type = "shell"
-command = "~/.config/herdr/open-hunk.sh"
+type = "plugin_action"
+command = "sotayamashita.hunk-review.open"
 description = "review working tree with Hunk"
+
+# Render the latest Mermaid block from the active agent session
+[[keys.command]]
+key = "prefix+shift+m"
+type = "plugin_action"
+command = "sotayamashita.mermaid-preview.show"
+description = "show latest Mermaid diagram"

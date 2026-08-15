@@ -1,0 +1,12 @@
+id = "sotayamashita.hunk-review"
+name = "Hunk Review"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Open the active working tree in Hunk watch mode."
+platforms = ["macos", "linux"]
+
+[[actions]]
+id = "open"
+title = "Review active working tree in Hunk"
+contexts = ["pane"]
+command = ["bash", "scripts/open_hunk.sh"]

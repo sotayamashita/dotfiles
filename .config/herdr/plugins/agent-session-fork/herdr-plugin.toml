@@ -1,0 +1,12 @@
+id = "sotayamashita.agent-session-fork"
+name = "Agent Session Fork"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Fork the active Codex or Claude Code session with inherited permissions."
+platforms = ["macos", "linux"]
+
+[[actions]]
+id = "fork"
+title = "Fork active agent session"
+contexts = ["pane"]
+command = ["python3", "scripts/fork_agent_session.py"]

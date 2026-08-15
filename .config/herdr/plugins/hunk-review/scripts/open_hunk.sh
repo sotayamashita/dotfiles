@@ -4,6 +4,10 @@
 
 set -euo pipefail
 
+readonly HERDR="${HERDR_BIN_PATH:-herdr}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+readonly SCRIPT_PATH="${SCRIPT_DIR}/open_hunk.sh"
 NEW_PANE_ID=''
 
 print_error() {
@@ -14,7 +18,7 @@ notify_failure() {
   local message="$1"
 
   print_error "${message}"
-  herdr notification show "Hunk launch failed" \
+  "${HERDR}" notification show "Hunk launch failed" \
     --body "${message}" \
     --sound request >/dev/null 2>&1 || true
 }
@@ -27,6 +31,7 @@ wait_for_close() {
 #######################################
 # Removes the pane created by this script after a launch failure.
 # Globals:
+#   HERDR
 #   NEW_PANE_ID
 # Arguments:
 #   None
@@ -39,7 +44,7 @@ cleanup_on_error() {
   fi
 
   if [[ -n "${NEW_PANE_ID}" ]]; then
-    herdr pane close "${NEW_PANE_ID}" >/dev/null 2>&1 || true
+    "${HERDR}" pane close "${NEW_PANE_ID}" >/dev/null 2>&1 || true
   fi
   notify_failure 'The Hunk pane could not be opened.'
 }
@@ -79,49 +84,59 @@ run_hunk() {
 #######################################
 # Opens a pane to the right of the active pane and starts Hunk in it.
 # Globals:
-#   HERDR_ACTIVE_PANE_CWD
-#   HERDR_ACTIVE_PANE_ID
+#   HERDR
+#   HERDR_PANE_ID
 #   NEW_PANE_ID
+#   SCRIPT_PATH
 # Arguments:
 #   None
 #######################################
 open_hunk_pane() {
-  local pane_json
+  local cwd pane_json run_command
+  local active_pane_id="${HERDR_PANE_ID:-}"
 
-  if [[ -z "${HERDR_ACTIVE_PANE_ID:-}" ]] ||
-    [[ -z "${HERDR_ACTIVE_PANE_CWD:-}" ]]; then
-    notify_failure 'The active Herdr pane or working directory is unavailable.'
+  if [[ -z "${active_pane_id}" ]]; then
+    notify_failure 'The active Herdr pane is unavailable.'
     return 1
   fi
+
+  cwd="$(
+    "${HERDR}" pane get "${active_pane_id}" |
+      jq -er '
+        .result.pane.foreground_cwd
+        // .result.pane.cwd
+        | select(length > 0)
+      '
+  )"
 
   trap cleanup_on_error EXIT
 
   pane_json="$(
-    herdr pane split "${HERDR_ACTIVE_PANE_ID}" \
+    "${HERDR}" pane split "${active_pane_id}" \
       --direction right \
-      --cwd "${HERDR_ACTIVE_PANE_CWD}" \
+      --cwd "${cwd}" \
       --focus
   )"
   NEW_PANE_ID="$(jq -er '.result.pane.pane_id' <<<"${pane_json}")"
 
-  herdr pane run "${NEW_PANE_ID}" \
-    'exec ~/.config/herdr/open-hunk.sh --run' >/dev/null
+  printf -v run_command 'exec %q --run' "${SCRIPT_PATH}"
+  "${HERDR}" pane run "${NEW_PANE_ID}" "${run_command}" >/dev/null
 
   trap - EXIT
 }
 
 main() {
   case "${1:-}" in
-  --run)
-    run_hunk
-    ;;
-  '')
-    open_hunk_pane
-    ;;
-  *)
-    print_error "Unknown argument: $1"
-    return 2
-    ;;
+    --run)
+      run_hunk
+      ;;
+    '')
+      open_hunk_pane
+      ;;
+    *)
+      print_error "Unknown argument: $1"
+      return 2
+      ;;
   esac
 }
 
