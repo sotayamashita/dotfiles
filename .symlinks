@@ -47,8 +47,6 @@ dir:.codex/skills/*
 
 # herdr
 .config/herdr/config.toml
-.config/herdr/fork-agent-session.sh
-.config/herdr/open-hunk.sh
 
 # Starship prompt
 .config/starship.toml

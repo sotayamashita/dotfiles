@@ -59,6 +59,7 @@ brew "yq"                       # YAML processor
 brew "sevenzip"                 # Archive tool
 brew "ffmpeg"                   # Video/audio processing
 brew "imagemagick"              # Image processing
+brew "mermaid-cli"              # Mermaid diagram rendering
 brew "poppler"                  # PDF rendering
 brew "resvg"                    # SVG rendering
 brew "trasta298/tap/keifu"      # Directory tree visualizer
