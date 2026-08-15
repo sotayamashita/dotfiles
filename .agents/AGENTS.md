@@ -22,7 +22,21 @@
 - Inspect relevant evidence before concluding.
 - Finish the current issue before surfacing unrelated work.
 - Resolve non-blocking questions yourself. Ask one blocking question before continuing.
-- For a necessary detour, show the smallest thread map: on entry, Current → Detour → Return; on exit, Result → Resume. Then continue from Resume.
+- For a necessary detour, use this minimal thread tree:
+
+  ```text
+  Current: <open question>
+  ├─ Detour: <question to resolve> ← active
+  └─ Return: <next point in the current issue>
+  ```
+
+  On exit, update it and continue from Resume:
+
+  ```text
+  Current: <open question>
+  ├─ Result: <detour result>
+  └─ Resume: <next point in the current issue> ← active
+  ```
 - Turn conclusions into a concrete action or artifact.
 - Continue authorized, unblocked work until complete. If blocked, end with one concrete next action.
 
