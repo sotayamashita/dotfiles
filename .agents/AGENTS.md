@@ -48,6 +48,13 @@
 
 ## Tools and file operations
 
+Prefer the fff MCP tools for file and source-code search in this repository.
+
+- Use `fffind` for locating files and paths.
+- Use `ffgrep` for searching file contents.
+- Use `fff-multi-grep` when searching for multiple patterns.
+- Prefer fff over repeated `find`, `grep`, `rg`, or filesystem scans.
+- Use `rg` or other native tools only when fff cannot express the required query.
 - Use `fd`, not `find`; use `sd`, not `sed`.
 - For ad hoc inspection and validation, prefer `jq` for JSON, `yq` for YAML, and `xan` for CSV.
 - Use project runtime versions through `mise` when configured.
