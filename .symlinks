@@ -30,8 +30,6 @@ dir:.claude/skills/*
 .codex/hooks/*.sh
 .codex/rules/*.rules
 .codex/AGENTS.md
-.codex/agents/*.toml
-dir:.codex/skills/*
 !.codex/config.example.toml
 
 # Fish shell
