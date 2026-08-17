@@ -79,25 +79,6 @@ brew "hunk"
 
 
 # ------------------------------
-# macOS Desktop Apps
-# ------------------------------
-# Window management & system
-cask "raycast"
-cask "divvy"
-cask "cleanshot"
-cask "1password"
-# Development
-cask "docker-desktop"
-cask "zed"
-cask "visual-studio-code"
-# Communication & media
-cask "google-chrome"
-cask "slack"
-cask "obsidian"
-cask "spotify"
-
-
-# ------------------------------
 # Fonts
 # ------------------------------
 cask "font-fira-code-nerd-font"
