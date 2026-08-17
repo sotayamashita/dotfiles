@@ -407,6 +407,15 @@
       "skillFolderHash": "a8eda6381157e27b067400b46cdf395da68b8670",
       "installedAt": "2026-08-13T09:58:20.769Z",
       "updatedAt": "2026-08-13T09:58:20.769Z"
+    },
+    "bridge-mode": {
+      "source": "sotayamashita/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/sotayamashita/skills.git",
+      "skillPath": "skills/bridge-mode/SKILL.md",
+      "skillFolderHash": "a9c7cfe4f4b41f60e2830fca714ca8ace5d75520",
+      "installedAt": "2026-08-17T05:29:40.753Z",
+      "updatedAt": "2026-08-17T05:29:40.753Z"
     }
   },
   "dismissed": {
@@ -425,6 +434,7 @@
     "kimi-code-cli",
     "opencode",
     "warp",
-    "zed"
+    "zed",
+    "claude-code"
   ]
 }
