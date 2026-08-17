@@ -52,9 +52,6 @@ dir:.claude/skills/*
 # Mise (runtime version manager)
 .config/mise/config.toml
 
-# JankyBorders
-.config/borders/bordersrc
-
 # Git configuration
 .gitconfig
 .gitconfig.*
