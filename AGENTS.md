@@ -21,6 +21,9 @@ live in `.agents/AGENTS.md` and are symlinked into Claude/Codex homes.
 - Run `./scripts/symlink.py --dry-run` to preview symlinks without changes.
 - Run `./scripts/symlink.py` to create symlinks defined in .symlinks.
 - Validate changes by spot-checking created links in $HOME.
+- Run `./scripts/mcp.py --dry-run` to preview MCP server registration, then `./scripts/mcp.py` to apply it.
+- Run `./scripts/herdr.py --dry-run` to preview Herdr plugin registration, then `./scripts/herdr.py` to apply it.
+- Run each `python3 scripts/test_*.py` after changing the script beside it.
 - For installers, run the specific script and confirm the tool/version installs cleanly.
 
 ## Symlink Workflow
@@ -33,7 +36,7 @@ live in `.agents/AGENTS.md` and are symlinked into Claude/Codex homes.
 ## Project Structure
 
 - Root contains dotfiles and config assets (.gitconfig, .Brewfile, .config/, .claude/, .codex/).
-- scripts/ holds automation: symlink.py manages symlinks from repo into $HOME via .symlinks.
+- scripts/ holds automation, each with a test_*.py beside it: symlink.py manages symlinks from repo into $HOME via .symlinks; mcp.py and herdr.py re-create registrations that live in untracked machine state (Claude/Codex MCP config, Herdr's plugins.json) rather than in symlinkable files.
 - .agents/ contains vendor-neutral global coding-agent defaults and local skills.
 - .claude/ and .codex/ contain tool-specific config that may symlink to .agents/.
 - Root `AGENTS.md` is project-specific and should not be symlinked into $HOME.
