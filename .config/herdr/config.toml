@@ -328,10 +328,3 @@ key = "prefix+shift+h"
 type = "plugin_action"
 command = "sotayamashita.hunk-review.open"
 description = "review working tree with Hunk"
-
-# Render the latest Mermaid block from the active agent session
-[[keys.command]]
-key = "prefix+shift+m"
-type = "plugin_action"
-command = "sotayamashita.mermaid-preview.show"
-description = "show latest Mermaid diagram"
