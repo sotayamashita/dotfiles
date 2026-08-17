@@ -129,20 +129,18 @@ class ArgvTest(TestCase):
         )
 
     def test_github_plugin_is_installed_without_prompting(self) -> None:
-        spec = PluginSpec(
-            "herdr-file-viewer", Origin.GITHUB, "smarzban/herdr-file-viewer"
-        )
+        spec = PluginSpec("demo-viewer", Origin.GITHUB, "owner/demo-viewer")
 
         # --yes matters: the script must not block on an install confirmation.
         self.assertEqual(
             build_argv(spec),
-            ["herdr", "plugin", "install", "--yes", "smarzban/herdr-file-viewer"],
+            ["herdr", "plugin", "install", "--yes", "owner/demo-viewer"],
         )
 
     def test_github_spec_uses_the_repo_name_as_id(self) -> None:
-        specs = github_specs(["smarzban/herdr-file-viewer"])
+        specs = github_specs(["owner/demo-viewer"])
 
-        self.assertEqual(specs[0].plugin_id, "herdr-file-viewer")
+        self.assertEqual(specs[0].plugin_id, "demo-viewer")
         self.assertEqual(specs[0].origin, Origin.GITHUB)
 
 

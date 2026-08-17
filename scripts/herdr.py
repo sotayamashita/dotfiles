@@ -37,7 +37,7 @@ PLUGINS_DIR = DOTFILES_DIR / ".config/herdr/plugins"
 MANIFEST_NAME = "herdr-plugin.toml"
 
 # Plugins installed from GitHub, as accepted by `herdr plugin install`.
-GITHUB_PLUGINS: tuple[str, ...] = ("smarzban/herdr-file-viewer",)
+GITHUB_PLUGINS: tuple[str, ...] = ()
 
 
 class Origin(Enum):
