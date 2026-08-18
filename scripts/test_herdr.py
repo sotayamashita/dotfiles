@@ -1,5 +1,6 @@
 from contextlib import redirect_stderr, redirect_stdout
 import io
+import json
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
@@ -9,18 +10,44 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from herdr import (
     ActionKind,
+    IntegrationSpec,
     Origin,
-    PluginPlan,
+    Plan,
     PluginSpec,
     apply_plan,
     build_argv,
     discover_local_plugins,
+    get_integration_plans,
     get_plugin_plans,
     github_specs,
+    normalize_hook_entries,
+    normalize_hook_file,
     parse_installed,
+    parse_integration_status,
     read_plugin_id,
     stale_registrations,
 )
+
+HOOK_COMMAND = 'bash "$HOME/.codex/herdr-agent-state.sh" session'
+HERDR_HOOK = "bash '/Users/me/.codex/herdr-agent-state.sh' session"
+
+
+def session_start(*entries: dict) -> dict:
+    """Build an agent config holding the given SessionStart entries."""
+    return {"hooks": {"SessionStart": list(entries)}}
+
+
+def hook_entry(*commands: str) -> dict:
+    """Build one SessionStart entry running the given commands."""
+    return {"hooks": [{"type": "command", "command": cmd} for cmd in commands]}
+
+
+def commands_of(config: dict) -> list[list[str]]:
+    """List the commands per SessionStart entry, for readable assertions."""
+    return [
+        [hook["command"] for hook in entry["hooks"]]
+        for entry in config["hooks"]["SessionStart"]
+    ]
 
 
 def write_plugin(plugins_dir: Path, directory: str, manifest: str | None) -> Path:
@@ -184,7 +211,7 @@ class StaleRegistrationTest(TestCase):
         self.assertEqual(stale, [])
 
 
-class PluginPlanTest(TestCase):
+class PlanTest(TestCase):
     def test_unregistered_plugin_is_added(self) -> None:
         spec = PluginSpec("me.demo", Origin.LOCAL, "/repo/demo")
 
@@ -226,7 +253,157 @@ class PluginPlanTest(TestCase):
 
         plans = get_plugin_plans(specs, {})
 
-        self.assertEqual([plan.plugin_id for plan in plans], ["a", "b"])
+        self.assertEqual([plan.target for plan in plans], ["a", "b"])
+
+
+class ParseIntegrationStatusTest(TestCase):
+    def test_reads_every_state_herdr_reports(self) -> None:
+        payload = (
+            "claude: current (v7) (/home/me/.claude/hooks/herdr-agent-state.sh)\n"
+            "codex: outdated (v6) (/home/me/.codex/herdr-agent-state.sh)\n"
+            "grok: not installed (/home/me/.grok/hooks/herdr-agent-state.sh)\n"
+        )
+
+        self.assertEqual(
+            parse_integration_status(payload),
+            {"claude": "current", "codex": "outdated", "grok": "not installed"},
+        )
+
+    def test_unparsable_output_yields_empty_mapping(self) -> None:
+        self.assertEqual(parse_integration_status("usage: herdr integration"), {})
+
+
+class IntegrationPlanTest(TestCase):
+    def spec(self, integration_id: str = "codex") -> IntegrationSpec:
+        return IntegrationSpec(integration_id, Path("/repo/hooks.json"), HOOK_COMMAND)
+
+    def test_missing_integration_is_installed(self) -> None:
+        plans = get_integration_plans([self.spec()], {"codex": "not installed"})
+
+        self.assertEqual(plans[0].kind, ActionKind.ADD)
+        self.assertEqual(plans[0].argv, ("herdr", "integration", "install", "codex"))
+
+    def test_outdated_integration_is_reinstalled(self) -> None:
+        plans = get_integration_plans([self.spec()], {"codex": "outdated"})
+
+        self.assertEqual(plans[0].kind, ActionKind.ADD)
+
+    def test_current_integration_is_skipped(self) -> None:
+        plans = get_integration_plans([self.spec()], {"codex": "current"})
+
+        self.assertEqual(plans[0].kind, ActionKind.SKIP)
+        self.assertEqual(plans[0].argv, ())
+
+    def test_unknown_integration_fails_instead_of_installing(self) -> None:
+        # herdr fixes its target list at build time, so an id it never reports
+        # cannot be installed by asking harder.
+        plans = get_integration_plans([self.spec("nosuch")], {"codex": "current"})
+
+        self.assertEqual(plans[0].kind, ActionKind.FAIL)
+        self.assertEqual(plans[0].argv, ())
+
+    def test_one_plan_per_spec_in_order(self) -> None:
+        specs = [self.spec("claude"), self.spec("codex")]
+
+        plans = get_integration_plans(specs, {})
+
+        self.assertEqual([plan.target for plan in plans], ["claude", "codex"])
+
+
+class NormalizeHookEntriesTest(TestCase):
+    def test_portable_hook_is_left_alone(self) -> None:
+        config = session_start(hook_entry(HOOK_COMMAND))
+
+        self.assertFalse(normalize_hook_entries(config, HOOK_COMMAND))
+        self.assertEqual(commands_of(config), [[HOOK_COMMAND]])
+
+    def test_absolute_hook_is_rewritten(self) -> None:
+        config = session_start(hook_entry(HERDR_HOOK))
+
+        self.assertTrue(normalize_hook_entries(config, HOOK_COMMAND))
+        self.assertEqual(commands_of(config), [[HOOK_COMMAND]])
+
+    def test_appended_duplicate_is_dropped(self) -> None:
+        config = session_start(hook_entry(HOOK_COMMAND), hook_entry(HERDR_HOOK))
+
+        self.assertTrue(normalize_hook_entries(config, HOOK_COMMAND))
+        self.assertEqual(commands_of(config), [[HOOK_COMMAND]])
+
+    def test_first_entry_keeps_its_position_and_other_keys(self) -> None:
+        entry = hook_entry(HERDR_HOOK) | {"matcher": "*"}
+        config = session_start(hook_entry("other.sh"), entry)
+
+        self.assertTrue(normalize_hook_entries(config, HOOK_COMMAND))
+        self.assertEqual(commands_of(config), [["other.sh"], [HOOK_COMMAND]])
+        self.assertEqual(config["hooks"]["SessionStart"][1]["matcher"], "*")
+
+    def test_unrelated_hooks_sharing_a_duplicate_entry_survive(self) -> None:
+        config = session_start(
+            hook_entry(HOOK_COMMAND),
+            hook_entry(HERDR_HOOK, "other.sh"),
+        )
+
+        self.assertTrue(normalize_hook_entries(config, HOOK_COMMAND))
+        self.assertEqual(commands_of(config), [[HOOK_COMMAND], ["other.sh"]])
+
+    def test_other_hook_events_are_untouched(self) -> None:
+        config = session_start(hook_entry(HERDR_HOOK))
+        config["hooks"]["PreToolUse"] = [hook_entry("gate.sh")]
+
+        normalize_hook_entries(config, HOOK_COMMAND)
+
+        self.assertEqual(config["hooks"]["PreToolUse"], [hook_entry("gate.sh")])
+
+    def test_config_without_session_start_is_left_alone(self) -> None:
+        self.assertFalse(normalize_hook_entries({}, HOOK_COMMAND))
+        self.assertFalse(normalize_hook_entries({"hooks": {}}, HOOK_COMMAND))
+
+
+class NormalizeHookFileTest(TestCase):
+    def write(self, tmp: str, config: dict) -> Path:
+        path = Path(tmp) / "hooks.json"
+        path.write_text(json.dumps(config, indent=2) + "\n")
+        return path
+
+    def test_rewrites_the_file_and_keeps_it_json(self) -> None:
+        with TemporaryDirectory() as tmp:
+            path = self.write(tmp, session_start(hook_entry(HERDR_HOOK)))
+
+            ok = quiet_call(normalize_hook_file, path, HOOK_COMMAND, False)
+
+            self.assertTrue(ok)
+            self.assertEqual(
+                commands_of(json.loads(path.read_text())), [[HOOK_COMMAND]]
+            )
+
+    def test_dry_run_leaves_the_file_untouched(self) -> None:
+        with TemporaryDirectory() as tmp:
+            path = self.write(tmp, session_start(hook_entry(HERDR_HOOK)))
+            before = path.read_text()
+
+            ok = quiet_call(normalize_hook_file, path, HOOK_COMMAND, True)
+
+            self.assertTrue(ok)
+            self.assertEqual(path.read_text(), before)
+
+    def test_unchanged_file_is_not_rewritten(self) -> None:
+        with TemporaryDirectory() as tmp:
+            path = self.write(tmp, session_start(hook_entry(HOOK_COMMAND)))
+            before = path.stat().st_mtime_ns
+
+            ok = quiet_call(normalize_hook_file, path, HOOK_COMMAND, False)
+
+            self.assertTrue(ok)
+            self.assertEqual(path.stat().st_mtime_ns, before)
+
+    def test_unreadable_file_is_reported_as_failure(self) -> None:
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "hooks.json"
+            path.write_text("{ not json")
+
+            ok = quiet_call(normalize_hook_file, path, HOOK_COMMAND, False)
+
+            self.assertFalse(ok)
 
 
 class ApplyPlanTest(TestCase):
@@ -241,7 +418,7 @@ class ApplyPlanTest(TestCase):
         return run
 
     def test_add_invokes_herdr_with_the_planned_argv(self) -> None:
-        plan = PluginPlan("me.demo", ActionKind.ADD, ("herdr", "plugin", "link", "/x"))
+        plan = Plan("me.demo", ActionKind.ADD, ("herdr", "plugin", "link", "/x"))
 
         ok = quiet_call(apply_plan, plan, False, self.runner())
 
@@ -249,7 +426,7 @@ class ApplyPlanTest(TestCase):
         self.assertEqual(self.calls, [["herdr", "plugin", "link", "/x"]])
 
     def test_dry_run_invokes_nothing(self) -> None:
-        plan = PluginPlan("me.demo", ActionKind.ADD, ("herdr", "plugin", "link", "/x"))
+        plan = Plan("me.demo", ActionKind.ADD, ("herdr", "plugin", "link", "/x"))
 
         ok = quiet_call(apply_plan, plan, True, self.runner())
 
@@ -257,7 +434,7 @@ class ApplyPlanTest(TestCase):
         self.assertEqual(self.calls, [])
 
     def test_skip_invokes_nothing_and_succeeds(self) -> None:
-        plan = PluginPlan("me.demo", ActionKind.SKIP, reason="already registered")
+        plan = Plan("me.demo", ActionKind.SKIP, reason="already registered")
 
         ok = quiet_call(apply_plan, plan, False, self.runner())
 
@@ -265,7 +442,7 @@ class ApplyPlanTest(TestCase):
         self.assertEqual(self.calls, [])
 
     def test_fail_invokes_nothing_and_reports_failure(self) -> None:
-        plan = PluginPlan("me.demo", ActionKind.FAIL, reason="registered elsewhere")
+        plan = Plan("me.demo", ActionKind.FAIL, reason="registered elsewhere")
 
         err_out = io.StringIO()
         with redirect_stdout(io.StringIO()), redirect_stderr(err_out):
@@ -276,7 +453,7 @@ class ApplyPlanTest(TestCase):
         self.assertIn("registered elsewhere", err_out.getvalue())
 
     def test_nonzero_herdr_exit_is_reported_as_failure(self) -> None:
-        plan = PluginPlan("me.demo", ActionKind.ADD, ("herdr", "plugin", "link", "/x"))
+        plan = Plan("me.demo", ActionKind.ADD, ("herdr", "plugin", "link", "/x"))
 
         ok = quiet_call(apply_plan, plan, False, self.runner(code=1))
 
