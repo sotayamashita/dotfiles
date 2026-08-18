@@ -1,17 +1,5 @@
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "\"$HOME/.codex/hooks/sfw-gate.sh\"",
-            "statusMessage": "Checking Bash command",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
-      }
-    ],
     "PostToolUse": [
       {
         "hooks": [
@@ -24,7 +12,28 @@
         "matcher": "Edit|Write"
       }
     ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.codex/hooks/sfw-gate.sh\"",
+            "statusMessage": "Checking Bash command",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
     "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bash \"$HOME/.codex/herdr-agent-state.sh\" session",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      },
       {
         "hooks": [
           {
@@ -37,13 +46,13 @@
     ],
     "SubagentStart": [
       {
-        "matcher": "tldraw-offline",
         "hooks": [
           {
-            "type": "command",
-            "command": "sh \"$HOME/skills/tldraw-offline/inject-server-context.sh\" SubagentStart"
+            "command": "sh \"$HOME/skills/tldraw-offline/inject-server-context.sh\" SubagentStart",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "tldraw-offline"
       }
     ]
   }
