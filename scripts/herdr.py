@@ -13,15 +13,16 @@ holding a herdr-plugin.toml, so adding one to the repository is enough. GitHub
 plugins are declared in GITHUB_PLUGINS below.
 
 Agent integrations are the other half. `herdr integration install <id>` writes
-a herdr-agent-state.sh reporter into the agent's home (~/.codex, ~/.claude) and
-registers a SessionStart hook that runs it. The reporter is machine state and
-is not tracked, so a fresh machine needs the install; the hook lands in a file
-this repository does own. Integrations are declared in INTEGRATIONS below.
+a reporter into the agent's home, either as a hook script the agent's config
+has to call (~/.claude, ~/.codex) or as an extension the agent loads on its own
+(~/.pi). The reporter is machine state and is not tracked, so a fresh machine
+needs the install. Integrations are declared in INTEGRATIONS below.
 
-Herdr writes that hook with an absolute path in single quotes and recognises
-only that exact string, so it appends a second entry next to the portable one
-tracked here and, in the ~ form it uses for Claude, produces a command no shell
-can resolve. Every run rewrites the hook to HOOK_COMMAND and drops the
+Where a hook is involved, it lands in a file this repository does own. Herdr
+writes it with an absolute path in single quotes and recognises only that exact
+string, so it appends a second entry next to the portable one tracked here
+and, in the ~ form it uses for Claude, produces a command no shell can resolve.
+Every run rewrites the hook to the spec's hook_command and drops the
 duplicates, which is also what repairs a file herdr has just re-installed into.
 
 The script only adds. Registrations it does not own are left alone; remove one
@@ -85,10 +86,12 @@ class IntegrationSpec:
     """One agent integration that should be installed."""
 
     integration_id: str
-    # Tracked file herdr registers the SessionStart hook in.
-    hook_file: Path
+    # Tracked file herdr registers the SessionStart hook in, when it registers
+    # one at all: an agent that loads the reporter as an extension needs no
+    # hook, so nothing has to be repaired afterwards.
+    hook_file: Path | None = None
     # Portable command that hook should end up running.
-    hook_command: str
+    hook_command: str = ""
 
 
 INTEGRATIONS: tuple[IntegrationSpec, ...] = (
@@ -102,6 +105,9 @@ INTEGRATIONS: tuple[IntegrationSpec, ...] = (
         DOTFILES_DIR / ".codex/hooks.json",
         'bash "$HOME/.codex/herdr-agent-state.sh" session',
     ),
+    # pi drops its reporter into ~/.pi/agent/extensions and loads it from
+    # there, so the install writes nothing this repository tracks.
+    IntegrationSpec("pi"),
 )
 
 
@@ -533,6 +539,8 @@ def register_integrations(dry_run: bool) -> bool:
     for spec, plan in zip(INTEGRATIONS, get_integration_plans(INTEGRATIONS, states)):
         if not apply_plan(plan, dry_run, run_command):
             ok = False
+            continue
+        if spec.hook_file is None:
             continue
         if not normalize_hook_file(spec.hook_file, spec.hook_command, dry_run):
             ok = False

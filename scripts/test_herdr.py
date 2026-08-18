@@ -9,6 +9,7 @@ from unittest import TestCase, main
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from herdr import (
+    INTEGRATIONS,
     ActionKind,
     IntegrationSpec,
     Origin,
@@ -308,6 +309,24 @@ class IntegrationPlanTest(TestCase):
         plans = get_integration_plans(specs, {})
 
         self.assertEqual([plan.target for plan in plans], ["claude", "codex"])
+
+
+class DeclaredIntegrationsTest(TestCase):
+    def test_ids_are_unique(self) -> None:
+        ids = [spec.integration_id for spec in INTEGRATIONS]
+
+        self.assertEqual(len(ids), len(set(ids)))
+
+    def test_a_declared_hook_file_comes_with_a_command(self) -> None:
+        # A hook_file without a hook_command would blank the command out.
+        for spec in INTEGRATIONS:
+            if spec.hook_file is not None:
+                self.assertTrue(spec.hook_command, spec.integration_id)
+
+    def test_hook_files_are_tracked_in_this_repository(self) -> None:
+        for spec in INTEGRATIONS:
+            if spec.hook_file is not None:
+                self.assertTrue(spec.hook_file.is_file(), spec.hook_file)
 
 
 class NormalizeHookEntriesTest(TestCase):
