@@ -1,0 +1,24 @@
+id = "sotayamashita.tab-rename"
+name = "Tab Rename"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Name tabs after the work in them instead of numbering them."
+platforms = ["macos", "linux"]
+
+[[startup]]
+command = ["python3", "scripts/tab_rename.py", "rename"]
+
+[[actions]]
+id = "rename"
+title = "Rename tabs"
+command = ["python3", "scripts/tab_rename.py", "rename"]
+
+[[events]]
+id = "agent-status-changed"
+on = "pane.agent_status_changed"
+command = ["python3", "scripts/tab_rename.py", "rename"]
+
+[[events]]
+id = "pane-focused"
+on = "pane.focused"
+command = ["python3", "scripts/tab_rename.py", "rename"]
