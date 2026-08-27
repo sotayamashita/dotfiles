@@ -8,9 +8,9 @@ and local plugins point straight at this repository. That registry is machine
 state and is not tracked, so a fresh machine has the plugin sources but no
 registrations. This script recreates them.
 
-Local plugins are discovered by scanning .config/herdr/plugins for directories
-holding a herdr-plugin.toml, so adding one to the repository is enough. GitHub
-plugins are declared in GITHUB_PLUGINS below.
+Local plugins are declared in LOCAL_PLUGINS as directory names under
+.config/herdr/plugins; GitHub plugins in GITHUB_PLUGINS. A plugin directory in
+the repository is not registered until it is listed.
 
 Agent integrations are the other half. `herdr integration install <id>` writes
 a reporter into the agent's home, either as a hook script the agent's config
@@ -49,6 +49,14 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 DOTFILES_DIR = SCRIPT_DIR.parent
 PLUGINS_DIR = DOTFILES_DIR / ".config/herdr/plugins"
 MANIFEST_NAME = "herdr-plugin.toml"
+
+# Plugins living in this repository, as directory names under PLUGINS_DIR.
+LOCAL_PLUGINS: tuple[str, ...] = (
+    "agent-quota",
+    "agent-session-fork",
+    "hunk-review",
+    "tab-rename",
+)
 
 # Plugins installed from GitHub, as accepted by `herdr plugin install`.
 GITHUB_PLUGINS: tuple[str, ...] = ()
@@ -162,29 +170,26 @@ def read_plugin_id(manifest: Path) -> str | None:
     return plugin_id if isinstance(plugin_id, str) and plugin_id else None
 
 
-def discover_local_plugins(plugins_dir: Path) -> list[PluginSpec]:
+def local_specs(plugins_dir: Path, names: Iterable[str]) -> list[PluginSpec]:
     """
-    Find every local plugin directory under plugins_dir.
+    Turn declared plugin directory names into specs, in declaration order.
 
-    A directory qualifies when it holds a readable herdr-plugin.toml declaring
-    an id. Results are sorted by id so runs are reproducible.
+    The id comes from each directory's herdr-plugin.toml rather than the
+    declaration, because that is the id herdr registers the plugin under. A
+    name whose manifest is missing or unusable is reported and skipped, so one
+    stale declaration cannot stop the rest of the run.
 
     Args:
         plugins_dir: Directory holding one subdirectory per plugin.
+        names: Declared plugin directory names.
 
     Returns:
-        Specs for the discovered plugins.
+        Specs for the usable declarations.
     """
-    if not plugins_dir.is_dir():
-        return []
-
     specs = []
-    for entry in sorted(plugins_dir.iterdir()):
-        if not entry.is_dir():
-            continue
+    for name in names:
+        entry = plugins_dir / name
         manifest = entry / MANIFEST_NAME
-        if not manifest.is_file():
-            continue
         plugin_id = read_plugin_id(manifest)
         if plugin_id is None:
             warn(f"{manifest}: no usable id, skipping")
@@ -509,9 +514,9 @@ def register_plugins(dry_run: bool) -> bool:
     """Register every declared plugin. Returns True when all ended well."""
     log(f"Plugin directory: {PLUGINS_DIR}")
 
-    specs = discover_local_plugins(PLUGINS_DIR) + github_specs(GITHUB_PLUGINS)
+    specs = local_specs(PLUGINS_DIR, LOCAL_PLUGINS) + github_specs(GITHUB_PLUGINS)
     if not specs:
-        warn(f"No plugins found under {PLUGINS_DIR}")
+        warn("No plugins declared in LOCAL_PLUGINS or GITHUB_PLUGINS")
         return True
 
     installed = list_installed()

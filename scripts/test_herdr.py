@@ -11,16 +11,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from herdr import (
     INTEGRATIONS,
     ActionKind,
+    LOCAL_PLUGINS,
+    PLUGINS_DIR,
     IntegrationSpec,
     Origin,
     Plan,
     PluginSpec,
     apply_plan,
     build_argv,
-    discover_local_plugins,
     get_integration_plans,
     get_plugin_plans,
     github_specs,
+    local_specs,
     normalize_hook_entries,
     normalize_hook_file,
     parse_installed,
@@ -96,55 +98,46 @@ class ReadPluginIdTest(TestCase):
             self.assertIsNone(read_plugin_id(blank))
 
 
-class DiscoverLocalPluginsTest(TestCase):
-    def test_discovers_directories_holding_a_manifest(self) -> None:
+class LocalSpecsTest(TestCase):
+    def test_takes_the_id_from_each_declared_manifest(self) -> None:
         with TemporaryDirectory() as tmp:
             plugins = Path(tmp) / "plugins"
             write_plugin(plugins, "beta", 'id = "me.beta"\n')
             write_plugin(plugins, "alpha", 'id = "me.alpha"\n')
 
-            specs = discover_local_plugins(plugins)
+            specs = local_specs(plugins, ["beta", "alpha"])
 
-            # Sorted so repeated runs plan the same order.
             self.assertEqual(
                 [(spec.plugin_id, spec.origin) for spec in specs],
-                [("me.alpha", Origin.LOCAL), ("me.beta", Origin.LOCAL)],
+                [("me.beta", Origin.LOCAL), ("me.alpha", Origin.LOCAL)],
             )
-            self.assertEqual(specs[0].source, str(plugins / "alpha"))
+            self.assertEqual(specs[0].source, str(plugins / "beta"))
 
-    def test_directory_without_manifest_is_ignored(self) -> None:
+    def test_undeclared_directory_is_not_registered(self) -> None:
         with TemporaryDirectory() as tmp:
             plugins = Path(tmp) / "plugins"
-            write_plugin(plugins, "real", 'id = "me.real"\n')
-            write_plugin(plugins, "notaplugin", None)
+            write_plugin(plugins, "declared", 'id = "me.declared"\n')
+            write_plugin(plugins, "unlisted", 'id = "me.unlisted"\n')
 
-            specs = discover_local_plugins(plugins)
+            specs = local_specs(plugins, ["declared"])
 
-            self.assertEqual([spec.plugin_id for spec in specs], ["me.real"])
+            self.assertEqual([spec.plugin_id for spec in specs], ["me.declared"])
 
-    def test_loose_files_are_ignored(self) -> None:
+    def test_declaration_without_a_usable_manifest_is_skipped(self) -> None:
         with TemporaryDirectory() as tmp:
             plugins = Path(tmp) / "plugins"
-            write_plugin(plugins, "real", 'id = "me.real"\n')
-            (plugins / "README.md").write_text("not a plugin")
-
-            specs = discover_local_plugins(plugins)
-
-            self.assertEqual([spec.plugin_id for spec in specs], ["me.real"])
-
-    def test_broken_manifest_does_not_abort_the_scan(self) -> None:
-        with TemporaryDirectory() as tmp:
-            plugins = Path(tmp) / "plugins"
-            write_plugin(plugins, "broken", "id = [[[")
             write_plugin(plugins, "good", 'id = "me.good"\n')
 
-            specs = quiet_call(discover_local_plugins, plugins)
+            specs = quiet_call(local_specs, plugins, ["gone", "good"])
 
             self.assertEqual([spec.plugin_id for spec in specs], ["me.good"])
 
-    def test_missing_plugins_directory_yields_nothing(self) -> None:
-        with TemporaryDirectory() as tmp:
-            self.assertEqual(discover_local_plugins(Path(tmp) / "absent"), [])
+    def test_every_declared_plugin_exists_in_this_repository(self) -> None:
+        specs = local_specs(PLUGINS_DIR, LOCAL_PLUGINS)
+
+        self.assertEqual(
+            [Path(spec.source).name for spec in specs], list(LOCAL_PLUGINS)
+        )
 
 
 class ArgvTest(TestCase):
