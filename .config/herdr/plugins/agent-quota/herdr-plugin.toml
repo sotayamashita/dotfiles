@@ -1,0 +1,24 @@
+id = "sotayamashita.agent-quota"
+name = "Agent Quota"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Show Claude Code and Codex subscription quota in the agent sidebar."
+platforms = ["macos", "linux"]
+
+[[startup]]
+command = ["python3", "scripts/agent_quota.py", "refresh"]
+
+[[actions]]
+id = "refresh"
+title = "Refresh agent quota"
+command = ["python3", "scripts/agent_quota.py", "refresh"]
+
+[[events]]
+id = "agent-detected"
+on = "pane.agent_detected"
+command = ["python3", "scripts/agent_quota.py", "refresh"]
+
+[[events]]
+id = "agent-status-changed"
+on = "pane.agent_status_changed"
+command = ["python3", "scripts/agent_quota.py", "refresh"]
