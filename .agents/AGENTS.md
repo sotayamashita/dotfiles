@@ -1,57 +1,52 @@
 # AGENTS.md
 
-## Communication
+## Discussion
 
-- Use Japanese for conversation; English for code, comments, identifiers, and commit scopes.
-- Ask one question at a time and include your best guess.
-- Explain jargon inline in plain language.
-- Introduce new conceptual categories by stating the question each answers before naming it.
-- For common and equivalent, name the objects and comparison basis; for standard, name the authority.
-- Use dead prose. Avoid aphorisms and flourishes.
-- Omit generic preambles, repeated requests, redundant recaps, and closing pleasantries.
-- Report errors plainly: state what failed, why, and how to fix it.
+### Discussion map
 
-## Work execution
+Help the user follow detours without losing the main topic.
+Show a compact map at the end of the response when branching makes
+the discussion hard to follow. Refresh it when the active topic or
+a topic's status changes, or when the user requests a recap.
 
-- Give a concrete time estimate.
-- Define completion criteria before starting non-trivial work.
-- Prefer the smallest complete result that meets the criteria.
-- Make the first action small and explicit.
-- Number multi-step work and keep each step to one bounded action.
-- Restate the state needed for the next action.
-- Inspect relevant evidence before concluding.
-- Finish the current issue before surfacing unrelated work.
-- Resolve non-blocking questions yourself. Ask one blocking question before continuing.
-- For a necessary detour, use this minimal thread tree:
+Keep only relevant topics and decisions in the map. Record what was
+decided and why; add impact when useful.
 
-  ```text
-  Current: <open question>
-  ├─ Detour: <question to resolve> ← active
-  └─ Return: <next point in the current issue>
-  ```
+In `Latest update`, briefly explain what changed, whether the detour
+is needed to complete the main task, whether the user's attention is
+needed and why, and what decision or check will end the detour.
+Keep only the latest update. Resume the parent topic once that
+condition is met, unless the user redirects the discussion.
 
-  On exit, update it and continue from Resume:
+Use the rendered Markdown format below. Omit the active marker
+when all topics are resolved.
 
-  ```text
-  Current: <open question>
-  ├─ Result: <detour result>
-  └─ Resume: <next point in the current issue> ← active
-  ```
-- Turn conclusions into a concrete action or artifact.
-- Continue authorized, unblocked work until complete. If blocked, end with one concrete next action.
+```markdown
+---
+## Discussion map
 
-## Work completion
+### Map
 
-- Verify the result against the completion criteria before declaring completion.
-- Stop when the completion criteria pass; do not polish beyond the requested scope.
-- Make the handoff self-contained: state what works, why, where the result is, and how to verify it.
+- Topic: A
+  - Detour: B **← Active 🔵**
+    - Resolved: C
+      - **Decision:** Adopt X.
+      - **Reason:** It satisfies constraint Y.
+      - **Impact:** Z needs to be updated.
 
-## Tools and file operations
+### Latest update
 
-- Route file and source-code search through the fff MCP server, not `rg`, `grep`, `find`, or the built-in Grep/Glob tools. The server ships its own usage rules; do not restate them here.
-- Fall back to `rg` or `ast-grep` only when fff cannot express the query, and state which constraint fff could not meet.
-- Use `fd`, not `find`; use `sd`, not `sed`.
-- For ad hoc inspection and validation, prefer `jq` for JSON, `yq` for YAML, and `xan` for CSV.
-- Use project runtime versions through `mise` when configured.
-- Use `ast-grep` for syntax-aware code search.
-- Keep deletions recoverable: use `trash`, never `rm`.
+Decide B's scope so we can determine what completing A requires.
+Once the scope is settled, resume A.
+
+---
+```
+
+## Tools
+
+- Prefer fff MCP.
+  fall back to `fd`/`rg` with a brief reason.
+- Use `mise` to manage runtime versions
+  unless the project already uses an alternative.
+- Use `hk` to manage Git hooks
+  unless the project already uses an alternative.
