@@ -9,8 +9,8 @@ state and is not tracked, so a fresh machine has the plugin sources but no
 registrations. This script recreates them.
 
 Local plugins are declared in LOCAL_PLUGINS as directory names under
-.config/herdr/plugins; GitHub plugins in GITHUB_PLUGINS. A plugin directory in
-the repository is not registered until it is listed.
+.config/herdr/plugins. A plugin directory in the repository is not registered
+until it is listed.
 
 Agent integrations are the other half. `herdr integration install <id>` writes
 a reporter into the agent's home, either as a hook script the agent's config
@@ -58,9 +58,6 @@ LOCAL_PLUGINS: tuple[str, ...] = (
     "tab-rename",
 )
 
-# Plugins installed from GitHub, as accepted by `herdr plugin install`.
-GITHUB_PLUGINS: tuple[str, ...] = ()
-
 # Basename of the reporter script `herdr integration install` writes, used to
 # tell herdr's SessionStart hook apart from every other hook in the file.
 HOOK_SCRIPT_NAME = "herdr-agent-state.sh"
@@ -72,20 +69,12 @@ STATUS_LINE = re.compile(
 STATE_CURRENT = "current"
 
 
-class Origin(Enum):
-    """Where a plugin's source comes from."""
-
-    LOCAL = "local"
-    GITHUB = "github"
-
-
 @dataclass(frozen=True)
 class PluginSpec:
     """One plugin that should be registered."""
 
     plugin_id: str
-    origin: Origin
-    # LOCAL: absolute path to the plugin directory. GITHUB: "owner/repo".
+    # Absolute path to the local plugin directory.
     source: str
 
 
@@ -194,27 +183,14 @@ def local_specs(plugins_dir: Path, names: Iterable[str]) -> list[PluginSpec]:
         if plugin_id is None:
             warn(f"{manifest}: no usable id, skipping")
             continue
-        specs.append(PluginSpec(plugin_id, Origin.LOCAL, str(entry)))
+        specs.append(PluginSpec(plugin_id, str(entry)))
 
     return specs
 
 
-def github_specs(repos: Iterable[str]) -> list[PluginSpec]:
-    """
-    Turn "owner/repo" declarations into specs.
-
-    Herdr registers a GitHub plugin under the id from its manifest, which is
-    not knowable before install; the repository name is the convention it
-    follows, so it doubles as the id used for the already-installed check.
-    """
-    return [PluginSpec(repo.split("/")[1], Origin.GITHUB, repo) for repo in repos]
-
-
 def build_argv(spec: PluginSpec) -> list[str]:
     """Build the `herdr plugin` command line that registers the plugin."""
-    if spec.origin == Origin.LOCAL:
-        return ["herdr", "plugin", "link", spec.source]
-    return ["herdr", "plugin", "install", "--yes", spec.source]
+    return ["herdr", "plugin", "link", spec.source]
 
 
 def parse_installed(payload: str) -> dict[str, str]:
@@ -275,7 +251,7 @@ def get_plugin_plans(
         if root is None:
             plans.append(Plan(spec.plugin_id, ActionKind.ADD, tuple(build_argv(spec))))
             continue
-        if spec.origin == Origin.LOCAL and root != spec.source:
+        if root != spec.source:
             plans.append(
                 Plan(
                     spec.plugin_id,
@@ -514,9 +490,9 @@ def register_plugins(dry_run: bool) -> bool:
     """Register every declared plugin. Returns True when all ended well."""
     log(f"Plugin directory: {PLUGINS_DIR}")
 
-    specs = local_specs(PLUGINS_DIR, LOCAL_PLUGINS) + github_specs(GITHUB_PLUGINS)
+    specs = local_specs(PLUGINS_DIR, LOCAL_PLUGINS)
     if not specs:
-        warn("No plugins declared in LOCAL_PLUGINS or GITHUB_PLUGINS")
+        warn("No plugins declared in LOCAL_PLUGINS")
         return True
 
     installed = list_installed()

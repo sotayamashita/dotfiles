@@ -253,11 +253,6 @@ def apply_plan(
     return True
 
 
-def which(executable: str) -> str | None:
-    """Look up an executable on PATH."""
-    return shutil.which(executable)
-
-
 def client_has_server(client: str, name: str) -> bool:
     """Probe whether a client already knows the server."""
     result = subprocess.run(
@@ -311,11 +306,11 @@ def main() -> None:
     if args.dry_run:
         log("Dry-run mode enabled")
 
-    clients = available_clients(CLIENTS, which)
+    clients = available_clients(CLIENTS, shutil.which)
     if not clients:
         err(f"None of these clients are installed: {', '.join(CLIENTS)}")
 
-    plans = get_register_plans(clients, SERVERS, which, client_has_server)
+    plans = get_register_plans(clients, SERVERS, shutil.which, client_has_server)
 
     ok = True
     for plan in plans:

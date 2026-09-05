@@ -14,14 +14,12 @@ from herdr import (
     LOCAL_PLUGINS,
     PLUGINS_DIR,
     IntegrationSpec,
-    Origin,
     Plan,
     PluginSpec,
     apply_plan,
     build_argv,
     get_integration_plans,
     get_plugin_plans,
-    github_specs,
     local_specs,
     normalize_hook_entries,
     normalize_hook_file,
@@ -108,8 +106,8 @@ class LocalSpecsTest(TestCase):
             specs = local_specs(plugins, ["beta", "alpha"])
 
             self.assertEqual(
-                [(spec.plugin_id, spec.origin) for spec in specs],
-                [("me.beta", Origin.LOCAL), ("me.alpha", Origin.LOCAL)],
+                [spec.plugin_id for spec in specs],
+                ["me.beta", "me.alpha"],
             )
             self.assertEqual(specs[0].source, str(plugins / "beta"))
 
@@ -142,27 +140,12 @@ class LocalSpecsTest(TestCase):
 
 class ArgvTest(TestCase):
     def test_local_plugin_is_linked_by_path(self) -> None:
-        spec = PluginSpec("me.demo", Origin.LOCAL, "/repo/.config/herdr/plugins/demo")
+        spec = PluginSpec("me.demo", "/repo/.config/herdr/plugins/demo")
 
         self.assertEqual(
             build_argv(spec),
             ["herdr", "plugin", "link", "/repo/.config/herdr/plugins/demo"],
         )
-
-    def test_github_plugin_is_installed_without_prompting(self) -> None:
-        spec = PluginSpec("demo-viewer", Origin.GITHUB, "owner/demo-viewer")
-
-        # --yes matters: the script must not block on an install confirmation.
-        self.assertEqual(
-            build_argv(spec),
-            ["herdr", "plugin", "install", "--yes", "owner/demo-viewer"],
-        )
-
-    def test_github_spec_uses_the_repo_name_as_id(self) -> None:
-        specs = github_specs(["owner/demo-viewer"])
-
-        self.assertEqual(specs[0].plugin_id, "demo-viewer")
-        self.assertEqual(specs[0].origin, Origin.GITHUB)
 
 
 class ParseInstalledTest(TestCase):
@@ -207,7 +190,7 @@ class StaleRegistrationTest(TestCase):
 
 class PlanTest(TestCase):
     def test_unregistered_plugin_is_added(self) -> None:
-        spec = PluginSpec("me.demo", Origin.LOCAL, "/repo/demo")
+        spec = PluginSpec("me.demo", "/repo/demo")
 
         plans = get_plugin_plans([spec], {})
 
@@ -215,7 +198,7 @@ class PlanTest(TestCase):
         self.assertEqual(plans[0].argv[-1], "/repo/demo")
 
     def test_plugin_registered_from_the_same_root_is_skipped(self) -> None:
-        spec = PluginSpec("me.demo", Origin.LOCAL, "/repo/demo")
+        spec = PluginSpec("me.demo", "/repo/demo")
 
         plans = get_plugin_plans([spec], {"me.demo": "/repo/demo"})
 
@@ -223,7 +206,7 @@ class PlanTest(TestCase):
         self.assertEqual(plans[0].argv, ())
 
     def test_plugin_registered_elsewhere_fails_instead_of_relinking(self) -> None:
-        spec = PluginSpec("me.demo", Origin.LOCAL, "/repo/demo")
+        spec = PluginSpec("me.demo", "/repo/demo")
 
         plans = get_plugin_plans([spec], {"me.demo": "/somewhere/else"})
 
@@ -232,17 +215,10 @@ class PlanTest(TestCase):
         self.assertEqual(plans[0].argv, ())
         self.assertIn("/somewhere/else", plans[0].reason)
 
-    def test_installed_github_plugin_is_skipped_regardless_of_root(self) -> None:
-        spec = PluginSpec("viewer", Origin.GITHUB, "owner/viewer")
-
-        plans = get_plugin_plans([spec], {"viewer": "/managed/path"})
-
-        self.assertEqual(plans[0].kind, ActionKind.SKIP)
-
     def test_one_plan_per_spec_in_order(self) -> None:
         specs = [
-            PluginSpec("a", Origin.LOCAL, "/repo/a"),
-            PluginSpec("b", Origin.LOCAL, "/repo/b"),
+            PluginSpec("a", "/repo/a"),
+            PluginSpec("b", "/repo/b"),
         ]
 
         plans = get_plugin_plans(specs, {})
