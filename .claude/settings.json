@@ -64,6 +64,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/sfw-gate.sh"
+          },
+          {
+            "type": "command",
+            "command": "sh \"$HOME/.claude/hooks/git-safety.sh\""
           }
         ]
       }
