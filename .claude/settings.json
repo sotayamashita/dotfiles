@@ -103,7 +103,8 @@
     "frontend-design@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "addy-agent-skills": {
@@ -117,10 +118,19 @@
         "source": "github",
         "repo": "openai/codex-plugin-cc"
       }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
     }
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
-  "skipWorkflowUsageWarning": true
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark-daltonized",
+  "preferredNotifChannel": "terminal_bell",
+  "teammateMode": "tmux"
 }
