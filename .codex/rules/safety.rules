@@ -1,8 +1,10 @@
-# Block high-risk commands outside the sandbox.
+# Block high-risk commands outside the sandbox, even when explicitly requested.
 #
-# Codex rules match command argument prefixes. Keep tests close to each rule so
-# mistakes are caught when Codex loads the file or when `codex execpolicy check`
-# is run manually.
+# Rules match command prefixes. Include match and not_match examples with each
+# rule; Codex validates them on load and with `codex execpolicy check`.
+#
+# hooks/git-safety.sh rejects literal --no-gpg-sign and force-push command text.
+# It does not inspect shell expansions or commands inside external scripts.
 
 prefix_rule(
     pattern = ["rm", ["-rf", "-fr", "-r"]],
@@ -44,9 +46,25 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern = ["git", "commit", "--no-gpg-sign"],
+    decision = "forbidden",
+    justification = "Disabling commit signing with `--no-gpg-sign` is always forbidden.",
+    match = [
+        "git commit --no-gpg-sign",
+        "git commit --no-gpg-sign -m update",
+    ],
+    not_match = [
+        "git commit -m update",
+        "git commit -S -m update",
+        "git commit -m --no-gpg-sign",
+        "git commit -- --no-gpg-sign",
+    ],
+)
+
+prefix_rule(
     pattern = ["git", "reset", "--hard"],
     decision = "forbidden",
-    justification = "This can destroy user work. Ask the user for an explicit destructive reset request.",
+    justification = "Hard resets are always forbidden because they can destroy user work.",
     match = [
         "git reset --hard",
         "git reset --hard HEAD~1",
@@ -59,7 +77,7 @@ prefix_rule(
 prefix_rule(
     pattern = ["git", "checkout", "--"],
     decision = "forbidden",
-    justification = "`git checkout -- <path>` discards uncommitted changes. Ask the user for an explicit destructive request.",
+    justification = "Discarding uncommitted changes with `git checkout -- <path>` is always forbidden.",
     match = [
         "git checkout -- file.txt",
         "git checkout -- .",
@@ -71,22 +89,9 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["git", "restore"],
-    decision = "forbidden",
-    justification = "`git restore <path>` discards uncommitted working-tree changes. Ask the user for an explicit destructive request.",
-    match = [
-        "git restore file.txt",
-        "git restore .",
-    ],
-    not_match = [
-        "git status",
-    ],
-)
-
-prefix_rule(
     pattern = ["git", "clean", ["-f", "-fd", "-df", "-fdx", "-xfd", "-ffd"]],
     decision = "forbidden",
-    justification = "`git clean -f` permanently deletes untracked files. Ask the user for an explicit destructive request.",
+    justification = "Deleting untracked files with `git clean -f` is always forbidden.",
     match = [
         "git clean -f",
         "git clean -fd",
@@ -97,35 +102,33 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["git", "push", ["--force", "--force-with-lease"]],
+    pattern = ["git", "push", ["--force", "--force-with-lease", "-f"]],
     decision = "forbidden",
-    justification = "Force-push requires an explicit user request.",
+    justification = "Force-push is always forbidden.",
     match = [
         "git push --force",
         "git push --force-with-lease",
+        "git push -f",
     ],
-    not_match = [
-        "git push",
-    ],
+    not_match = ["git push"],
 )
 
 prefix_rule(
-    pattern = ["git", "push", "origin", ["--force", "--force-with-lease"]],
+    pattern = ["git", "push", "origin", ["--force", "--force-with-lease", "-f"]],
     decision = "forbidden",
-    justification = "Force-push requires an explicit user request.",
+    justification = "Force-push is always forbidden.",
     match = [
         "git push origin --force",
         "git push origin --force-with-lease",
+        "git push origin -f",
     ],
-    not_match = [
-        "git push origin main",
-    ],
+    not_match = ["git push origin main"],
 )
 
 prefix_rule(
     pattern = ["dd"],
     decision = "forbidden",
-    justification = "`dd` can overwrite disks or files; ask the user for an explicit request.",
+    justification = "`dd` is always forbidden because it can overwrite disks or files.",
     match = [
         "dd if=/dev/zero of=disk.img",
     ],

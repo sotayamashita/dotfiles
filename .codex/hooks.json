@@ -19,6 +19,11 @@
             "command": "\"$HOME/.codex/hooks/sfw-gate.sh\"",
             "statusMessage": "Checking Bash command",
             "type": "command"
+          },
+          {
+            "command": "sh \"$HOME/.codex/hooks/git-safety.sh\"",
+            "statusMessage": "Checking Git safety policy",
+            "type": "command"
           }
         ],
         "matcher": "Bash"
