@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Communication
+
+- Respond in Japanese, including skill-defined replies, unless I request otherwise.
+
 ## Discussion
 
 ### Discussion map
