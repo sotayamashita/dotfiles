@@ -15,6 +15,8 @@ Writing:
 - Explain a choice in a document only when its reader needs the reason.
   - Otherwise, put the reason in the chat reply.
 - Always use the `$show-me` skill when presenting plans.
+- Render diagrams with `show_widget` when available.
+- Use Mermaid code blocks when `show_widget` is unavailable.
 
 Coding:
 
