@@ -39,6 +39,15 @@ fish_add_path $BREW_PREFIX/opt/openssl@3/bin
 # https://volta.sh/
 # -> Use mise instead of Volta for Node.js version management
 
+# GitHub Packages (npm.pkg.github.com)
+# Private packages need a token with `read:packages`. ~/.npmrc references
+# `${GITHUB_PACKAGES_TOKEN}` instead of the token itself so this repo stays free of
+# secrets; the value comes from the gh CLI keychain at shell startup.
+# Note: pnpm fails with "Failed to replace env in config" if this variable is unset.
+if type -q gh
+    set -gx GITHUB_PACKAGES_TOKEN (gh auth token 2>/dev/null)
+end
+
 # Python (pyenv)
 # https://github.com/pyenv/pyenv
 # -> Use mise instead of pyenv for Python version management
