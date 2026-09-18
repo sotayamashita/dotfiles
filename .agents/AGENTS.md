@@ -11,6 +11,7 @@ Writing:
 - Aim for about 80 visible characters per bullet point - Japanese and English.
 - Keep documents self-contained.
 - Limit references to repository files or URLs.
+- Restate a point where it is needed instead of referring to another section.
 - Explain a choice in a document only when its reader needs the reason.
   - Otherwise, put the reason in the chat reply.
 - Always use the `$show-me` skill when presenting plans.
