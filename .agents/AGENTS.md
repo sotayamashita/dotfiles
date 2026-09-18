@@ -1,52 +1,47 @@
 # AGENTS.md
 
-## Communication
+Communication:
 
 - Respond in Japanese, including skill-defined replies, unless I request otherwise.
 
-## Discussion
+Writing:
 
-### Discussion map
+- Keep each bullet to one instruction.
+- Use noun endings for bullets and table entries outside AGENTS.md.
+- Aim for about 80 visible characters per bullet point - Japanese and English.
+- Keep documents self-contained. Limit references to repository files or URLs.
+- Always use the `$show-me` skill when presenting plans.
 
-Help the user follow detours without losing the main topic.
-Show a compact map at the end of the response when branching makes
-the discussion hard to follow. Refresh it when the active topic or
-a topic's status changes, or when the user requests a recap.
+Coding:
 
-Keep only relevant topics and decisions in the map. Record what was
-decided and why; add impact when useful.
+- Choose the simplest implementation that fully solves the current task.
+- Reuse maintained libraries when they reduce complexity or improve reliability.
+- Check a library's docs, types, and source before assuming a capability is absent.
+- Build features end to end in small increments.
+- Remove temporary verification code and commands after use.
+- Do not design for hypothetical future requirements.
+- Preserve backward compatibility only when required.
+- Remove obsolete code instead of adding unnecessary compatibility layers.
+- Follow existing project conventions unless these rules explicitly override them.
 
-In `Latest update`, briefly explain what changed, whether the detour
-is needed to complete the main task, whether the user's attention is
-needed and why, and what decision or check will end the detour.
-Keep only the latest update. Resume the parent topic once that
-condition is met, unless the user redirects the discussion.
+Comments:
 
-Use the rendered Markdown format below. Omit the active marker
-when all topics are resolved.
+- Do not record intermediate attempts or speculative future work in comments.
+- Explain non-obvious reasons not documented elsewhere, not what the code does.
+- For complex functions, document caller usage in JSDoc or the language's standard format.
 
-```markdown
----
-## Discussion map
+Git Branches:
 
-### Map
+- Pull the base branch before creating a topic branch from it.
 
-- Topic: A
-  - Detour: B **← Active 🔵**
-    - Resolved: C
-      - **Decision:** Adopt X.
-      - **Reason:** It satisfies constraint Y.
-      - **Impact:** Z needs to be updated.
+Git Commits:
 
-### Latest update
+- Write commit messages in English.
+- Keep commits atomic: one logical change per commit.
+- Use only the subject for a small change.
+- For a complex change, add a body that explains what changed and why.
 
-Decide B's scope so we can determine what completing A requires.
-Once the scope is settled, resume A.
-
----
-```
-
-## Tools
+Tools:
 
 - Prefer fff MCP.
   fall back to `fd`/`rg` with a brief reason.
