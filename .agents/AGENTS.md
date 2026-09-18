@@ -9,7 +9,8 @@ Writing:
 - Keep each bullet to one instruction.
 - Use noun endings for bullets and table entries outside AGENTS.md.
 - Aim for about 80 visible characters per bullet point - Japanese and English.
-- Keep documents self-contained. Limit references to repository files or URLs.
+- Keep documents self-contained.
+- Limit references to repository files or URLs.
 - Always use the `$show-me` skill when presenting plans.
 
 Coding:
@@ -43,9 +44,7 @@ Git Commits:
 
 Tools:
 
-- Prefer fff MCP.
-  fall back to `fd`/`rg` with a brief reason.
-- Use `mise` to manage runtime versions
-  unless the project already uses an alternative.
-- Use `hk` to manage Git hooks
-  unless the project already uses an alternative.
+- Prefer the fff MCP for search.
+- Fall back to `fd`/`rg` with a brief reason.
+- Use `mise` for runtime versions unless the project already uses an alternative.
+- Use `hk` for Git hooks unless the project already uses an alternative.
