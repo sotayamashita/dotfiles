@@ -1,83 +1,94 @@
 # brew bundle
 
+
 # ------------------------------
 # Taps
 # ------------------------------
-tap "trasta298/tap"
 tap "dmtrkovalenko/fff"
 
 
 # ------------------------------
-# Shell & Prompt
+# Shells & Interactive Helpers
 # ------------------------------
-brew "coreutils"                 # GNU core utilities (https://www.gnu.org/software/coreutils/)
 brew "zsh"
 brew "bash"
 brew "fish"
 brew "starship"
-brew "zoxide"                   # Smarter cd (https://github.com/ajeetdsouza/zoxide)
 brew "thefuck"                  # Auto-correct mistyped commands
+brew "fzf"                      # fuzzy  (https://github.com/junegunn/fzf)
+brew "tealdeer"                 # tldr   (https://github.com/tealdeer-rs/tealdeer)
 
 
 # ------------------------------
-# Version Control
+# Unix Command Alternatives
 # ------------------------------
-brew "git"
-brew "gh"
-brew "delta"
-brew "diff-so-fancy"
-
-
-# ------------------------------
-# Modern CLI Tools
-# ------------------------------
-# Each replaces or improves a classic Unix command.
+brew "coreutils"                # GNU core utilities (https://www.gnu.org/software/coreutils/)
+brew "zoxide"                   # cd     (https://github.com/ajeetdsouza/zoxide)
 brew "bat"                      # cat    (https://github.com/sharkdp/bat)
 brew "ripgrep"                  # grep   (https://github.com/BurntSushi/ripgrep)
 brew "fd"                       # find   (https://github.com/sharkdp/fd)
-brew "fzf"                      # fuzzy  (https://github.com/junegunn/fzf)
-brew "ast-grep"                 # AST    (https://github.com/ast-grep/ast-grep)
 brew "eza"                      # ls     (https://github.com/eza-community/eza?tab=readme-ov-file)
 brew "sd"                       # sed    (https://github.com/chmln/sd)
 brew "choose-rust"              # cut    (https://github.com/theryangeary/choose)
 brew "ouch"                     # tar, gzip, unzip (https://github.com/ouch-org/ouch)
 brew "procs"                    # ps     (https://github.com/dalance/procs)
 brew "diskus"                   # du     (https://github.com/sharkdp/diskus)
-brew "bottom"                   # htop   (https://github.com/ClementTsang/bottom)
-brew "tealdeer"                 # tldr   (https://github.com/tealdeer-rs/tealdeer)
+brew "bottom"                   # top    (https://github.com/ClementTsang/bottom)
 brew "prettyping"               # ping   (https://github.com/denilsonsa/prettyping)
-brew "xan"                      # CSV    (https://github.com/medialab/xan)
+
+
+# ------------------------------
+# Git & Diff Review
+# ------------------------------
+brew "git"
+brew "gh"
+brew "lazygit"
+brew "delta"
+brew "diff-so-fancy"
+brew "hunk"
+
+
+# ------------------------------
+# Code Search, Linting & Formatting
+# ------------------------------
+brew "ast-grep"                 # AST    (https://github.com/ast-grep/ast-grep)
 brew "shellcheck"               # Shell  (https://github.com/koalaman/shellcheck)
 brew "shfmt"                    # Shell  (https://github.com/mvdan/sh)
 brew "actionlint"               # GHA    (https://github.com/rhysd/actionlint)
 brew "zizmor"                   # GHA    (https://github.com/woodruffw/zizmor)
-brew "lazygit"
+
 
 # ------------------------------
-# File Management & Media
+# Structured Data Processing
 # ------------------------------
-brew "yazi"                     # Terminal file manager
 brew "jq"                       # JSON processor
 brew "yq"                       # YAML processor
+brew "xan"                      # CSV    (https://github.com/medialab/xan)
+
+
+# ------------------------------
+# File Management & Archives
+# ------------------------------
 brew "sevenzip"                 # Archive tool
+
+
+# ------------------------------
+# Media & Document Processing
+# ------------------------------
 brew "ffmpeg"                   # Video/audio processing
 brew "imagemagick"              # Image processing
 brew "mermaid-cli"              # Mermaid diagram rendering
 brew "poppler"                  # PDF rendering
 brew "resvg"                    # SVG rendering
-brew "trasta298/tap/keifu"      # Directory tree visualizer
 
 
 # ------------------------------
-# AI Coding Agents
+# AI Agents & Integrations
 # ------------------------------
-cask "codex"
-cask "claude-code"
 brew "pi-coding-agent"
+brew "herdr"
 brew "agent-browser"
 brew "dmtrkovalenko/fff/fff-mcp"
-brew "herdr"
-brew "hunk"
 
 
 # ------------------------------
