@@ -16,7 +16,6 @@
 .agents/AGENTS.md
 .agents/.skill-lock.json
 dir:.agents/skills/*
-!.agents/AGENTS.project.example.md
 
 # Claude Code
 .claude/**
