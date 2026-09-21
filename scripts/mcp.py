@@ -48,8 +48,6 @@ class ServerSpec:
 # Install them with `brew bundle --file=Brewfile` or `mise install`.
 SERVERS: tuple[ServerSpec, ...] = (
     ServerSpec("fff", Transport.STDIO, ("fff-mcp",)),
-    ServerSpec("context7", Transport.STDIO, ("npx", "@upstash/context7-mcp@latest")),
-    ServerSpec("deepwiki", Transport.HTTP, ("https://mcp.deepwiki.com/mcp",)),
     ServerSpec(
         "openaiDeveloperDocs", Transport.HTTP, ("https://developers.openai.com/mcp",)
     ),
