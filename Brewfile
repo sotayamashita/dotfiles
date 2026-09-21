@@ -23,7 +23,6 @@ brew "tealdeer"                 # tldr   (https://github.com/tealdeer-rs/tealdee
 # Unix Command Alternatives
 # ------------------------------
 brew "coreutils"                # GNU core utilities (https://www.gnu.org/software/coreutils/)
-brew "zoxide"                   # cd     (https://github.com/ajeetdsouza/zoxide)
 brew "bat"                      # cat    (https://github.com/sharkdp/bat)
 brew "ripgrep"                  # grep   (https://github.com/BurntSushi/ripgrep)
 brew "fd"                       # find   (https://github.com/sharkdp/fd)

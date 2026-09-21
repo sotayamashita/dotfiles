@@ -42,12 +42,6 @@ if has_command diskus
     alias du="diskus"
 end
 
-# cd -> zoxide
-# https://github.com/ajeetdsouza/zoxide
-if has_command zoxide
-    alias cd="zoxide"
-end
-
 # find -> fd
 # https://github.com/sharkdp/fd
 if has_command fd
