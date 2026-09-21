@@ -7,38 +7,60 @@ alias h="history"
 alias v="vim"
 
 # ------------------------------
-# Navigation Shortcuts
-# ------------------------------
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-
-# Project directories
-alias prj="cd ~/Projects"
-alias icloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs"
-
-# ------------------------------
-# Modern CLI Tools
+# Unix Command Alternatives
 # ------------------------------
 
-# Function to check if command exists
 function has_command
     type -q $argv[1]
 end
 
-# Find
+# GNU coreutils; later aliases take precedence over these defaults.
+# https://www.gnu.org/software/coreutils/
+if has_command brew
+    set -l coreutils_prefix (command brew --prefix coreutils)
+    for tool in $coreutils_prefix/libexec/gnubin/*
+        set -l name (path basename "$tool")
+        # Fish reserves these names and does not allow alias functions for them.
+        if contains -- $name '[' test
+            continue
+        end
+        if test -x "$coreutils_prefix/bin/g$name"
+            alias $name (string escape -- "$coreutils_prefix/bin/g$name")
+        end
+    end
+end
+
+# grep -> ripgrep
+# https://github.com/BurntSushi/ripgrep
+if has_command rg
+    alias grep="rg"
+end
+
+# du -> diskus
+# https://github.com/sharkdp/diskus
+if has_command diskus
+    alias du="diskus"
+end
+
+# cd -> zoxide
+# https://github.com/ajeetdsouza/zoxide
+if has_command zoxide
+    alias cd="zoxide"
+end
+
+# find -> fd
 # https://github.com/sharkdp/fd
 if has_command fd
     alias find="fd"
 end
 
-# Sed
+# sed -> sd
 # https://github.com/chmln/sd
 if has_command sd
     alias sed="sd"
 end
 
-# File and directory operations
+# ls, ll, tree -> eza
 # https://github.com/eza-community/eza
 if has_command eza
     alias ls="eza -al -hg --icons --color=always --group-directories-first"
@@ -46,43 +68,51 @@ if has_command eza
     alias tree="eza --tree --icons --color=always"
 end
 
-# File viewing
+# cat, less -> bat
 # https://github.com/sharkdp/bat
 if has_command bat
     alias cat="bat --style=header,grid --paging=never"
     alias less="bat --style=plain --paging=never"
 end
 
-# System monitoring
+# top, htop -> bottom
 # https://github.com/ClementTsang/bottom
 if has_command btm
     alias top="btm"
     alias htop="btm"
 end
 
-# Process management
+# ps -> procs
 # https://github.com/dalance/procs
 if has_command procs
     alias ps="procs"
 end
 
-# Safe delete
+# rm -> trash
 # https://github.com/sindresorhus/trash-cli
 if has_command trash
     alias rm="trash"
 end
 
-# Network utilities
+# ping -> prettyping
 # https://github.com/denilsonsa/prettyping
 if has_command prettyping
     alias ping="prettyping --nolegend"
 end
 
-# Help
+# ------------------------------
+# Shells & Interactive Helpers
+# ------------------------------
+
+# help -> tealdeer
 # https://github.com/tealdeer-rs/tealdeer
 if has_command help
     alias help="tldr"
 end
+
+# ------------------------------
+# AI Agents & Integrations
+# ------------------------------
 
 # Claude Code
 # https://docs.anthropic.com/en/docs/claude-code
@@ -93,6 +123,10 @@ if has_command claude
         command env CLAUDE_CODE_NO_FLICKER=1 claude --dangerously-skip-permissions $argv
     end
 end
+
+# ------------------------------
+# Package Managers & Supply Chain Protection
+# ------------------------------
 
 # Deno
 # Supply chain attack mitigation: delay installing newly published packages.
@@ -131,8 +165,8 @@ if has_command sfw
             case pip
                 __python_package_manager_error
             case add sync
-                # Calculate the date 7 days ago in a macOS-compatible way.
-                set -l target_date (date -v-7d +%Y-%m-%d)
+                # Bypass the GNU date alias because -v requires macOS date.
+                set -l target_date (command date -v-7d +%Y-%m-%d)
 
                 # Run with arguments ordered for uv.
                 # $argv[1] (add/sync), --exclude-newer, date, remaining arguments ($argv[2..])
@@ -159,12 +193,4 @@ end
 
 function pip --wraps=pip --description "Tell agents to use uv instead of pip"
     __python_package_manager_error
-end
-
-# PDF to Markdown conversion using docling
-# https://github.com/docling-project/docling
-if has_command mise
-    function pdf2md --description "Convert PDF to Markdown using mise"
-        mise x -- uvx docling --to md --pipeline vlm --vlm-model granite_docling $argv
-    end
 end

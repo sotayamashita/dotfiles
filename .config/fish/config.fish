@@ -96,13 +96,6 @@ if test -d $ANDROID_HOME
     fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
 end
 
-# fnox
-# https://fnox.jdx.dev/guide/shell-integration.html#enable-shell-integration
-# activate only defines shell functions (~6ms). Secrets are resolved on cd into dirs with fnox.toml
-if command -v fnox &>/dev/null
-    fnox activate fish | source
-end
-
 # ------------------------------
 # Applications
 # ------------------------------
