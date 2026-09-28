@@ -27,6 +27,8 @@ Coding:
 - Preserve backward compatibility only when required.
 - Remove obsolete code instead of adding unnecessary compatibility layers.
 - Follow existing project conventions unless these rules explicitly override them.
+- Separate groups of related lines with a blank line, at module level and inside functions alike.
+- Keep lines within a group together, without blank lines.
 
 Comments:
 
