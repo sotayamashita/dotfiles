@@ -3,15 +3,11 @@
 java   = "latest"
 node   = "lts"
 pnpm   = "latest"
-python = "3.13"
+python = "latest"
 rust   = "latest"
 bun    = "latest"
-
-# Ruby Gems
-"gem:cocoapods" = "latest"
 
 # NPM Global Packages
 "npm:trash-cli"    = "latest"
 "npm:defuddle-cli" = "latest"
 "npm:sfw"          = "latest"
-"npm:@tobilu/qmd"  = "latest"
