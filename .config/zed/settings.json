@@ -1,23 +1,22 @@
 {
-
-  "agent_servers": {
-    "codex-acp": {
-      "default_config_options": {
-        "mode": "agent-full-access"
-      },
-      "type": "registry"
-    },
-    "claude-acp": {
-      "type": "registry"
-    }
-  },
-  "use_system_window_tabs": true,
-
   // Telemetry settings
   "telemetry": {
     "diagnostics": false,
     "metrics": false,
   },
+
+  // Agent servers configuration (MCP servers)
+  "agent_servers": {
+    "codex-acp": {
+      "type": "registry",
+    },
+    "claude-acp": {
+      "type": "registry",
+    },
+  },
+
+  // Use macOS native window tabs
+  "use_system_window_tabs": true,
 
   // Show whitespace characters: all, selection, none, boundary
   "show_whitespaces": "all",
