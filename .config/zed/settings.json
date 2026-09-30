@@ -48,6 +48,9 @@
 
   // File scan exclusions (files to hide from file explorer and search)
   "file_scan_exclusions": [
+    // Inherit Zed's default exclusions
+    "...",
+    // Custom exclusions
     "**/out",
     "**/dist",
     "**/.turbo",
