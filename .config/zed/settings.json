@@ -15,6 +15,9 @@
     },
   },
 
+  // Open folders in a new window
+  "cli_default_open_behavior": "new_window",
+
   // Use macOS native window tabs
   "use_system_window_tabs": true,
 
