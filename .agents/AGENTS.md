@@ -35,9 +35,16 @@ Coding:
 
 Comments:
 
-- Do not record intermediate attempts or speculative future work in comments.
-- Explain non-obvious reasons not documented elsewhere, not what the code does.
-- For complex functions, document caller usage in JSDoc or the language's standard format.
+- Put How in code, What in tests, Why in commit messages, and Why not in comments.
+- Keep a comment only for one of these:
+  - A constraint from code we do not control, such as a library, platform, or spec.
+  - A caller-facing contract in the language's doc format, such as JSDoc or KDoc.
+  - A license header.
+- Document caller usage of complex functions in that doc format.
+- When our own code needs a comment, rename, extract, or retype it instead.
+- Leave out narration, section banners, commented-out code, past attempts, and plans.
+- Leave out a comment when unsure whether it qualifies.
+- Record a long-lived design reason in an ADR when the project keeps ADRs.
 
 Scratchpad:
 
@@ -74,7 +81,7 @@ Git Commits:
 - Write commit messages in English.
 - Keep commits atomic: one logical change per commit.
 - Use only the subject for a small change.
-- For a complex change, add a body that explains what changed and why.
+- For a complex change, add a body: the problem before, the change, and why this approach.
 
 Tools:
 
