@@ -14,6 +14,9 @@ Writing:
 - Restate a point where it is needed instead of referring to another section.
 - Explain a choice in a document only when its reader needs the reason.
   - Otherwise, put the reason in the chat reply.
+- Choose examples that need few premises over analogies or added explanations.
+- Explain only the premises that a simpler example cannot remove.
+- Show every variable, table, and function that an example uses.
 - Always use the `$show-me` skill when presenting plans.
 
 Coding:
