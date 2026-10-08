@@ -39,6 +39,32 @@ Comments:
 - Explain non-obvious reasons not documented elsewhere, not what the code does.
 - For complex functions, document caller usage in JSDoc or the language's standard format.
 
+Scratchpad:
+
+- Keep the scratchpad at `$TMPDIR/agent-scratchpad/<project>-<date>.md`.
+- Treat it as yours alone; rewrite, compact, or recreate it freely.
+
+```text
+on(session spans several topics or decisions)
+  create scratchpad
+  record current thread, open questions, user corrections, verified sources
+
+on(scratchpad grows stale)
+  replace stale entries with a short, specific summary
+
+on(side topic appears)
+  write side topic to scratchpad
+  tell user "parked: <topic>"
+  continue main thread
+
+on(main thread ends)
+  read scratchpad
+  offer parked topics to user
+
+on(resuming a thread)
+  read scratchpad first
+```
+
 Git Branches:
 
 - Pull the base branch before creating a topic branch from it.
