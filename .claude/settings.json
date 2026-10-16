@@ -45,6 +45,7 @@
       "Read(**/*.key)"
     ]
   },
+  "includeGitInstructions": false,
   "hooks": {
     "PostToolUse": [
       {
