@@ -1,5 +1,6 @@
 from contextlib import redirect_stderr, redirect_stdout
 import io
+import json
 from pathlib import Path
 import sys
 from unittest import TestCase, main
@@ -22,6 +23,12 @@ from mcp import (
 
 STDIO = ServerSpec("demo", Transport.STDIO, ("demo-mcp", "--flag", "value"))
 HTTP = ServerSpec("demo", Transport.HTTP, ("https://example.com/mcp",))
+ALWAYS_STDIO = ServerSpec(
+    "demo", Transport.STDIO, ("demo-mcp", "--flag", "value"), always_load=True
+)
+ALWAYS_HTTP = ServerSpec(
+    "demo", Transport.HTTP, ("https://example.com/mcp",), always_load=True
+)
 
 
 def resolver(paths: dict[str, str]):
@@ -94,6 +101,43 @@ class BuildArgvTest(TestCase):
         self.assertEqual(
             argv,
             ["codex", "mcp", "add", "demo", "--url", "https://example.com/mcp"],
+        )
+
+    def test_claude_always_load_stdio_uses_add_json(self) -> None:
+        argv = build_add_argv(
+            "claude", ALWAYS_STDIO, ("/bin/demo-mcp", "--flag", "value")
+        )
+
+        self.assertEqual(
+            argv[:6], ["claude", "mcp", "add-json", "--scope", "user", "demo"]
+        )
+        self.assertEqual(
+            json.loads(argv[6]),
+            {
+                "type": "stdio",
+                "command": "/bin/demo-mcp",
+                "args": ["--flag", "value"],
+                "alwaysLoad": True,
+            },
+        )
+
+    def test_claude_always_load_http_uses_add_json(self) -> None:
+        argv = build_add_argv("claude", ALWAYS_HTTP, ("https://example.com/mcp",))
+
+        self.assertEqual(argv[2], "add-json")
+        self.assertEqual(
+            json.loads(argv[-1]),
+            {"type": "http", "url": "https://example.com/mcp", "alwaysLoad": True},
+        )
+
+    def test_codex_ignores_always_load(self) -> None:
+        argv = build_add_argv(
+            "codex", ALWAYS_STDIO, ("/bin/demo-mcp", "--flag", "value")
+        )
+
+        self.assertEqual(
+            argv,
+            build_add_argv("codex", STDIO, ("/bin/demo-mcp", "--flag", "value")),
         )
 
     def test_unknown_client_is_rejected(self) -> None:
@@ -268,8 +312,14 @@ class DeclarationTest(TestCase):
             for client in CLIENTS:
                 with self.subTest(server=spec.name, client=client):
                     argv = build_add_argv(client, spec, command)
-                    self.assertEqual(argv[:3], [client, "mcp", "add"])
+                    self.assertEqual(argv[:2], [client, "mcp"])
+                    self.assertIn(argv[2], ("add", "add-json"))
                     self.assertIn(spec.name, argv)
+
+    def test_fff_loads_upfront_in_claude(self) -> None:
+        fff = next(spec for spec in SERVERS if spec.name == "fff")
+
+        self.assertTrue(fff.always_load)
 
 
 if __name__ == "__main__":

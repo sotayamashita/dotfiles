@@ -18,6 +18,7 @@ Usage: mcp.py [--dry-run]
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import subprocess
 import sys
@@ -41,13 +42,21 @@ class ServerSpec:
     transport: Transport
     # STDIO: executable followed by its arguments. HTTP: a single URL.
     command: tuple[str, ...]
+    # Claude Code only: load the tools upfront instead of deferring them behind
+    # tool search. Codex has no equivalent setting.
+    always_load: bool = False
 
 
 # The declared server set. STDIO executables are named without a path and
 # resolved on PATH at run time, so no machine-specific path is tracked here.
 # Install them with `brew bundle --file=Brewfile` or `mise install`.
 SERVERS: tuple[ServerSpec, ...] = (
-    ServerSpec("fff", Transport.STDIO, ("fff-mcp",)),
+    # Claude Code's tool search defers MCP tools behind a ToolSearch call, so
+    # sessions fell back to Bash rg/grep and rarely used fff. Loading fff
+    # upfront keeps its tools visible on every turn.
+    ServerSpec(
+        "fff", Transport.STDIO, ("fff-mcp",), always_load=True
+    ),
     ServerSpec(
         "openaiDeveloperDocs", Transport.HTTP, ("https://developers.openai.com/mcp",)
     ),
@@ -107,6 +116,9 @@ def build_add_argv(client: str, spec: ServerSpec, command: Sequence[str]) -> lis
         ValueError: If the client is unknown.
     """
     if client == "claude":
+        if spec.always_load:
+            config = json.dumps(build_claude_config(spec, command))
+            return [client, "mcp", "add-json", "--scope", "user", spec.name, config]
         if spec.transport == Transport.STDIO:
             return [client, "mcp", "add", "--scope", "user", spec.name, "--", *command]
         return [
@@ -127,6 +139,23 @@ def build_add_argv(client: str, spec: ServerSpec, command: Sequence[str]) -> lis
         return [client, "mcp", "add", spec.name, "--url", *command]
 
     raise ValueError(f"Unknown client: {client}")
+
+
+def build_claude_config(spec: ServerSpec, command: Sequence[str]) -> dict[str, object]:
+    """Build the server JSON that `claude mcp add-json` accepts."""
+    if spec.transport == Transport.STDIO:
+        executable, *args = command
+        config: dict[str, object] = {
+            "type": "stdio",
+            "command": executable,
+            "args": args,
+        }
+    else:
+        config = {"type": "http", "url": command[0]}
+
+    if spec.always_load:
+        config["alwaysLoad"] = True
+    return config
 
 
 def build_get_argv(client: str, name: str) -> list[str]:
