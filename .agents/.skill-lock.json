@@ -360,6 +360,34 @@
       "skillFolderHash": "678c375b883794bf4292715a43acbba5c84681aa",
       "installedAt": "2026-09-19T03:46:54.042Z",
       "updatedAt": "2026-09-26T13:15:11.924Z"
+    },
+    "yomiyasu": {
+      "source": "nanaism/yomiyasu",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/nanaism/yomiyasu.git",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "30ee6041c328ce21d38a7963f667e079a93d7a12",
+      "installedAt": "2026-10-01T01:18:15.208Z",
+      "updatedAt": "2026-10-01T01:18:15.208Z"
+    },
+    "retro": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "skillPath": "skills/engineering/retro/SKILL.md",
+      "skillFolderHash": "335c1862a43da9d629abafdb79ca0c0de118be08",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-10-04T11:55:05.264Z",
+      "updatedAt": "2026-10-04T11:55:05.264Z"
+    },
+    "anatomy": {
+      "source": "wheresryan22/anatomy",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/wheresryan22/anatomy.git",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "bc943e40c59998be5da61f9d39c6a983b1116099",
+      "installedAt": "2026-10-15T03:50:52.103Z",
+      "updatedAt": "2026-10-15T03:50:52.103Z"
     }
   },
   "dismissed": {
@@ -376,6 +404,7 @@
     "kilo",
     "kimi-code-cli",
     "opencode",
+    "pi",
     "warp",
     "zed",
     "claude-code"
