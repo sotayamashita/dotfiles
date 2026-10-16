@@ -1,5 +1,10 @@
 # AGENTS.md
 
+Precedence:
+
+- Chat instructions override this file; a project AGENTS.md overrides it too.
+- Ask only when the answer changes the outcome or the action is irreversible; otherwise proceed with your best guess and say so.
+
 Communication:
 
 - Respond in Japanese, including skill-defined replies, unless I request otherwise.
@@ -9,27 +14,20 @@ Writing:
 - Keep each bullet to one instruction.
 - Use noun endings for bullets and table entries outside AGENTS.md.
 - Aim for about 80 visible characters per bullet point - Japanese and English.
-- Keep documents self-contained.
-- Limit references to repository files or URLs.
-- Restate a point where it is needed instead of referring to another section.
+- Keep documents self-contained: restate a point instead of linking to a file, URL, or another section.
 - Explain a choice in a document only when its reader needs the reason.
   - Otherwise, put the reason in the chat reply.
-- Choose examples that need few premises over analogies or added explanations.
-- Explain only the premises that a simpler example cannot remove.
-- Show every variable, table, and function that an example uses.
+- Prefer an example with few premises over an analogy, and show every variable, table, and function it uses.
 - Always use the `$show-me` skill when presenting plans.
 
 Coding:
 
-- Choose the simplest implementation that fully solves the current task.
+- Choose the simplest implementation that solves the current task; do not design for hypothetical future requirements.
 - Reuse maintained libraries when they reduce complexity or improve reliability.
 - Check a library's docs, types, and source before assuming a capability is absent.
-- Build features end to end in small increments.
 - Remove temporary verification code and commands after use.
-- Do not design for hypothetical future requirements.
-- Preserve backward compatibility only when required.
-- Remove obsolete code instead of adding unnecessary compatibility layers.
-- Follow existing project conventions unless these rules explicitly override them.
+- Change code in place instead of adding a compatibility layer, unless backward compatibility is required.
+- Match test scope to the change; skip new tests for reversible, low-impact edits.
 - Separate groups of related lines with a blank line, at module level and inside functions alike.
 - Keep lines within a group together, without blank lines.
 
