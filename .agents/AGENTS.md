@@ -2,8 +2,9 @@
 
 Precedence:
 
-- Chat instructions override this file; a project AGENTS.md overrides it too.
-- Ask only when the answer changes the outcome or the action is irreversible; otherwise proceed with your best guess and say so.
+- Chat instructions override this file, and a project AGENTS.md overrides it too.
+- Ask only when the answer changes the outcome or the action is irreversible.
+- Otherwise, proceed with your best guess and say so.
 
 Communication:
 
@@ -11,9 +12,11 @@ Communication:
 
 Writing:
 
-- Keep each bullet to one instruction.
+- Write English in ASD-STE100 style: one instruction per sentence, imperative verbs, active voice, no semicolons.
+- Keep related sentences together in one paragraph of up to six sentences on one topic.
+- Give each list item one sentence.
 - Use noun endings for bullets and table entries outside AGENTS.md.
-- Aim for about 80 visible characters per bullet point - Japanese and English.
+- Keep a Japanese bullet to about 80 characters.
 - Keep documents self-contained: restate a point instead of linking to a file, URL, or another section.
 - Explain a choice in a document only when its reader needs the reason.
   - Otherwise, put the reason in the chat reply.
@@ -22,12 +25,13 @@ Writing:
 
 Coding:
 
-- Choose the simplest implementation that solves the current task; do not design for hypothetical future requirements.
+- Choose the simplest implementation that solves the current task.
+- Do not design for hypothetical future requirements.
 - Reuse maintained libraries when they reduce complexity or improve reliability.
 - Check a library's docs, types, and source before assuming a capability is absent.
 - Remove temporary verification code and commands after use.
 - Change code in place instead of adding a compatibility layer, unless backward compatibility is required.
-- Match test scope to the change; skip new tests for reversible, low-impact edits.
+- Match test scope to the change, and skip new tests for reversible, low-impact edits.
 - Separate groups of related lines with a blank line, at module level and inside functions alike.
 - Keep lines within a group together, without blank lines.
 
