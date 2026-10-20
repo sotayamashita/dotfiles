@@ -119,7 +119,8 @@
     "gopls-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true
+    "vercel@claude-plugins-official": true,
+    "skill-creator@anthropic-plugin-directory": true
   },
   "extraKnownMarketplaces": {
     "addy-agent-skills": {
