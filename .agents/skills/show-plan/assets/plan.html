@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>〔計画の名前〕</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --ink: #1f2328;
+    --muted: #5f6672;
+    --line: #e2e2dc;
+    --blue: #2563eb;
+    --blue-soft: #e8efff;
+    --purple: #7c3aed;
+    --purple-soft: #f1eaff;
+    --green: #15803d;
+    --green-soft: #e7f6ec;
+    --amber: #b45309;
+    --amber-soft: #fdf3e2;
+    --red: #b91c1c;
+    --red-soft: #fdecec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.75 -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Segoe UI", sans-serif;
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  .lead { color: var(--muted); margin: 0 0 16px; }
+  mark { background: linear-gradient(transparent 55%, #ffe58a 55%); color: inherit; font-weight: 700; padding: 0 1px; }
+  .keypoints { background: var(--card); border: 2px solid var(--ink); border-radius: 12px; padding: 14px 20px; margin: 0 0 36px; }
+  .keypoints .title { margin: 0 0 6px; font-size: 14px; font-weight: 700; color: var(--muted); }
+  .keypoints ol { margin: 0; padding-left: 22px; font-size: 16px; }
+  .keypoints li { margin: 4px 0; }
+  h2 { font-size: 19px; margin: 48px 0 14px; display: flex; align-items: center; gap: 10px; }
+  h2 .num {
+    display: inline-grid; place-items: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--ink); color: #fff; font-size: 14px; flex: none;
+  }
+  p { margin: 0 0 12px; }
+  code { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; background: #eceae4; padding: 1px 5px; border-radius: 4px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+  .rule h3 { font-size: 15px; margin: 0 0 4px; }
+  .rule p { color: var(--muted); margin: 0; font-size: 14px; }
+  .rule .icon { font-size: 22px; line-height: 1; margin-bottom: 8px; }
+
+  .places { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .place { border-radius: 12px; padding: 16px; border: 2px dashed; }
+  .place.out { border-color: var(--red); background: var(--red-soft); }
+  .place.in { border-color: var(--green); background: var(--green-soft); }
+  .place h3 { margin: 0 0 8px; font-size: 15px; }
+  .place ul { margin: 0; padding-left: 20px; }
+
+  .steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+  .steps li {
+    position: relative; background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 16px 14px 60px; margin-bottom: 10px;
+  }
+  .steps li::before {
+    counter-increment: s; content: counter(s);
+    position: absolute; left: 16px; top: 14px;
+    width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center; font-weight: 700;
+    background: var(--bg); border: 1px solid var(--line);
+  }
+  .who {
+    display: inline-block; font-size: 12px; font-weight: 700;
+    padding: 1px 8px; border-radius: 999px; margin-right: 6px; vertical-align: 2px;
+  }
+  .who.script { background: var(--blue-soft); color: var(--blue); }
+  .who.agent { background: var(--purple-soft); color: var(--purple); }
+  .who.claude { background: var(--amber-soft); color: var(--amber); }
+  .who.person { background: var(--green-soft); color: var(--green); }
+  .steps .where { font-size: 12px; color: var(--muted); float: right; }
+  .steps .desc { color: var(--muted); font-size: 14px; display: block; margin-top: 2px; }
+
+  .compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .panel .cap { font-size: 12px; font-weight: 700; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  .panel.before .cap { background: var(--red-soft); color: var(--red); }
+  .panel.after .cap { background: var(--green-soft); color: var(--green); }
+  .panel .body { padding: 10px; font-size: 13px; }
+  .panel table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .panel td { border: 1px solid #cfd3d8; padding: 6px 8px; }
+  .arrow { font-size: 28px; color: var(--muted); }
+
+  .checks .card h3 { margin: 0 0 4px; font-size: 15px; }
+  .checks .card p { margin: 0; font-size: 14px; color: var(--muted); }
+  .checks .tag { font-size: 12px; font-weight: 700; color: var(--blue); }
+
+  .files { font: 13px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre; overflow-x: auto; }
+  .files .add { color: var(--green); }
+  .files .del { color: var(--red); text-decoration: line-through; }
+  .files .c { color: var(--muted); }
+
+  .ask { display: grid; gap: 10px; }
+  .ask .head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
+  .ask h3 { margin: 0; font-size: 15px; }
+  .ask p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+
+  .terms { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+  .terms dt { font-weight: 700; }
+  .terms dd { margin: 0; color: var(--muted); }
+
+  .problem { border-left: 4px solid var(--red); }
+  .problem h3 { margin: 0 0 4px; font-size: 15px; }
+  .problem p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  .sheet table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .sheet td { border: 1px solid #cfd3d8; padding: 6px 8px; position: relative; }
+  .sheet td.head { background: #dbe7f5; font-weight: 700; }
+  .sheet td.label { background: #f2f2f2; width: 34%; }
+  .sheet td.img { background: #d9d9d9; color: #666; text-align: center; font-size: 12px; }
+  .sheet .red { color: #c00; }
+  .sheet .strike { text-decoration: line-through; }
+  .mark { outline: 2px solid var(--red); outline-offset: -2px; }
+  .pin {
+    display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--red); color: #fff; font-size: 11px; font-weight: 700; vertical-align: 1px;
+  }
+
+  table.plain { border-collapse: collapse; width: 100%; background: var(--card); font-size: 14px; }
+  table.plain th, table.plain td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  table.plain th { background: var(--bg); }
+
+  .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 12px 0; }
+  .option h4 { margin: 0 0 6px; font-size: 15px; }
+  .option .pic { margin: 8px 0; }
+  .option ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px; }
+  .option .good::marker { content: "＋ "; color: var(--green); }
+  .option .bad::marker { content: "－ "; color: var(--red); }
+  .option.recommended { border: 2px solid var(--green); }
+
+  .status { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .status.decided { background: var(--green-soft); color: var(--green); }
+  .status.tentative { background: var(--amber-soft); color: var(--amber); }
+  .status.open { background: var(--red-soft); color: var(--red); }
+
+  @media (max-width: 720px) {
+    .grid3, .grid2, .places, .compare { grid-template-columns: 1fr; }
+    .terms { grid-template-columns: 1fr; }
+    .terms dd { margin-bottom: 6px; }
+    .arrow { transform: rotate(90deg); justify-self: center; }
+    .steps .where { float: none; display: block; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<h1>〔計画の名前〕</h1>
+<p class="lead">〔この計画で何ができるようになるかを 1 文で〕</p>
+
+<!-- 要点：ここだけ読めば計画がわかるように、3 つまで。mark は各項目に 1 か所まで -->
+<section class="keypoints">
+  <p class="title">要点</p>
+  <ol>
+    <li>〔要点を 1 文で。<mark>いちばん大事な言葉</mark>を強調〕</li>
+  </ol>
+</section>
+
+<!-- 守ること：どの手順も守る約束 -->
+<!-- 言葉：読み手が知らないかもしれない言葉をすべてここで説明する -->
+<h2><span class="num">1</span>言葉</h2>
+<div class="card">
+  <dl class="terms">
+    <dt>〔言葉〕</dt><dd>〔何をするもの・何のことかを 1 文で〕</dd>
+  </dl>
+</div>
+
+<!-- 困っていること：まえがきだけでは伝わらないときだけ -->
+<h2><span class="num">2</span>困っていること</h2>
+<div class="card problem">
+  <h3>〔今うまくいかないこと〕</h3>
+  <p>〔何が起きて、なぜ困るかを 1〜2 文で〕</p>
+</div>
+
+<h2><span class="num">3</span>守ること</h2>
+<div class="grid3">
+  <div class="card rule">
+    <div class="icon">🔒</div>
+    <h3>〔約束を短く〕</h3>
+    <p>〔その約束の中身を 1 文で〕</p>
+  </div>
+</div>
+
+<!-- 置き場所：データやファイルの境界が大事なときだけ -->
+<h2><span class="num">4</span>置き場所</h2>
+<div class="places">
+  <div class="place out">
+    <h3>〔外に出さない場所〕</h3>
+    <ul><li>〔置くもの〕</li></ul>
+  </div>
+  <div class="place in">
+    <h3>〔共有する場所〕</h3>
+    <ul><li>〔置くもの〕</li></ul>
+  </div>
+</div>
+
+<!-- 手順：who は script / agent / claude / person。where は場所が大事なときだけ -->
+<h2><span class="num">5</span>手順</h2>
+<ol class="steps">
+  <li><span class="where">〔場所〕</span><span class="who script">スクリプト</span><b>〔何をするかを 1 行で〕</b>
+    <span class="desc">〔なぜ必要かを 1 文で。<mark>大事な言葉</mark>を 1 か所だけ強調〕</span></li>
+  <li><span class="who agent">〔AI の名前〕</span><b>〔何をするか〕</b>
+    <span class="desc">〔説明〕</span></li>
+  <li><span class="who claude">Claude</span><b>〔何をするか〕</b>
+    <span class="desc">〔説明〕</span></li>
+  <li><span class="who person">人</span><b>〔何を確かめるか〕</b>
+    <span class="desc">〔説明〕</span></li>
+</ol>
+
+<!-- 例：前と後を並べる。使う値はすべて見せる。シートは .sheet、それ以外は .body に書く -->
+<h2><span class="num">6</span>例</h2>
+<div class="compare">
+  <div class="panel before sheet">
+    <div class="cap">〔前〕</div>
+    <table>
+      <tr><td class="head" colspan="2">〔見出しのセル〕</td></tr>
+      <tr><td class="label">〔ラベル〕</td><td>〔値〕<span class="red">〔赤字の部分〕</span></td></tr>
+      <tr><td class="label">〔ラベル〕</td><td class="mark"><span class="pin">1</span> 〔指したいセル〕</td></tr>
+      <tr><td class="label">〔ラベル〕</td><td class="img">〔画像〕</td></tr>
+    </table>
+  </div>
+  <div class="arrow">→</div>
+  <div class="panel after">
+    <div class="cap">〔後〕</div>
+    <div class="body">〔具体的な値〕</div>
+  </div>
+</div>
+<p class="note"><span class="pin">1</span> 〔赤い枠で指した場所の説明〕</p>
+
+<!-- 確認：正しくできたとどう判断するか -->
+<h2><span class="num">7</span>確認</h2>
+<div class="grid2 checks">
+  <div class="card"><span class="tag">〔短い見出し〕</span><h3>〔確かめること〕</h3>
+    <p>〔どう確かめるかを 1 文で〕</p></div>
+</div>
+
+<!-- 作るもの：add は新規、del は削除、c は説明。どの行にも説明を付ける -->
+<h2><span class="num">8</span>作るもの</h2>
+<div class="card files"><span class="add">〔新しいファイル〕</span>   <span class="c">〔何をするものか〕</span>
+〔今あるファイル〕       <span class="c">〔どう変えるか〕</span>
+<span class="del">〔消すファイル〕</span>     <span class="c">〔なぜ要らなくなるか〕</span></div>
+
+<!-- 進め方：区切りと、止めて確認する所 -->
+<h2><span class="num">9</span>進め方</h2>
+<ol class="steps">
+  <li><b>〔区切り〕</b><span class="desc">〔ここで止めて報告する、など〕</span></li>
+</ol>
+
+<!-- やらないこと：見送った案と理由。変更の履歴ではない -->
+<h2><span class="num">10</span>やらないこと</h2>
+<table class="plain">
+  <tr><th>見送った案</th><th>理由</th></tr>
+  <tr><td>〔案の中身を言葉で〕</td><td>〔理由を 1 文で〕</td></tr>
+</table>
+
+<!-- 決めること：status は decided / tentative / open。答えをもらった点は decided にする -->
+<h2><span class="num">11</span>決めること</h2>
+<div class="ask">
+  <div class="card">
+    <div class="head"><h3>〔質問〕</h3><span class="status open">未決</span></div>
+    <!-- 案の違いが図で伝わるときだけ options を使う -->
+    <div class="options">
+      <div class="card option recommended">
+        <h4>〔案の中身を言葉で〕 <span class="status decided">おすすめ</span></h4>
+        <div class="pic">〔図・小さなシート・画面の写し〕</div>
+        <p>〔今の状態がどう変わるか〕</p>
+        <ul><li class="good">〔良い点〕</li><li class="bad">〔気になる点〕</li></ul>
+      </div>
+      <div class="card option">
+        <h4>〔別の案〕</h4>
+        <p>〔今の状態がどう変わるか〕</p>
+        <ul><li class="good">〔良い点〕</li><li class="bad">〔気になる点〕</li></ul>
+      </div>
+    </div>
+    <p>おすすめ：〔答え〕。〔理由を 1〜2 文で〕</p>
+  </div>
+  <div class="card">
+    <div class="head"><h3>〔決まったこと〕</h3><span class="status decided">決定</span></div>
+    <p>〔決まった中身を 1〜2 文で〕</p>
+  </div>
+  <div class="card">
+    <div class="head"><h3>〔仮に決めたこと〕</h3><span class="status tentative">仮決定</span></div>
+    <p>〔中身と、何がわかれば確定するか〕</p>
+  </div>
+</div>
+
+</main>
+</body>
+</html>
