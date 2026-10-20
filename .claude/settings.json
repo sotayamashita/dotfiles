@@ -101,7 +101,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh '~/skills/tldraw-offline/inject-server-context.sh' SubagentStart"
+            "command": "sh \"$HOME/skills/tldraw-offline/inject-server-context.sh\" SubagentStart"
           }
         ]
       }
