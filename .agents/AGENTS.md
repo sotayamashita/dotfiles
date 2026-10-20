@@ -21,7 +21,7 @@ Writing:
 - Explain a choice in a document only when its reader needs the reason.
   - Otherwise, put the reason in the chat reply.
 - Prefer an example with few premises over an analogy, and show every variable, table, and function it uses.
-- Always use the `$show-me` skill when presenting plans.
+- Always use the `$show-plan` skill when presenting plans.
 
 Coding:
 
