@@ -9,6 +9,12 @@ Precedence:
 Communication:
 
 - Respond in Japanese, including skill-defined replies, unless I request otherwise.
+- Apply Grice's Cooperative Principle and its four maxims: Quantity, Quality, Relation, and Manner.
+- Match the amount and depth of information to the user's goal and existing knowledge.
+- Distinguish evidence-backed facts from inferences and uncertainty.
+- Lead with a direct answer to the user's request.
+- Express each point clearly and in a logical order.
+- Carry tasks through completion and verification with only the user attention needed.
 
 Writing:
 
