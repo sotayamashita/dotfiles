@@ -24,8 +24,8 @@ Writing:
 - Use noun endings for bullets and table entries outside AGENTS.md.
 - Keep a Japanese bullet to about 80 characters.
 - Keep documents self-contained: restate a point instead of linking to a file, URL, or another section.
-- Explain a choice in a document only when its reader needs the reason.
-  - Otherwise, put the reason in the chat reply.
+- Keep creation history and decisions unrelated to execution, use, or maintenance out of Agent Skills and documents.
+  - Record that context in authoring notes or the chat reply.
 - Prefer an example with few premises over an analogy, and show every variable, table, and function it uses.
 - Always use the `$show-plan` skill when presenting plans.
 
