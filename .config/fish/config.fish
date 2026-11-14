@@ -96,6 +96,11 @@ if test -d $ANDROID_HOME
     fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
 end
 
+# Grok
+if test -d $HOME/.grok/bin
+    fish_add_path $HOME/.grok/bin
+end
+
 # ------------------------------
 # Applications
 # ------------------------------
