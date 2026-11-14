@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Sends SIGTERM to every process that listens on a TCP port.
+#
+# Usage: kill-port <port>
+
+set -euo pipefail
+
+main() {
+  if [[ $# -ne 1 ]]; then
+    echo "Usage: kill-port <port>" >&2
+    exit 2
+  fi
+
+  if [[ ! "$1" =~ ^[0-9]{1,5}$ ]]; then
+    echo "kill-port: port must be an integer between 1 and 65535" >&2
+    exit 2
+  fi
+  local port="$((10#$1))"
+  if ((port < 1 || port > 65535)); then
+    echo "kill-port: port must be an integer between 1 and 65535" >&2
+    exit 2
+  fi
+
+  if ! command -v lsof >/dev/null; then
+    echo "kill-port: lsof is required" >&2
+    exit 1
+  fi
+
+  local pids
+  pids="$(lsof -nP -t -iTCP:"${port}" -sTCP:LISTEN)" || {
+    echo "kill-port: no process listening on TCP port ${port}"
+    exit 0
+  }
+
+  xargs kill -TERM <<<"${pids}"
+}
+
+main "$@"
