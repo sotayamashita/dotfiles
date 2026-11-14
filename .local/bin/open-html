@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# Shows an HTML file in Google Chrome. Reloads every tab that already shows
+# the file, or opens the file when no tab shows it.
+#
+# Usage: open-html <path>
+
+set -euo pipefail
+
+main() {
+  if [[ $# -ne 1 || ! -f "$1" ]]; then
+    echo "Usage: open-html <path>" >&2
+    exit 2
+  fi
+
+  local path
+  path="$(realpath "$1")"
+
+  local reloaded=0
+  if pgrep -xq "Google Chrome"; then
+    reloaded="$(osascript - "file://${path}" <<'APPLESCRIPT'
+on run argv
+  set target to item 1 of argv
+  set n to 0
+  tell application "Google Chrome"
+    repeat with w in windows
+      set matches to (tabs of w whose URL starts with target)
+      repeat with t in matches
+        reload t
+      end repeat
+      set n to n + (count of matches)
+    end repeat
+  end tell
+  return n
+end run
+APPLESCRIPT
+)"
+  fi
+
+  if [[ "${reloaded}" -eq 0 ]]; then
+    open -a "Google Chrome" "${path}"
+    echo "opened"
+  else
+    echo "reloaded ${reloaded} tab(s)"
+  fi
+}
+
+main "$@"

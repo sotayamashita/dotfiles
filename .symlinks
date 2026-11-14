@@ -36,6 +36,9 @@ dir:.claude/skills/*
 .config/fish/completions/*.fish
 .config/fish/functions/*.fish
 
+# Local commands
+.local/bin/*
+
 # Ghosty
 .config/ghostty/config
 
