@@ -1,4 +1,4 @@
-import { View, div, image, svg } from "gpui-kit";
+import { View, div, image, svg, PathBuilder } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { exec, home, layout, readTextFile, run, theme } from "herdr";
 
@@ -10,6 +10,7 @@ const GAP = 8;
 const BAR = 44;
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const WINDOW_LABELS = { 300: "5-hour", 10080: "Weekly" };
+const FOLDED_KEY = "usage.folded";
 
 const PROVIDERS = [
   { name: "Claude", icon: "icons/claude.svg", read: claudeWindows },
@@ -89,8 +90,27 @@ function resetText(resetMs) {
   return `resets on ${WEEKDAYS[date.getDay()]} ${time}`;
 }
 
-function blockHeight(providers) {
-  const bars = providers.reduce((count, provider) => count + provider.windows.length, 0);
+function usageColor(used, t) {
+  return used >= 90 ? t.blocked : used >= 70 ? t.working : t.muted;
+}
+
+function weeklyRing(usage, key, t) {
+  const ring = div().id(key).size(18).flex_none().relative()
+    .tooltip(`Weekly: ${Math.round(usage.used)}% used`)
+    .child(div().absolute().top(1).left(1).size(16).rounded(8).border(2).border_color(t.raised));
+  if (usage.used === 0) return ring;
+
+  const angle = usage.used / 100 * Math.PI * 2;
+  const path = PathBuilder.stroke(2).move_to(9, 2);
+  if (usage.used > 50) path.arc_to(7, 7, 0, false, true, 9, 16);
+
+  path.arc_to(7, 7, 0, false, true, 9 + 7 * Math.sin(angle), 9 - 7 * Math.cos(angle));
+
+  return ring.child(window.paint_path(path.build(), usageColor(usage.used, t)).size(18).absolute().top(0).left(0));
+}
+
+function blockHeight(providers, folded) {
+  const bars = providers.reduce((count, provider) => count + (folded.has(provider.name) ? 0 : provider.windows.length), 0);
 
   return providers.length === 0
     ? 1
@@ -100,6 +120,7 @@ function blockHeight(providers) {
 export default class PlanUsage extends View {
   init(_props, cx) {
     this.providers = [];
+    this.folded = new Set(JSON.parse(localStorage.getItem(FOLDED_KEY) ?? "[]"));
     this.height = 0;
     this.refresh(cx);
     cx.timer.every(REFRESH_MS, (cx) => this.refresh(cx));
@@ -113,26 +134,37 @@ export default class PlanUsage extends View {
       })));
       this.providers = providers.filter((provider) => provider.windows.length > 0);
 
-      const height = blockHeight(this.providers);
-      if (height !== this.height) {
-        this.height = height;
-        run("layout.resize", { id: BLOCK_ID, px: height });
-      }
-
+      this.resize();
       cx.notify();
     });
   }
 
-  bar(window, key, t) {
-    const color = window.used >= 90 ? t.blocked : window.used >= 70 ? t.working : t.muted;
+  resize() {
+    const height = blockHeight(this.providers, this.folded);
+    if (height === this.height) return;
+
+    this.height = height;
+    run("layout.resize", { id: BLOCK_ID, px: height });
+  }
+
+  toggle(provider, cx) {
+    cx.stop_propagation();
+    if (!this.folded.delete(provider)) this.folded.add(provider);
+    localStorage.setItem(FOLDED_KEY, JSON.stringify([...this.folded]));
+    this.resize();
+    cx.notify();
+  }
+
+  bar(usage, key, t) {
+    const color = usageColor(usage.used, t);
 
     return v_flex().id(key).h(BAR).justify_center().gap(3)
       .child(h_flex().justify_between().text_size(11.5)
-        .child(div().text_color(t.muted).child(window.label))
-        .child(div().font_medium().text_color(color === t.muted ? t.foreground : color).child(`${Math.round(window.used)}%`)))
+        .child(div().text_color(t.muted).child(usage.label))
+        .child(div().font_medium().text_color(color === t.muted ? t.foreground : color).child(`${Math.round(usage.used)}%`)))
       .child(div().h(5).w_full().rounded(3).bg(t.raised)
-        .child(div().h(5).rounded(3).bg(color).w(`${Math.max(2, window.used)}%`)))
-      .child(div().text_size(10.5).text_color(t.dim).truncate().child(window.resetMs === null ? "" : resetText(window.resetMs)));
+        .child(div().h(5).rounded(3).bg(color).w(`${Math.max(2, usage.used)}%`)))
+      .child(div().text_size(10.5).text_color(t.dim).truncate().child(usage.resetMs === null ? "" : resetText(usage.resetMs)));
   }
 
   render() {
@@ -146,14 +178,24 @@ export default class PlanUsage extends View {
     return v_flex().id("plan-usage").size_full().px(collapsed ? 4 : 14).py(PADDING / 2).gap(GAP)
       .bg(t.chrome).border_t(1).border_color(t.border).cursor_pointer()
       .on_click((_event, cx) => this.refresh(cx))
-      .children(this.providers.map((provider) => collapsed
-        ? v_flex().items_center().gap(2)
+      .children(this.providers.map((provider) => {
+        const folded = this.folded.has(provider.name);
+        const weekly = provider.windows.find((entry) => entry.label === "Weekly");
+
+        return collapsed
+        ? v_flex().id(`usage-toggle-${provider.name}`).items_center().gap(2)
+          .on_click((_event, cx) => this.toggle(provider.name, cx))
           .child(icon(provider))
-          .children(provider.windows.map((window) => div().text_size(10).text_color(t.muted).child(`${Math.round(window.used)}%`)))
+          .when(!folded, (el) => el.children(provider.windows.map((usage) => div().text_size(10).text_color(t.muted).child(`${Math.round(usage.used)}%`))))
         : v_flex()
-          .child(h_flex().h(HEADER).items_center().gap(6).text_size(11.5)
+          .child(h_flex().id(`usage-toggle-${provider.name}`).h(HEADER).items_center().gap(6).text_size(11.5)
+            .rounded(4).hover((el) => el.bg(t.hover))
+            .on_click((_event, cx) => this.toggle(provider.name, cx))
+            .child(svg(`mods/workspace-chrome/chevron-${folded ? "right" : "down"}.svg`).size(11).flex_none().text_color(t.dim))
             .child(icon(provider))
-            .child(div().font_medium().text_color(t.foreground).child(provider.name)))
-          .children(provider.windows.map((window, index) => this.bar(window, `${provider.name}-${index}`, t)))));
+            .child(div().flex_1().min_w(0).truncate().font_medium().text_color(t.foreground).child(provider.name))
+            .when(folded && weekly, (el) => el.child(weeklyRing(weekly, `usage-weekly-${provider.name}`, t))))
+          .when(!folded, (el) => el.children(provider.windows.map((usage, index) => this.bar(usage, `${provider.name}-${index}`, t))));
+      }));
   }
 }
