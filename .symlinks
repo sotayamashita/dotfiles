@@ -52,6 +52,7 @@ dir:.claude/skills/*
 .config/herdr-app/mods/space-menu/*
 .config/herdr-app/mods/plan-usage/*
 .config/herdr-app/mods/sidebar-footer/*
+.config/herdr-app/mods/spotify-player/*
 
 # Starship prompt
 .config/starship.toml
