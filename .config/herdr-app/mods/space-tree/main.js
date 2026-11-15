@@ -125,7 +125,7 @@ export default class SpaceTree extends View {
       .hover((el) => el.bg(t.hover))
       .on_click(() => run("space.select", { id: space.id }))
       .on_mouse_down("right", () => openOverlay({
-        mod: "menu", kind: "popup", width: 200, height: 260,
+        mod: "space-menu", kind: "popup", width: 200, height: 260,
         props: { tab: "space", target: { id: space.id } },
       }))
       .when(!collapsed, (el) => el.child(div().id(`tree-space-fold-${space.id}`)
