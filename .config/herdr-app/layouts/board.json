@@ -49,16 +49,6 @@
           }
         },
         {
-          "id": "spotify-player",
-          "type": "block",
-          "content": {
-            "mod": "spotify-player"
-          },
-          "size": {
-            "px": 112
-          }
-        },
-        {
           "id": "sidebar-footer",
           "type": "block",
           "content": {
