@@ -1,0 +1,291 @@
+#!/usr/bin/env python3
+
+import argparse
+from collections import defaultdict
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import unicodedata
+
+
+TARGET_DIRS = [
+    ("Node", ["node_modules", ".next", ".turbo"]),
+    ("Java", [".gradle"]),
+    ("Rust", ["target"]),
+    ("Python", [".venv", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"]),
+]
+
+TARGET_GROUPS = {name: group for group, names in TARGET_DIRS for name in names}
+
+
+CACHE_COMMANDS = [
+    # https://pnpm.io/cli/store#prune
+    ["pnpm", "store", "prune"],
+    # https://docs.astral.sh/uv/concepts/cache/#clearing-the-cache
+    ["uv", "cache", "prune"],
+]
+
+
+DOCKER_COMMANDS = [
+    # https://docs.docker.com/reference/cli/docker/image/prune/
+    ["docker", "image", "prune", "--all", "--force"],
+    # https://docs.docker.com/reference/cli/docker/builder/prune/
+    ["docker", "builder", "prune", "--all", "--force"],
+]
+
+
+TARGET_MARKERS = {
+    "target": ["Cargo.toml"],
+    ".gradle": ["settings.gradle", "settings.gradle.kts", "build.gradle", "build.gradle.kts"],
+}
+
+TABLE_ESCAPES = str.maketrans(
+    {"\\": "\\\\", "|": "\\|", "\n": "\\n", "\r": "\\r", "\t": "\\t"}
+)
+
+
+def raise_error(error):
+    raise error
+
+
+def run(command, check=True):
+    return subprocess.run(
+        command, check=check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+    )
+
+
+def is_target(path):
+    if path.name not in TARGET_GROUPS or path.is_symlink():
+        return False
+
+    if path.name == ".venv":
+        return (path / "pyvenv.cfg").is_file()
+
+    markers = TARGET_MARKERS.get(path.name)
+
+    return markers is None or any((path.parent / marker).is_file() for marker in markers)
+
+
+def find_candidates(root):
+    candidates = []
+
+    for base, directories, _ in os.walk(root, followlinks=False, onerror=raise_error):
+        parent = Path(base)
+        remaining = []
+
+        for name in sorted(directories):
+            path = parent / name
+
+            if is_target(path):
+                candidates.append(path)
+            elif name != ".git":
+                remaining.append(name)
+
+        directories[:] = remaining
+
+    return candidates
+
+
+def protection_reason(path):
+    for _, directories, files in os.walk(path, followlinks=False, onerror=raise_error):
+        if ".git" in directories or ".git" in files:
+            return "contains a Git repository"
+
+    if run(["git", "-C", str(path), "rev-parse", "--show-toplevel"], check=False).returncode:
+        return None
+
+    tracked = run(["git", "-C", str(path), "ls-files", "-z", "--", "."])
+
+    if tracked.stdout:
+        return "contains Git-tracked files"
+
+    return None
+
+
+def directory_size(path):
+    return int(run(["du", "-sk", str(path)]).stdout.split()[0]) * 1024
+
+
+def format_size(size):
+    if size is None:
+        return "unknown"
+
+    for unit in ["B", "KiB", "MiB", "GiB", "TiB"]:
+        if size < 1024 or unit == "TiB":
+            return f"{size:.2f} {unit}"
+
+        size /= 1024
+
+
+def print_table(headers, rows):
+    def width(value):
+        return sum(
+            2 if unicodedata.east_asian_width(char) in "WF" else 1 for char in value
+        )
+
+    values = [
+        [str(value).translate(TABLE_ESCAPES) for value in row]
+        for row in [headers, *rows]
+    ]
+    widths = [max(width(row[index]) for row in values) for index in range(len(headers))]
+
+    for index, row in enumerate(values):
+        cells = [
+            value + " " * (widths[column] - width(value))
+            for column, value in enumerate(row)
+        ]
+        print("| " + " | ".join(cells) + " |")
+
+        if index == 0:
+            print("| " + " | ".join("-" * size for size in widths) + " |")
+
+
+def print_report(root, records, apply):
+    groups = defaultdict(list)
+
+    for record in records:
+        name = record["path"].name
+        groups[(record["status"], TARGET_GROUPS[name], name)].append(record["size"])
+
+    print("Summary")
+    summary = []
+
+    for (status, group, name), sizes in sorted(groups.items()):
+        size = None if None in sizes else sum(sizes)
+        summary.append([status, group, name, len(sizes), format_size(size)])
+
+    print_table(["Status", "Group", "Target", "Directories", "Size"], summary)
+    print("\nDetails")
+    print_table(
+        ["Status", "Group", "Path under ~/Projects", "Size", "Reason"],
+        [
+            [
+                record["status"],
+                TARGET_GROUPS[record["path"].name],
+                record["path"].relative_to(root),
+                format_size(record["size"]),
+                record["reason"],
+            ]
+            for record in records
+        ],
+    )
+    completed = [
+        record
+        for record in records
+        if record["status"] == ("Removed" if apply else "Would remove")
+    ]
+    total = sum(record["size"] for record in completed)
+    action = "Removed" if apply else "Selected"
+    print(f"\n{action} {len(completed)} directories: {format_size(total)}.")
+    print("Sizes are measured before deletion. Shared files may reduce the space reclaimed.")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Remove dependencies under ~/Projects and prune shared caches."
+    )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--apply", action="store_true", help="Delete the candidates.")
+    mode.add_argument("--dry-run", action="store_true", help="Only list candidates.")
+    args = parser.parse_args()
+
+    required = ["git", "du"]
+
+    if args.apply:
+        required += [command[0] for command in CACHE_COMMANDS]
+
+    for command in required:
+        if not shutil.which(command):
+            parser.error(f"{command} is required")
+
+    root = Path.home() / "Projects"
+
+    if root.is_symlink() or not root.is_dir():
+        parser.error(f"not a directory or is a symlink: {root}")
+
+    root = root.resolve()
+    pending = "Not removed" if args.apply else "Would remove"
+    records = []
+
+    for path in find_candidates(root):
+        reason = protection_reason(path)
+        records.append(
+            {
+                "path": path,
+                "size": None if reason else directory_size(path),
+                "status": "Skipped" if reason else pending,
+                "reason": reason or "",
+            }
+        )
+
+    try:
+        for record in records:
+            if record["status"] != "Not removed":
+                continue
+
+            path = record["path"]
+
+            if path.is_symlink() or protection_reason(path):
+                record["status"] = "Skipped"
+                record["reason"] = "candidate changed during scan"
+                continue
+
+            try:
+                shutil.rmtree(path)
+            except OSError as error:
+                record["status"] = "Failed"
+                record["reason"] = f"may be partially removed: {error}"
+                raise
+
+            record["status"] = "Removed"
+    finally:
+        print_report(root, records, args.apply)
+
+    print("\nShared cache commands (not included in directory totals)", flush=True)
+
+    prune_caches(CACHE_COMMANDS, args.apply)
+    cleanup_docker(args.apply)
+
+
+def prune_caches(commands, apply):
+    for command in commands:
+        result = run(command, check=False) if apply else None
+        status = "Would run" if result is None else "Completed" if result.returncode == 0 else "Failed"
+        output = (result.stdout.strip() or "No output") if result else "unknown until prune"
+        print_table(
+            ["Status", "Command", "Result"], [[status, " ".join(command), output]]
+        )
+
+        if result is not None:
+            result.check_returncode()
+
+
+def cleanup_docker(apply):
+    print("\nDocker images and build cache (containers and volumes are kept)")
+
+    if not shutil.which("docker"):
+        print_table(["Status", "Reason"], [["Skipped", "Docker is not installed"]])
+        return
+
+    usage = run(["docker", "system", "df", "--verbose"], check=False)
+
+    if usage.returncode:
+        print_table(
+            ["Status", "Reason"],
+            [["Skipped", usage.stdout.strip() or "Docker is unavailable"]],
+        )
+        return
+
+    print("Current usage includes resources that will be kept. This is not a deletion preview.")
+    print(usage.stdout.strip(), flush=True)
+    prune_caches(DOCKER_COMMANDS, apply)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
+        print(f"cleanup-deps: {error}", file=sys.stderr)
+        sys.exit(1)
