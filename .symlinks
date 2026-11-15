@@ -47,6 +47,10 @@ dir:.claude/skills/*
 
 # herdr
 .config/herdr/config.toml
+.config/herdr-app/layouts/board.json
+.config/herdr-app/mods/space-tree/*
+.config/herdr-app/mods/plan-usage/*
+.config/herdr-app/mods/sidebar-footer/*
 
 # Starship prompt
 .config/starship.toml
